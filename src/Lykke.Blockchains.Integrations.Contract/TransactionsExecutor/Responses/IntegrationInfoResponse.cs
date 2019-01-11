@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
 {
@@ -20,50 +19,28 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
         /// some kind of dummy text.
         /// </summary>
         [JsonProperty("configuration")]
-        public IDictionary<string, string> Configuration { get; set; }
+        public IDictionary<string, string> Configuration { get; }
 
         /// <summary>
         /// Blockchain specific information.
         /// </summary>
         [JsonProperty("blockchain")]
-        public BlockchainInfo Blockchain { get; set; }
+        public BlockchainInfo Blockchain { get; }
 
         /// <summary>
         /// Info concerning services on which integration is dependent. This should include node and all intermediate APIs.
         /// </summary>
         [JsonProperty("dependencies")]
-        public IDictionary<string, DependencyInfo> Dependencies { get; set; }
+        public IDictionary<string, DependencyInfo> Dependencies { get; }
 
-        public class BlockchainInfo
+        public IntegrationInfoResponse(
+            IDictionary<string, string> configuration,
+            BlockchainInfo blockchain,
+            IDictionary<string, DependencyInfo> dependencies)
         {
-            /// <summary>
-            /// Number of the latest available block in the blockchain according to the integration.
-            /// </summary>
-            [JsonProperty("latestBlockNumber")]
-            public long LatestBlockNumber { get; set; }
-
-            /// <summary>
-            /// Moment of the latest available block in the blockchain according to the integration.
-            /// </summary>
-            [JsonProperty("latestBlockMoment")]
-            public DateTime LatestBlockMoment { get; set; }
-        }
-
-        public class DependencyInfo
-        {
-            /// <summary>
-            /// Running version of the dependency.
-            /// </summary>
-            [JsonProperty("runningVersion")]
-            [JsonConverter(typeof(VersionConverter))]
-            public Version RunningVersion { get; set; }
-
-            /// <summary>
-            /// Latest available version of the dependency. 
-            /// </summary>
-            [JsonProperty("latestAvailableVersion")]
-            [JsonConverter(typeof(VersionConverter))]
-            public Version LatestAvailableVersion { get; set; }
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            Blockchain = blockchain ?? throw new ArgumentNullException(nameof(blockchain));
+            Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
         }
     }
 }

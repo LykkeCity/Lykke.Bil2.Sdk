@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Commands
@@ -13,6 +14,14 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Commands
         /// Number of the block to read.
         /// </summary>
         [JsonProperty("blockNumber")]
-        public long BlockNumber { get; set; }
+        public long BlockNumber { get; }
+
+        public ReadBlockCommand(long blockNumber)
+        {
+            if (blockNumber < 0)
+                throw new ArgumentOutOfRangeException(nameof(blockNumber), blockNumber, "Should be zero or positive number");
+
+            BlockNumber = blockNumber;
+        }
     }
 }

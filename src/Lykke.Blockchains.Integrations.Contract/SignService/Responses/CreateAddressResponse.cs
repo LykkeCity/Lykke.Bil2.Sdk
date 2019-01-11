@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
@@ -14,13 +15,13 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// Encrypted private key of the address.
         /// </summary>
         [JsonProperty("encryptedPrivateKey")]
-        public string EncryptedPrivateKey { get; set; }
+        public string EncryptedPrivateKey { get; }
         
         /// <summary>
         /// Generated address.
         /// </summary>
         [JsonProperty("address")]
-        public string Address { get; set; }
+        public string Address { get; }
 
         /// <summary>
         /// Optional.
@@ -28,6 +29,19 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public Base64String AddressContext { get; set; }
+        public Base64String AddressContext { get; }
+
+        public CreateAddressResponse(string encryptedPrivateKey, string address, Base64String addressContext = null)
+        {
+            if (string.IsNullOrWhiteSpace(encryptedPrivateKey))
+                throw new ArgumentException("Should be not empty string", nameof(encryptedPrivateKey));
+
+            if (string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("Should be not empty string", nameof(address));
+
+            EncryptedPrivateKey = encryptedPrivateKey;
+            Address = address;
+            AddressContext = addressContext;
+        }
     }
 }

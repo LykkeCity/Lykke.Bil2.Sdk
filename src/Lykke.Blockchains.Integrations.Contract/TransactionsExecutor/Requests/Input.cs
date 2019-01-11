@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
@@ -14,13 +15,19 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// Asset ID to transfer.
         /// </summary>
         [JsonProperty("assetId")]
-        public string AssetId { get;set; }
+        public string AssetId { get; }
 
         /// <summary>
         /// Address.
         /// </summary>
         [JsonProperty("address")]
-        public string Address { get; set; }
+        public string Address { get; }
+        
+        /// <summary>
+        /// Amount to transfer from the given address.
+        /// </summary>
+        [JsonProperty("amount")]
+        public CoinsAmount Amount { get; }
 
         /// <summary>
         /// Optional.
@@ -28,12 +35,27 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public string AddressContext { get; set; }
+        public string AddressContext { get; }
 
-        /// <summary>
-        /// Amount to transfer from the given address.
-        /// </summary>
-        [JsonProperty("amount")]
-        public CoinsAmount Amount { get; set; }
+        public Input(
+            string assetId, 
+            string address, 
+            CoinsAmount amount,
+            string addressContext = null)
+        {
+            if (string.IsNullOrWhiteSpace(assetId))
+                throw new ArgumentException("Should be not empty string", nameof(assetId));
+
+            if (string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("Should be not empty string", nameof(address));
+
+            if(amount == 0)
+                throw new ArgumentOutOfRangeException(nameof(amount), amount, "Should be positive number");
+
+            AssetId = assetId;
+            Address = address;
+            Amount = amount;
+            AddressContext = addressContext;
+        }
     }
 }

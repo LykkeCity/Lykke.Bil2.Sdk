@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using JetBrains.Annotations;
 
-namespace Lykke.Blockchains.Integrations.Contract.Common
+namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
 {
     /// <summary>
     /// Enum describing implementation specific type of the transaction.

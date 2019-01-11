@@ -35,14 +35,10 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
         public static Base64String Create(string base64Value)
         {
             if (base64Value == null)
-            {
                 throw new ArgumentNullException(nameof(base64Value));
-            }
 
             if (!_formatRegex.IsMatch(base64Value))
-            {
                 throw new Base64StringConversionException("String is not valid Base64 string", base64Value);
-            }
 
             return new Base64String(base64Value);
         }

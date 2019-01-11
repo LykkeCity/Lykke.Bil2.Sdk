@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
 {
@@ -11,12 +12,24 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         /// Number of the last irreversible block.
         /// </summary>
         [JsonProperty("blockNumber")]
-        public long BlockNumber { get; set; }
+        public long BlockNumber { get; }
 
         /// <summary>
         /// Hash of the last irreversible block.
         /// </summary>
         [JsonProperty("blockHash")]
-        public string BlockHash { get; set; }
+        public string BlockHash { get; }
+
+        public LastIrreversibleBlockUpdatedEvent(long blockNumber, string blockHash)
+        {
+            if (blockNumber < 0)
+                throw new ArgumentOutOfRangeException(nameof(blockNumber), blockNumber, "Should be zero or positive number");
+
+            if (string.IsNullOrWhiteSpace(blockHash))
+                throw new ArgumentException("Should be not empty string", nameof(blockHash));
+
+            BlockNumber = blockNumber;
+            BlockHash = blockHash;
+        }
     }
 }

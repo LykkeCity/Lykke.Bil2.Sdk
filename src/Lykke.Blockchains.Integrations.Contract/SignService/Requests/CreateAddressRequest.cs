@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
@@ -16,6 +17,14 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         /// response. 
         /// </summary>
         [JsonProperty("encryptionPublicKey")]
-        public string EncryptionPublicKey{ get; set; }
+        public string EncryptionPublicKey { get; }
+
+        public CreateAddressRequest(string encryptionPublicKey)
+        {
+            if (string.IsNullOrWhiteSpace(encryptionPublicKey))
+                throw new ArgumentException("Should be not empty string", nameof(encryptionPublicKey));
+
+            EncryptionPublicKey = encryptionPublicKey;
+        }
     }
 }

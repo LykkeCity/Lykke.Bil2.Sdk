@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
 {
@@ -12,18 +13,30 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// Transaction inputs.
         /// </summary>
         [JsonProperty("inputs")]
-        public Input[] Inputs { get; set; }
+        public ICollection<Input> Inputs { get; }
 
         /// <summary>
         /// Transaction outputs.
         /// </summary>
         [JsonProperty("outputs")]
-        public Output[] Outputs { get; set; }
+        public ICollection<Output> Outputs { get; }
 
         /// <summary>
         /// Fee options.
         /// </summary>
         [JsonProperty("fee")]
-        public FeeOptions Fee { get; set; }
+        public FeeOptions Fee { get; }
+
+        public EstimateSendingTransactionRequest(
+            ICollection<Input> inputs,
+            ICollection<Output> outputs,
+            FeeOptions fee)
+        {
+            SendingTransactionInputsOutputsValidator.Validate(inputs, outputs);
+
+            Inputs = inputs;
+            Outputs = outputs;
+            Fee = fee ?? throw new ArgumentNullException(nameof(fee));
+        }
     }
 }

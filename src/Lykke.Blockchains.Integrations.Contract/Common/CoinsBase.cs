@@ -18,23 +18,17 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
         protected CoinsBase(string stringValue, bool allowNegative)
         {
             if (stringValue == null)
-            {
                 throw new ArgumentNullException(nameof(stringValue));
-            }
 
             _numberStyle = allowNegative
                 ? NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign
                 : NumberStyles.AllowDecimalPoint;
 
             if (!decimal.TryParse(stringValue, _numberStyle, CultureInfo.InvariantCulture, out var decimalValue))
-            {
                 throw new CoinsConversionException("Value can't be parsed as decimal", stringValue);
-            }
 
             if (!allowNegative && decimalValue < 0)
-            {
                 throw new CoinsConversionException("Negative values are not allowed", stringValue);
-            }
 
             StringValue = stringValue;
         }
@@ -42,9 +36,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
         protected static string DecimalToString(decimal value, int accuracy)
         {
             if (accuracy < 0 || accuracy > 28)
-            {
                 throw new CoinsConversionException($"Asset accuracy should be number in the range [0..28], but is [{accuracy}]", value);
-            }
             
             var roundedValue = Math.Round(value, accuracy);
 

@@ -23,9 +23,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
         public static CoinsAmount FromDecimal(decimal value, int accuracy)
         {
             if (value < 0)
-            {
-                throw new CoinsConversionException("Negative values are not allowed", value);
-            }
+                throw new CoinsConversionException("Only zero and positive values are allowed", value);
 
             var stringValue = DecimalToString(value, accuracy);
 

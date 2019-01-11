@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
@@ -14,7 +15,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// Generated address tag.
         /// </summary>
         [JsonProperty("tag")]
-        public string Tag { get; set; }
+        public string Tag { get; }
 
         /// <summary>
         /// Optional.
@@ -22,6 +23,15 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// </summary>
         [CanBeNull]
         [JsonProperty("tagContext")]
-        public Base64String TagContext { get; set; }
+        public Base64String TagContext { get; }
+
+        public CreateAddressTagResponse(string tag, Base64String tagContext = null)
+        {
+            if (string.IsNullOrWhiteSpace(tag))
+                throw new ArgumentException("Should be not empty string", nameof(tag));
+
+            Tag = tag;
+            TagContext = tagContext;
+        }
     }
 }

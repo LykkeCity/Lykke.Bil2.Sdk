@@ -17,9 +17,15 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         /// <summary>
         /// Error code
         /// </summary>
-        [JsonProperty("errorCode")]
+        [JsonProperty("code")]
         [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
-        public TErrorCode ErrorCode { get; set; }
+        public TErrorCode Code { get; }
+
+        public ErrorResponse(TErrorCode code, string message, IDictionary<string, ICollection<string>> details) :
+            base(message, details)
+        {
+            Code = code;
+        }
     }
 
     /// <summary>
@@ -29,20 +35,24 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
     public class ErrorResponse
     {
         /// <summary>
-        /// Optional.
-        /// Summary error message
+        /// Summary error message clear for humans.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("errorCode")]
-        public string ErrorMessage { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; }
 
         /// <summary>
         /// Optional.
-        /// Model errors. Key is the model field name, value is the list of the errors related to the given model field.
+        /// Details. Key is the request parameter name, value is the list of the errors related to the given parameter.
         /// </summary>
         [CanBeNull]
-        [JsonProperty("modelErrors")]
-        public Dictionary<string, List<string>> ModelErrors { get; set; }
+        [JsonProperty("details")]
+        public IDictionary<string, ICollection<string>> Details { get; private set; }
+
+        public ErrorResponse(string message, IDictionary<string, ICollection<string>> details)
+        {
+            Message = message;
+            Details = details;
+        }
 
         /// <summary>
         /// Creates <see cref="ErrorResponse"/> with summary error message
@@ -50,10 +60,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         /// <param name="message">Summary error message</param>
         public static ErrorResponse Create(string message)
         {
-            return new ErrorResponse
-            {
-                ErrorMessage = message
-            };
+            return new ErrorResponse(message, null);
         }
 
         /// <summary>
@@ -64,31 +71,27 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         /// <typeparam name="TErrorCode">Type of the error code. Should be enum</typeparam>
         public static ErrorResponse<TErrorCode> Create<TErrorCode>(TErrorCode errorCode, string message = null)
         {
-            return new ErrorResponse<TErrorCode>
-            {
-                ErrorCode = errorCode,
-                ErrorMessage = message
-            };
+            return new ErrorResponse<TErrorCode>(errorCode, message, null);
         }
 
         /// <summary>
-        /// Adds model error to the current <see cref="ErrorResponse"/> instance
+        /// Adds request parameter detail error to the current <see cref="ErrorResponse"/> instance
         /// </summary>
-        /// <param name="key">Model field name</param>
-        /// <param name="message">Error related to the given model field</param>
+        /// <param name="key">Request parameter name</param>
+        /// <param name="message">Error related to the given parameter</param>
         /// <returns></returns>
-        public ErrorResponse AddModelError(string key, string message)
+        public ErrorResponse AddDetail(string key, string message)
         {
-            if (ModelErrors == null)
+            if (Details == null)
             {
-                ModelErrors = new Dictionary<string, List<string>>();
+                Details = new Dictionary<string, ICollection<string>>();
             }
 
-            if (!ModelErrors.TryGetValue(key, out var errors))
+            if (!Details.TryGetValue(key, out var errors))
             {
                 errors = new List<string>();
 
-                ModelErrors.Add(key, errors);
+                Details.Add(key, errors);
             }
 
             errors.Add(message);
@@ -97,30 +100,30 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         }
 
         /// <summary>
-        /// Adds model error to the current <see cref="ErrorResponse"/> instance
+        /// Adds request parameter detail error to the current <see cref="ErrorResponse"/> instance
         /// </summary>
-        /// <param name="key">Model field name</param>
-        /// <param name="exception">Exception which corresponds to the error related to the given model field</param>
-        public ErrorResponse AddModelError(string key, Exception exception)
+        /// <param name="key">MRequest parameter name</param>
+        /// <param name="exception">Exception which corresponds to the error related to the given parameter</param>
+        public ErrorResponse AddDetail(string key, Exception exception)
         {
-            return AddModelError(key, exception.ToString());
+            return AddDetail(key, exception.ToString());
         }
 
         public string GetSummaryMessage()
         {
             var sb = new StringBuilder();
 
-            if (ErrorMessage != null)
+            if (Message != null)
             {
-                sb.AppendLine($"Error summary: {ErrorMessage}");
+                sb.AppendLine($"Error summary: {Message}");
             }
 
-            if (ModelErrors == null) 
+            if (Details == null) 
                 return sb.ToString();
             
             sb.AppendLine();
 
-            foreach (var error in ModelErrors)
+            foreach (var error in Details)
             {
                 if (error.Key == null || error.Value == null || error.Value.Count == 0) 
                     continue;

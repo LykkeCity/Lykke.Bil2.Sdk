@@ -17,7 +17,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// </summary>
         [JsonProperty("type")]
         [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
-        public FeeType Type { get; set; }
+        public FeeType Type { get; }
 
         /// <summary>
         /// Optional.
@@ -25,6 +25,12 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("assetOptions")]
-        public IDictionary<string, AssetFeeOptions> AssetOptions { get;set; }
+        public IDictionary<string, AssetFeeOptions> AssetOptions { get; }
+
+        public FeeOptions(FeeType type, IDictionary<string, AssetFeeOptions> assetOptions = null)
+        {
+            Type = type;
+            AssetOptions = assetOptions;
+        }
     }
 }

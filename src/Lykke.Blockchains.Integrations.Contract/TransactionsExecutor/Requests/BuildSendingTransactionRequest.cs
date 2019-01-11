@@ -1,10 +1,10 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
 {
-
     /// <summary>
     /// Endpoint: [POST] /api/transactions/sending/built
     /// </summary>
@@ -15,19 +15,19 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// Transaction inputs.
         /// </summary>
         [JsonProperty("inputs")]
-        public Input[] Inputs { get; set; }
+        public ICollection<Input> Inputs { get; }
 
         /// <summary>
         /// Transaction outputs.
         /// </summary>
         [JsonProperty("outputs")]
-        public Output[] Outputs { get; set; }
+        public ICollection<Output> Outputs { get; }
 
         /// <summary>
         /// Fee options.
         /// </summary>
         [JsonProperty("fee")]
-        public FeeOptions Fee { get; set; }
+        public FeeOptions Fee { get; }
 
         /// <summary>
         /// Optional.
@@ -41,6 +41,20 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("expiration")]
-        public ExpirationOptions Expiration { get; set; }
+        public ExpirationOptions Expiration { get; }
+
+        public BuildSendingTransactionRequest(
+            ICollection<Input> inputs, 
+            ICollection<Output> outputs, 
+            FeeOptions fee, 
+            ExpirationOptions expiration = null)
+        {
+            SendingTransactionInputsOutputsValidator.Validate(inputs, outputs);
+
+            Inputs = inputs;
+            Outputs = outputs;
+            Fee = fee ?? throw new ArgumentNullException(nameof(fee));
+            Expiration = expiration;
+        }
     }
 }

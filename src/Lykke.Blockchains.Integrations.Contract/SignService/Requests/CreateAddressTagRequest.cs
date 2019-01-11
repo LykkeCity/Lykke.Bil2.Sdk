@@ -28,5 +28,11 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         [JsonProperty("type")]
         [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
         public AddressTagType? Type { get; set; }
+
+        public CreateAddressTagRequest(Base64String addressContext = null, AddressTagType? type = null)
+        {
+            AddressContext = addressContext;
+            Type = type;
+        }
     }
 }
