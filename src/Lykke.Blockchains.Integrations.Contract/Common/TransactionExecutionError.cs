@@ -31,6 +31,14 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
         /// </summary>
         [EnumMember(Value = "notEnoughBalance")]
         NotEnoughBalance,
+
+        /// <summary>
+        /// Fee amount is not enough to execute the transaction.
+        /// It should be guaranteed that the transaction is not included and
+        /// will not be included to the any blockchain block.
+        /// </summary>
+        [EnumMember(Value = "feeTooLow")]
+        FeeTooLow,
         
         /// <summary>
         /// Transaction should be built again. It should be guaranteed that the
