@@ -10,14 +10,14 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
     public class AddressValidityResponse
     {
         /// <summary>
-        /// Flag, which indicates if the address is valid.
+        /// Result of the address validation.
         /// </summary>
-        [JsonProperty("isValid")]
-        public bool IsValid { get; }
+        [JsonProperty("result")]
+        public AddressValidationResult Result { get; }
 
-        public AddressValidityResponse(bool isValid)
+        public AddressValidityResponse(AddressValidationResult result)
         {
-            IsValid = isValid;
+            Result = result;
         }
     }
 }

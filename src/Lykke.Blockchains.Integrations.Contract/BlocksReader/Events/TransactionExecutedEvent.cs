@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
-using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events

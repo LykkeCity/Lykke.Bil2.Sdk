@@ -1,12 +1,16 @@
 ﻿using System.Runtime.Serialization;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
-namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
+namespace Lykke.Blockchains.Integrations.Contract.BlocksReader
 {
     /// <summary>
     /// Enum describing implementation specific type of the transaction.
     /// </summary>
     [PublicAPI]
+    [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
     public enum TransactionType
     {
         /// <summary>

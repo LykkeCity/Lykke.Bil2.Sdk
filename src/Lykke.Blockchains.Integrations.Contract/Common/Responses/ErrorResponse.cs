@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 
 namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
 {
@@ -18,7 +16,6 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         /// Error code
         /// </summary>
         [JsonProperty("code")]
-        [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
         public TErrorCode Code { get; }
 
         public ErrorResponse(TErrorCode code, string message, IDictionary<string, ICollection<string>> details) :
