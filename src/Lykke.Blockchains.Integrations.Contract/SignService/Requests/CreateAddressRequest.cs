@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
@@ -17,7 +18,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         /// response. 
         /// </summary>
         [JsonProperty("encryptionPublicKey")]
-        public string EncryptionPublicKey { get; }
+        public Base64String EncryptionPublicKey { get; }
 
         public CreateAddressRequest(string encryptionPublicKey)
         {

@@ -25,7 +25,6 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
             string name, 
             Version version, 
             string envInfo, 
-            bool isDebug, 
             Version contractVersion, 
             string disease = null) : 
 
@@ -33,8 +32,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
             (
                 name, 
                 version, 
-                envInfo, 
-                isDebug, 
+                envInfo,
                 contractVersion
             )
         {

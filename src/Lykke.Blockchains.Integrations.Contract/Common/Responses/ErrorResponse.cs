@@ -64,12 +64,20 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         }
 
         /// <summary>
+        /// Creates <see cref="ErrorResponse"/> with summary error message
+        /// </summary>
+        public static ErrorResponse Create(Exception exception)
+        {
+            return new ErrorResponse(exception.ToString(), null);
+        }
+
+        /// <summary>
         /// Creates <see cref="ErrorResponse{TErrorCode}"/> with specific error code and optional summary error message
         /// </summary>
         /// <param name="errorCode">Error code</param>
         /// <param name="message">Summary error message</param>
         /// <typeparam name="TErrorCode">Type of the error code. Should be enum</typeparam>
-        public static ErrorResponse<TErrorCode> Create<TErrorCode>(TErrorCode errorCode, string message = null)
+        public static ErrorResponse<TErrorCode> CreateFromCode<TErrorCode>(TErrorCode errorCode, string message = null)
         {
             return new ErrorResponse<TErrorCode>(errorCode, message, null);
         }

@@ -13,7 +13,6 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
     [JsonConverter(typeof(Base64StringJsonConverter))]
     public sealed class Base64String
     {
-        private static Encoding _encoding;
         private static Regex _formatRegex;
 
         /// <summary>
@@ -23,7 +22,6 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
 
         static Base64String()
         {
-            _encoding = Encoding.UTF8;
             _formatRegex = new Regex("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$", RegexOptions.Compiled);
         }
 
@@ -50,7 +48,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
                 return null;
             }
 
-            var bytes = _encoding.GetBytes(stringValue);
+            var bytes = Encoding.UTF8.GetBytes(stringValue);
             
             return Encode(bytes);
         }
@@ -71,7 +69,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
         {
             return Encode(stringValue);
         }
-
+   
         public static implicit operator Base64String(byte[] bytes)
         {
             return Encode(bytes);
@@ -91,7 +89,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
         {
             var bytes = DecodeToBytes();
 
-            return _encoding.GetString(bytes);
+            return Encoding.UTF8.GetString(bytes);
         }
 
         public byte[] DecodeToBytes()

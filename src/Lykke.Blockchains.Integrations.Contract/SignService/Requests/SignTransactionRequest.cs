@@ -18,7 +18,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         /// Multiple keys can be used for the/ transactions with multiple inputs.
         /// </summary>
         [JsonProperty("privateKeys")]
-        public ICollection<string> PrivateKeys { get; }
+        public ICollection<EncryptedString> PrivateKeys { get; }
 
         /// <summary>
         /// Implementation specific transaction context.
@@ -26,9 +26,9 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         [JsonProperty("transactionContext")]
         public Base64String TransactionContext { get; }
 
-        public SignTransactionRequest(ICollection<string> privateKeys, Base64String transactionContext)
+        public SignTransactionRequest(ICollection<EncryptedString> privateKeys, Base64String transactionContext)
         {
-            if (privateKeys == null || !privateKeys.Any() || privateKeys.Any(string.IsNullOrWhiteSpace))
+            if (privateKeys == null || !privateKeys.Any() || privateKeys.Any(x => x == null))
                 throw new ArgumentException("Should be not empty collection of not empty strings", nameof(privateKeys));
 
             if (string.IsNullOrWhiteSpace(transactionContext))

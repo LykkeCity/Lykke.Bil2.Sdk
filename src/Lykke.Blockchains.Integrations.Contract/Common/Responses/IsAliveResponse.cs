@@ -29,12 +29,6 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         /// </summary>
         [JsonProperty("env")]
         public string EnvInfo { get; }
- 
-        /// <summary>
-        /// Flag, which indicates if the service is built in the debug configuration or not
-        /// </summary>
-        [JsonProperty("isDebug")]
-        public bool IsDebug { get; }
        
         /// <summary>
         /// Should return implemented contract version. For example: “2.0.0”
@@ -47,7 +41,6 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
             string name,
             Version version,
             string envInfo,
-            bool isDebug,
             Version contractVersion)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -59,7 +52,6 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
             Name = name;
             Version = version;
             EnvInfo = envInfo;
-            IsDebug = isDebug;
             ContractVersion = contractVersion;
         }
     }
