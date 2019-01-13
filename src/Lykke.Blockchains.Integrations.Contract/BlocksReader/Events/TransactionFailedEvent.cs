@@ -33,7 +33,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         /// Code of the error.
         /// </summary>
         [JsonProperty("errorCode")]
-        public TransactionExecutionError ErrorCode { get; }
+        public TransactionBroadcastingError ErrorCode { get; }
 
         /// <summary>
         /// Clean error description.
@@ -45,7 +45,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
             string blockHash,
             int transactionNumber,
             string transactionHash,
-            TransactionExecutionError errorCode,
+            TransactionBroadcastingError errorCode,
             string errorMessage)
         {
             if (string.IsNullOrWhiteSpace(blockHash))

@@ -7,11 +7,11 @@ using Newtonsoft.Json.Serialization;
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
 {
     /// <summary>
-    /// Enum describing reason of the transaction execution failure.
+    /// Enum describing reason of the transaction broadcasting failure.
     /// </summary>
     [PublicAPI]
     [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
-    public enum TransactionExecutionError
+    public enum TransactionBroadcastingError
     {
         /// <summary>
         /// Any not well known errors. It’s not guaranteed if transaction was
