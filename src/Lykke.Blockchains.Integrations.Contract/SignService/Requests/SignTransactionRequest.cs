@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
@@ -29,10 +28,10 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         public SignTransactionRequest(ICollection<EncryptedString> privateKeys, Base64String transactionContext)
         {
             if (privateKeys == null || !privateKeys.Any() || privateKeys.Any(x => x == null))
-                throw new ArgumentException("Should be not empty collection of not empty strings", nameof(privateKeys));
+                throw RequestValidationException.ShouldBeNotEmptyCollection(nameof(privateKeys));
 
             if (string.IsNullOrWhiteSpace(transactionContext))
-                throw new ArgumentException("Should be not empty string", nameof(transactionContext));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(transactionContext));
 
             PrivateKeys = privateKeys;
             TransactionContext = transactionContext;

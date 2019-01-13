@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Lykke.Blockchains.Integrations.Contract.Common;
 
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
 {
@@ -10,10 +11,10 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         public static void Validate(ICollection<Input> inputs, ICollection<Output> outputs)
         {
             if(inputs == null || !inputs.Any())
-                throw new ArgumentException("Should be not empty collection", nameof(inputs));
+                throw RequestValidationException.ShouldBeNotEmptyCollection(nameof(inputs));
 
             if(outputs == null || !outputs.Any())
-                throw new ArgumentException("Should be not empty collection", nameof(outputs));
+                throw RequestValidationException.ShouldBeNotEmptyCollection(nameof(outputs));
 
             var inputByAssets = inputs
                 .GroupBy(x => x.AssetId)
@@ -36,10 +37,12 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
             var inputAssets = inputByAssets.Select(x => x.AssetId).ToArray();
             var outputAssets = outputByAssets.Select(x => x.AssetId).ToArray();
 
-            if(!inputAssets.SequenceEqual(outputAssets))
-                throw new ArgumentException("Assets sets of inputs and outputs should be equal." + 
-                                            $"{Environment.NewLine}Actual input assets: [{string.Join(", ", inputAssets)}]" +
-                                            $"{Environment.NewLine}Actual output assets: [{string.Join(", ", outputAssets)}]");
+            if (!inputAssets.SequenceEqual(outputAssets))
+                throw new RequestValidationException(
+                    "Assets sets of inputs and outputs should be equal." +
+                    $"{Environment.NewLine}Actual input assets: [{string.Join(", ", inputAssets)}]" +
+                    $"{Environment.NewLine}Actual output assets: [{string.Join(", ", outputAssets)}]",
+                    new[] {nameof(inputs), nameof(outputs)});
 
             var mismatchedAssetSums = inputByAssets
                 .Join(
@@ -66,7 +69,9 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
                     misamtchesMessage.AppendLine($"Asset: {assetSum.AssetId}, input sum: {assetSum.InputSum}, output sum: {assetSum.OutputSum}");
                 }
 
-                throw new ArgumentException($"Sum of inputs and outputs of each asset should be equal. Mismatched sum:{misamtchesMessage}");
+                throw new RequestValidationException(
+                    $"Sum of inputs and outputs of each asset should be equal. Mismatched sum: {misamtchesMessage}",
+                    new[] {nameof(inputs), nameof(outputs)});
             }
         }
     }

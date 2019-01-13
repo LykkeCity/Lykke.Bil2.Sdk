@@ -37,6 +37,10 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
                     var value = EncryptedString.Create(Base64String.Create((string)reader.Value));
                     return value;
                 }
+                catch (Base64StringConversionException ex)
+                {
+                    throw new RequestValidationException("Failed to parse Encryptedstring as Base64String", reader.Value, ex, reader.Path);
+                }
                 catch (Exception ex)
                 {
                     throw new JsonSerializationException($"Error parsing EncryptedString: [{reader.Value}] at path [{reader.Path}]", ex);

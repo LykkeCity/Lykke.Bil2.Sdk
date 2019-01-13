@@ -50,13 +50,13 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Cryptograhy
                 twoBytes = reader.ReadUInt16();
                 if (twoBytes != 0x0102)
                 {
-                    throw new Exception($"Unexpected version {twoBytes:X4}");
+                    throw new InvalidOperationException($"Unexpected version {twoBytes:X4}");
                 }
 
                 var oneByte = reader.ReadByte();
                 if (oneByte != 0x00)
                 {
-                    throw new Exception($"Unexpected value {oneByte:X2}");
+                    throw new InvalidOperationException($"Unexpected value {oneByte:X2}");
                 }
 
                 var rsa = RSA.Create();

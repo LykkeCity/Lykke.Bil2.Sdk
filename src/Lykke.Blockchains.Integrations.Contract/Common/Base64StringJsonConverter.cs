@@ -34,8 +34,12 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 try
                 {
-                    var value = Base64String.Create((string)reader.Value);
+                    var value = Base64String.Create((string) reader.Value);
                     return value;
+                }
+                catch (Base64StringConversionException ex)
+                {
+                    throw new RequestValidationException("Failed to parse Base64String", reader.Value, ex, reader.Path);
                 }
                 catch (Exception ex)
                 {

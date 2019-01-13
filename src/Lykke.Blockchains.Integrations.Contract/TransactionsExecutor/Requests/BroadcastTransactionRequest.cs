@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
@@ -18,7 +17,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         public BroadcastTransactionRequest(Base64String signedTransaction)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction))
-                throw new ArgumentException("Should be not empty string", nameof(signedTransaction));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(signedTransaction));
 
             SignedTransaction = signedTransaction;
         }

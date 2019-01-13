@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
@@ -53,16 +52,16 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
             AddressTagType? tagType = null)
         {
             if (string.IsNullOrWhiteSpace(assetId))
-                throw new ArgumentException("Should be not empty string", nameof(assetId));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
 
             if (string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be not empty string", nameof(address));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
 
-            if (amount == 0)
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, "Should be positive number");
+            if(amount <= 0)
+                throw RequestValidationException.ShouldBePositiveNumber(amount, nameof(amount));
 
             if (tagType.HasValue && tag == null)
-                throw new ArgumentException("If the tag type is specified, the tag should be specified too");
+                throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(tagType), nameof(tag)});
 
             AssetId = assetId;
             Address = address;

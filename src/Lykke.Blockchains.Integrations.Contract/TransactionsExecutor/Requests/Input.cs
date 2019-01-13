@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
@@ -44,13 +43,13 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
             string addressContext = null)
         {
             if (string.IsNullOrWhiteSpace(assetId))
-                throw new ArgumentException("Should be not empty string", nameof(assetId));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
 
             if (string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be not empty string", nameof(address));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
 
-            if(amount == 0)
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, "Should be positive number");
+            if(amount <= 0)
+                throw RequestValidationException.ShouldBePositiveNumber(amount, nameof(amount));
 
             AssetId = assetId;
             Address = address;

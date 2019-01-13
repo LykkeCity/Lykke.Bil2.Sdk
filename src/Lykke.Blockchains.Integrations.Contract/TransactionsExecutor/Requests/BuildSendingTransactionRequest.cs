@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
@@ -53,7 +53,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
 
             Inputs = inputs;
             Outputs = outputs;
-            Fee = fee ?? throw new ArgumentNullException(nameof(fee));
+            Fee = fee ?? throw RequestValidationException.ShouldBeNotNull(nameof(fee));
             Expiration = expiration;
         }
     }
