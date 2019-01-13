@@ -9,7 +9,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
     /// Endpoint: [GET] /api/isalive
     /// </summary>
     [PublicAPI]
-    public class IsAliveResponse
+    public class BlockchainIsAliveResponse
     {
         /// <summary>
         /// Name of the service 
@@ -37,7 +37,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         [JsonConverter(typeof(VersionConverter))]
         public Version ContractVersion { get; }
 
-        public IsAliveResponse(
+        public BlockchainIsAliveResponse(
             string name,
             Version version,
             string envInfo,

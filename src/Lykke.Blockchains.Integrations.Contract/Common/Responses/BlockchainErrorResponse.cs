@@ -10,7 +10,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
     /// <inheritdoc />
     /// <typeparam name="TErrorCode">Type of the error code. Should be enum</typeparam>
     [PublicAPI]
-    public class ErrorResponse<TErrorCode> : ErrorResponse
+    public class BlockchainErrorResponse<TErrorCode> : BlockchainErrorResponse
     {
         /// <summary>
         /// Error code
@@ -18,7 +18,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         [JsonProperty("code")]
         public TErrorCode Code { get; }
 
-        public ErrorResponse(TErrorCode code, string message, IDictionary<string, ICollection<string>> details) :
+        public BlockchainErrorResponse(TErrorCode code, string message, IDictionary<string, ICollection<string>> details) :
             base(message, details)
         {
             Code = code;
@@ -29,7 +29,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
     /// General API error response
     /// </summary>
     [PublicAPI]
-    public class ErrorResponse
+    public class BlockchainErrorResponse
     {
         /// <summary>
         /// Summary error message clear for humans.
@@ -45,47 +45,47 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         [JsonProperty("details")]
         public IDictionary<string, ICollection<string>> Details { get; private set; }
 
-        public ErrorResponse(string message, IDictionary<string, ICollection<string>> details)
+        public BlockchainErrorResponse(string message, IDictionary<string, ICollection<string>> details)
         {
             Message = message;
             Details = details;
         }
 
         /// <summary>
-        /// Creates <see cref="ErrorResponse"/> with summary error message
+        /// Creates <see cref="BlockchainErrorResponse"/> with summary error message
         /// </summary>
         /// <param name="message">Summary error message</param>
-        public static ErrorResponse Create(string message)
+        public static BlockchainErrorResponse Create(string message)
         {
-            return new ErrorResponse(message, null);
+            return new BlockchainErrorResponse(message, null);
         }
 
         /// <summary>
-        /// Creates <see cref="ErrorResponse"/> with summary error message
+        /// Creates <see cref="BlockchainErrorResponse"/> with summary error message
         /// </summary>
-        public static ErrorResponse Create(Exception exception)
+        public static BlockchainErrorResponse Create(Exception exception)
         {
-            return new ErrorResponse(exception.ToString(), null);
+            return new BlockchainErrorResponse(exception.ToString(), null);
         }
 
         /// <summary>
-        /// Creates <see cref="ErrorResponse{TErrorCode}"/> with specific error code and optional summary error message
+        /// Creates <see cref="BlockchainBlockchainErrorResponse{TErrorCode}"/> with specific error code and optional summary error message
         /// </summary>
         /// <param name="errorCode">Error code</param>
         /// <param name="message">Summary error message</param>
         /// <typeparam name="TErrorCode">Type of the error code. Should be enum</typeparam>
-        public static ErrorResponse<TErrorCode> CreateFromCode<TErrorCode>(TErrorCode errorCode, string message = null)
+        public static BlockchainErrorResponse<TErrorCode> CreateFromCode<TErrorCode>(TErrorCode errorCode, string message = null)
         {
-            return new ErrorResponse<TErrorCode>(errorCode, message, null);
+            return new BlockchainErrorResponse<TErrorCode>(errorCode, message, null);
         }
 
         /// <summary>
-        /// Adds request parameter detail error to the current <see cref="ErrorResponse"/> instance
+        /// Adds request parameter detail error to the current <see cref="BlockchainErrorResponse"/> instance
         /// </summary>
         /// <param name="key">Request parameter name</param>
         /// <param name="message">Error related to the given parameter</param>
         /// <returns></returns>
-        public ErrorResponse AddDetail(string key, string message)
+        public BlockchainErrorResponse AddDetail(string key, string message)
         {
             if (Details == null)
             {
@@ -105,11 +105,11 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         }
 
         /// <summary>
-        /// Adds request parameter detail error to the current <see cref="ErrorResponse"/> instance
+        /// Adds request parameter detail error to the current <see cref="BlockchainErrorResponse"/> instance
         /// </summary>
         /// <param name="key">MRequest parameter name</param>
         /// <param name="exception">Exception which corresponds to the error related to the given parameter</param>
-        public ErrorResponse AddDetail(string key, Exception exception)
+        public BlockchainErrorResponse AddDetail(string key, Exception exception)
         {
             return AddDetail(key, exception.ToString());
         }

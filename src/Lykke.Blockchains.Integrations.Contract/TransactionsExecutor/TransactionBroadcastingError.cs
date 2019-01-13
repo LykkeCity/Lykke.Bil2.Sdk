@@ -14,21 +14,6 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
     public enum TransactionBroadcastingError
     {
         /// <summary>
-        /// Any not well known errors. It’s not guaranteed if transaction was
-        /// broadcasted to the blockchain or not.
-        /// </summary>
-        [EnumMember(Value = "unknown")]
-        Unknown,
-
-        /// <summary>
-        /// Transaction can’t be broadcasted with the given parameters.
-        /// It should be guaranteed that the transaction is not included
-        /// and will not be included to the any blockchain block.
-        /// </summary>
-        [EnumMember(Value = "rejected")]
-        Rejected,
-        
-        /// <summary>
         /// There is not enough balance on the some of the input address.
         /// It should be guaranteed that the transaction is not included
         /// and will not be included to the any blockchain block.

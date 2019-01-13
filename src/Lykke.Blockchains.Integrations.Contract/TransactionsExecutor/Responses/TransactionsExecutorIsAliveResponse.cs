@@ -7,7 +7,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
 {
     /// <inheritdoc />
     [PublicAPI]
-    public class TransactionsExecutorIsAliveResponse : IsAliveResponse
+    public class TransactionsExecutorIsAliveResponse : BlockchainIsAliveResponse
     {
         /// <summary>
         /// Optional.
