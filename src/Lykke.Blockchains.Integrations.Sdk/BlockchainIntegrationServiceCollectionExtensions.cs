@@ -60,6 +60,8 @@ namespace Lykke.Blockchains.Integrations.Sdk
                 {
                     lykkeSdkOptions.Extend = (services1, settings) =>
                     {
+                        services.AddSingleton<ISettingsRenderer>(new SettingsRenderer<TAppSettings>(settings));
+
                         options.UseSettings.Invoke(settings);
                     };
                 }

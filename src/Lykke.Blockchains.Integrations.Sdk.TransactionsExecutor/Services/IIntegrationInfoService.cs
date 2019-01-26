@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses;
+using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Models;
 
 namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services
 {
@@ -13,6 +13,6 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services
         /// All required information could be gathered synchronously in the call.
         /// </summary>
         /// <returns></returns>
-        Task<IntegrationInfoResponse> GetInfoAsync();
+        Task<IntegrationInfo> GetInfoAsync();
     }
 }

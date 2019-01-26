@@ -11,21 +11,26 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services
         private readonly IHealthMonitor _healthMonitor;
         private readonly IHealthProvider _healthProvider;
         private readonly IIntegrationInfoService _integrationInfoService;
+        private readonly ISettingsRenderer _settingsRenderer;
 
         public StartupManager(
             ILogFactory logFactory,
             IHealthMonitor healthMonitor,
             IHealthProvider healthProvider,
-            IIntegrationInfoService integrationInfoService)
+            IIntegrationInfoService integrationInfoService,
+            ISettingsRenderer settingsRenderer)
         {
+            _log = logFactory.CreateLog(this);
             _healthMonitor = healthMonitor;
             _healthProvider = healthProvider;
             _integrationInfoService = integrationInfoService;
-            _log = logFactory.CreateLog(this);
+            _settingsRenderer = settingsRenderer;
         }
 
         public async Task StartAsync()
         {
+            _log.Info("Settings", _settingsRenderer.RenderSettings());
+
             _log.Info("Starting health monitor...");
 
             _healthMonitor.Start();

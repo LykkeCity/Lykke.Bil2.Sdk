@@ -3,6 +3,8 @@ using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.Sdk.SignService.Controllers;
 using Lykke.Blockchains.Integrations.Sdk.SignService.Models;
+using Lykke.Blockchains.Integrations.Sdk.SignService.Services;
+using Lykke.Sdk;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Blockchains.Integrations.Sdk.SignService
@@ -40,7 +42,9 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
             {
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.AddressGeneratorFactory)} is required.");
             }
-            
+
+            services.AddTransient<IStartupManager, StartupManager>();
+
             return services.BuildBlockchainIntegrationServiceProvider<TAppSettings>(integrationOptions =>
             {
                 integrationOptions.ServiceName = $"{options.IntegrationName} Sign service";
@@ -52,7 +56,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
 
                     services.AddTransient(s => options.AddressGeneratorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
                     services.AddTransient(s => options.TransactionSignerFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
-
+                    
                     options.UseSettings?.Invoke(settings);
                 };
                 integrationOptions.DisableLogging();

@@ -12,21 +12,32 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Controllers
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     internal class IntegrationInfoController : ControllerBase
     {
+        private readonly ISettingsRenderer _settingsRenderer;
         private readonly IIntegrationInfoService _integrationInfoService;
 
-        public IntegrationInfoController(IIntegrationInfoService integrationInfoService)
+        public IntegrationInfoController(
+            ISettingsRenderer settingsRenderer,
+            IIntegrationInfoService integrationInfoService)
         {
+            _settingsRenderer = settingsRenderer;
             _integrationInfoService = integrationInfoService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IntegrationInfoResponse>> GetInfo()
         {
-            var response = await _integrationInfoService.GetInfoAsync();
-            if (response == null)
+            var info = await _integrationInfoService.GetInfoAsync();
+            if (info == null)
             {
                 throw new InvalidOperationException("Not null response object expected");
             }
+
+            var response = new IntegrationInfoResponse
+            (
+                _settingsRenderer.RenderSettings(),
+                info.Blockchain,
+                info.Dependencies
+            );
 
             return Ok(response);
         }

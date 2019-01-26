@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Sdk.Services;
 using Lykke.Sdk.Settings;
 
 namespace Lykke.Blockchains.Integrations.Sdk.SignService
@@ -9,6 +10,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
     [PublicAPI]
     public class BaseSignServiceSettings : BaseAppSettings
     {
+        [SecureSettings]
         public string EncryptionPrivateKey { get; set; }
     }
 }

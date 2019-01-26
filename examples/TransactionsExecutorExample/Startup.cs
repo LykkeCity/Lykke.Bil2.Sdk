@@ -25,7 +25,7 @@ namespace TransactionsExecutorExample
                 (
                     c.Services.GetRequiredService<INodeClient>()
                 );
-                options.IntegrationInfoServiceFactory = c => new IntegrationInfoService(c.Settings.CurrentValue);
+                options.IntegrationInfoServiceFactory = c => new IntegrationInfoService();
                 options.TransactionEstimatorFactory = c => new TransactionsEstimator();
                 options.TransactionExecutorFactory = c => new TransactionsExecutor();
 
