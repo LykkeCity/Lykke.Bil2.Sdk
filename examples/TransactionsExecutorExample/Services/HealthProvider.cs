@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services;
 
@@ -6,28 +6,28 @@ namespace TransactionsExecutorExample.Services
 {
     public class HealthProvider : IHealthProvider
     {
-        private readonly Random _random;
+        private readonly INodeClient _nodeClient;
 
-        public HealthProvider()
+        public HealthProvider(INodeClient nodeClient)
         {
-            _random = new Random();
+            _nodeClient = nodeClient;
         }
 
-        public Task<string> GetDiseaseAsync()
+        public async Task<string> GetDiseaseAsync()
         {
-            var value = _random.Next(0, 100);
-
-            if (value < 30)
+            try
             {
-                return Task.FromResult("Node is unavailable");
+                if (!await _nodeClient.GetIsSynchronizedAsync())
+                {
+                    return "Node is not synchronized";
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                return $"Node is unavailable: {ex}";
             }
 
-            if (value < 40)
-            {
-                return Task.FromResult("Node is not synchronized");
-            }
-
-            return Task.FromResult<string>(null);
+            return null;
         }
     }
 }

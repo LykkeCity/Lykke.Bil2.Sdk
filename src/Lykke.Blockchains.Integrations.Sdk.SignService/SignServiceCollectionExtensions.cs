@@ -15,7 +15,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
         /// </summary>
         public static IServiceProvider BuildBlockchainSignServiceProvider<TAppSettings>(
             this IServiceCollection services,
-            Action<SignServiceOptions> configureOptions)
+            Action<SignServiceOptions<TAppSettings>> configureOptions)
 
             where TAppSettings : BaseSignServiceSettings
         {
@@ -28,7 +28,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
                 throw new ArgumentNullException(nameof(configureOptions));
             }
 
-            var options = new SignServiceOptions();
+            var options = new SignServiceOptions<TAppSettings>();
 
             configureOptions(options);
 
@@ -41,9 +41,6 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.AddressGeneratorFactory)} is required.");
             }
             
-            services.AddTransient(options.AddressGeneratorFactory);
-            services.AddTransient(options.TransactionSignerFactory);
-
             return services.BuildBlockchainIntegrationServiceProvider<TAppSettings>(integrationOptions =>
             {
                 integrationOptions.ServiceName = $"{options.IntegrationName} Sign service";
@@ -52,6 +49,11 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
                     var privateKey = Base58String.Create(settings.CurrentValue.EncryptionPrivateKey);
 
                     services.AddSingleton(new EncryptionConfiguration(privateKey));
+
+                    services.AddTransient(s => options.AddressGeneratorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+                    services.AddTransient(s => options.TransactionSignerFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+
+                    options.UseSettings?.Invoke(settings);
                 };
                 integrationOptions.DisableLogging();
                 integrationOptions.AddDefaultIsAliveController();

@@ -19,11 +19,20 @@ namespace TransactionsExecutorExample
             return services.BuildBlockchainTransactionsExecutorServiceProvider<AppSettings>(options =>
             {
                 options.IntegrationName = IntegrationName;
-                options.AddressValidatorFactory = s => new AddressValidator();
-                options.HealthProviderFactory = s => new HealthProvider();
-                options.IntegrationInfoServiceFactory = s => new IntegrationInfoService();
-                options.TransactionEstimatorFactory = s => new TransactionsEstimator();
-                options.TransactionExecutorFactory = s => new TransactionsExecutor();
+                
+                options.AddressValidatorFactory = c => new AddressValidator();
+                options.HealthProviderFactory = c => new HealthProvider
+                (
+                    c.Services.GetRequiredService<INodeClient>()
+                );
+                options.IntegrationInfoServiceFactory = c => new IntegrationInfoService(c.Settings.CurrentValue);
+                options.TransactionEstimatorFactory = c => new TransactionsEstimator();
+                options.TransactionExecutorFactory = c => new TransactionsExecutor();
+
+                options.UseSettings = settings =>
+                {
+                    services.AddSingleton<INodeClient>(new NodeClient(settings.CurrentValue.NodeUrl));
+                };
             });
         }
 

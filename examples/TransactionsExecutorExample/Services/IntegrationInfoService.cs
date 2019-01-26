@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses;
 using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services;
+using TransactionsExecutorExample.Settings;
 
 namespace TransactionsExecutorExample.Services
 {
     public class IntegrationInfoService : IIntegrationInfoService
     {
+        private readonly AppSettings _settings;
         private readonly DateTime _startTime;
 
-        public IntegrationInfoService()
+        public IntegrationInfoService(AppSettings appSettings)
         {
+            _settings = appSettings;
             _startTime = new DateTime(2019, 1, 1);
         }
 
@@ -23,8 +26,11 @@ namespace TransactionsExecutorExample.Services
 
             return Task.FromResult(new IntegrationInfoResponse
             (
-                // TODO: Helper
-                new Dictionary<string, string>(), 
+                new Dictionary<string, string>
+                {
+                    {nameof(AppSettings.HealthMonitoringPeriod), _settings.HealthMonitoringPeriod.ToString()},
+                    {nameof(DbSettings.AzureDataConnString), _settings.Db.AzureDataConnString}
+                },
                 new BlockchainInfo(blockNumber, blockTime),
                 new Dictionary<string, DependencyInfo>
                 {

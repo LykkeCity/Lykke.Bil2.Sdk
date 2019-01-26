@@ -19,7 +19,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
         /// </summary>
         public static IServiceProvider BuildBlockchainTransactionsExecutorServiceProvider<TAppSettings>(
             this IServiceCollection services,
-            Action<TransactionsExecutorServiceOptions> configureOptions)
+            Action<TransactionsExecutorServiceOptions<TAppSettings>> configureOptions)
 
             where TAppSettings : class, ITransactionsExecutorSettings<BaseTransactionsExecutorDbSettings>
         {
@@ -32,7 +32,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
                 throw new ArgumentNullException(nameof(configureOptions));
             }
 
-            var options = new TransactionsExecutorServiceOptions();
+            var options = new TransactionsExecutorServiceOptions<TAppSettings>();
 
             configureOptions(options);
 
@@ -61,12 +61,6 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.TransactionExecutorFactory)} is required.");
             }
             
-            services.AddTransient(options.AddressValidatorFactory);
-            services.AddTransient(options.HealthProviderFactory);
-            services.AddTransient(options.IntegrationInfoServiceFactory);
-            services.AddTransient(options.TransactionEstimatorFactory);
-            services.AddTransient(options.TransactionExecutorFactory);
-
             services.AddTransient<IStartupManager, StartupManager>();
 
             return services.BuildBlockchainIntegrationServiceProvider<TAppSettings>(integrationOptions =>
@@ -83,6 +77,14 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
                     services.AddSingleton(s => RawTransactionReadOnlyRepository.Create(
                         options.IntegrationName,
                         settings.Nested(x => x.Db.AzureDataConnString)));
+
+                    services.AddTransient(s => options.AddressValidatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+                    services.AddTransient(s => options.HealthProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+                    services.AddTransient(s => options.IntegrationInfoServiceFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+                    services.AddTransient(s => options.TransactionEstimatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+                    services.AddTransient(s => options.TransactionExecutorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+
+                    options.UseSettings?.Invoke(settings);
                 };
 
                 integrationOptions.LogsAzureTableName = $"{options.IntegrationName}TransactionsExecutorLogs";

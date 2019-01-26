@@ -19,8 +19,8 @@ namespace SignServiceExample
             return services.BuildBlockchainSignServiceProvider<AppSettings>(options =>
             {
                 options.IntegrationName = IntegrationName;
-                options.TransactionSignerFactory = s => new TransactionSigner();
-                options.AddressGeneratorFactory = s => new AddressGenerator();
+                options.TransactionSignerFactory = c => new TransactionSigner(c.Settings.CurrentValue.Network);
+                options.AddressGeneratorFactory = c => new AddressGenerator(c.Settings.CurrentValue.Network);
             });
         }
 

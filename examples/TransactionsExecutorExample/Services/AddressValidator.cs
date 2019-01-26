@@ -20,8 +20,11 @@ namespace TransactionsExecutorExample.Services
                 throw new RequestValidationException("Address tagType is not supported", tagType, nameof(tagType));
             }
 
-            return Task.FromResult(!Guid.TryParse(address, out _) 
-                ? new AddressValidityResponse(AddressValidationResult.InvalidAddressFormat) 
+            var addressParts = address.Split(":");
+            var isAddressForatValid = addressParts.Length == 2 && Guid.TryParse(addressParts[1], out _);
+            
+            return Task.FromResult(!isAddressForatValid
+                ? new AddressValidityResponse(AddressValidationResult.InvalidAddressFormat)
                 : new AddressValidityResponse(AddressValidationResult.Valid));
         }
     }
