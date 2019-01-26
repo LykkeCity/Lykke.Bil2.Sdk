@@ -6,12 +6,12 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Cryptograhy
     internal class EncryptedMessage
     {
         [JsonProperty("encryptedAesKeys")]
-        public Base64String EncryptedAesKeys { get; }
+        public Base58String EncryptedAesKeys { get; }
 
         [JsonProperty("encryptedBody")]
-        public Base64String EncryptedBody { get; }
+        public Base58String EncryptedBody { get; }
 
-        public EncryptedMessage(Base64String encryptedAesKeys, Base64String encryptedBody)
+        public EncryptedMessage(Base58String encryptedAesKeys, Base58String encryptedBody)
         {
             EncryptedAesKeys = encryptedAesKeys ?? throw new ArgumentNullException(nameof(encryptedAesKeys));
             EncryptedBody = encryptedBody ?? throw new ArgumentNullException(nameof(encryptedBody));

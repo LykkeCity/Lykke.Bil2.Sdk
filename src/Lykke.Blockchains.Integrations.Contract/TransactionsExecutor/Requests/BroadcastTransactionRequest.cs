@@ -12,9 +12,9 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
     {
         // The signed transaction.
         [JsonProperty("signedTransaction")]
-        public Base64String SignedTransaction { get; }
+        public Base58String SignedTransaction { get; }
 
-        public BroadcastTransactionRequest(Base64String signedTransaction)
+        public BroadcastTransactionRequest(Base58String signedTransaction)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(signedTransaction));

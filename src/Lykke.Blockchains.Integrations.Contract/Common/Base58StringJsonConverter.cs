@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Lykke.Blockchains.Integrations.Contract.Common
 {
     [PublicAPI]
-    public class EncryptedStringJsonConverter : JsonConverter
+    public class Base58StringJsonConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -13,13 +13,13 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 writer.WriteNull();
             }
-            else if (value is EncryptedString base58String)
+            else if (value is Base58String base58String)
             {
-                writer.WriteValue(base58String.EncryptedValue.Value);
+                writer.WriteValue(base58String.Value);
             }
             else
             {
-                throw new JsonSerializationException("Expected EncryptedString object value");
+                throw new JsonSerializationException("Expected Base58String object value");
             }
         }
 
@@ -34,25 +34,25 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 try
                 {
-                    var value = EncryptedString.Create(Base58String.Create((string)reader.Value));
+                    var value = Base58String.Create((string) reader.Value);
                     return value;
                 }
                 catch (Base58StringConversionException ex)
                 {
-                    throw new RequestValidationException("Failed to parse Encryptedstring as Base58String", reader.Value, ex, reader.Path);
+                    throw new RequestValidationException("Failed to parse Base58String", reader.Value, ex, reader.Path);
                 }
                 catch (Exception ex)
                 {
-                    throw new JsonSerializationException($"Error parsing EncryptedString: [{reader.Value}] at path [{reader.Path}]", ex);
+                    throw new JsonSerializationException($"Error parsing Base58String: [{reader.Value}] at path [{reader.Path}]", ex);
                 }
             }
 
-            throw new JsonSerializationException($"Unexpected token or value when parsing EncryptedString. Token [{reader.TokenType}], value [{reader.Value}]");
+            throw new JsonSerializationException($"Unexpected token or value when parsing Base58String. Token [{reader.TokenType}], value [{reader.Value}]");
         }
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(EncryptedString);
+            return objectType == typeof(Base58String);
         }
     }
 }

@@ -26,6 +26,13 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
         /// Fee should be increased and transaction should be built again.
         /// </summary>
         [EnumMember(Value = "feeTooLow")]
-        FeeTooLow
+        FeeTooLow,
+
+        /// <summary>
+        /// Integration can’t serve request right now due to workload or any other reason.
+        /// Request should be retried later.
+        /// </summary>
+        [EnumMember(Value = "retryLater")]
+        RetryLater 
     }
 }

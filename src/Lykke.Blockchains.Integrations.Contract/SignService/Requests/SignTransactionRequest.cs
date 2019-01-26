@@ -23,9 +23,9 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         /// Implementation specific transaction context.
         /// </summary>
         [JsonProperty("transactionContext")]
-        public Base64String TransactionContext { get; }
+        public Base58String TransactionContext { get; }
 
-        public SignTransactionRequest(ICollection<EncryptedString> privateKeys, Base64String transactionContext)
+        public SignTransactionRequest(ICollection<EncryptedString> privateKeys, Base58String transactionContext)
         {
             if (privateKeys == null || !privateKeys.Any() || privateKeys.Any(x => x == null))
                 throw RequestValidationException.ShouldBeNotEmptyCollection(nameof(privateKeys));

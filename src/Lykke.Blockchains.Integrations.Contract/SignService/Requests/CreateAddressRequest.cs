@@ -17,9 +17,9 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         /// response. 
         /// </summary>
         [JsonProperty("encryptionPublicKey")]
-        public Base64String EncryptionPublicKey { get; }
+        public Base58String EncryptionPublicKey { get; }
 
-        public CreateAddressRequest(string encryptionPublicKey)
+        public CreateAddressRequest(Base58String encryptionPublicKey)
         {
             if (string.IsNullOrWhiteSpace(encryptionPublicKey))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(encryptionPublicKey));

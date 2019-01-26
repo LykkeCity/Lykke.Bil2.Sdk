@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.Common
 {
     [PublicAPI]
-    public class Base64StringJsonConverter : JsonConverter
+    public class ImplicitToStringJsonConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -13,13 +15,9 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 writer.WriteNull();
             }
-            else if (value is Base64String base64String)
-            {
-                writer.WriteValue(base64String.Base64Value);
-            }
             else
             {
-                throw new JsonSerializationException("Expected Base64String object value");
+                writer.WriteValue(value.ToString());
             }
         }
 
@@ -34,25 +32,27 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 try
                 {
-                    var value = Base64String.Create((string) reader.Value);
+                    var value = Activator.CreateInstance(objectType, reader.Value);
                     return value;
-                }
-                catch (Base64StringConversionException ex)
-                {
-                    throw new RequestValidationException("Failed to parse Base64String", reader.Value, ex, reader.Path);
                 }
                 catch (Exception ex)
                 {
-                    throw new JsonSerializationException($"Error parsing Base64String: [{reader.Value}] at path [{reader.Path}]", ex);
+                    throw new JsonSerializationException($"Error parsing Base58String: [{reader.Value}] at path [{reader.Path}]", ex);
                 }
             }
 
-            throw new JsonSerializationException($"Unexpected token or value when parsing Base64String. Token [{reader.TokenType}], value [{reader.Value}]");
+            throw new JsonSerializationException($"Unexpected token or value when parsing Base58String. Token [{reader.TokenType}], value [{reader.Value}]");
         }
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(Base64String);
+            return objectType.IsClass && 
+                   !objectType.IsAbstract && 
+                   !objectType.IsGenericType && 
+                   objectType
+                       .GetConstructors(BindingFlags.Public)
+                       .Count(c => c.GetParameters().Length == 1 &&
+                                   c.GetParameters().Count(p => p.ParameterType == typeof(string) && p.IsIn) == 1) == 1;
         }
     }
 }

@@ -15,9 +15,9 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
         /// Raw transaction.
         /// </summary>
         [JsonProperty("raw")]
-        public Base64String Raw { get; }
+        public Base58String Raw { get; }
 
-        public RawTransactionResponse(Base64String raw)
+        public RawTransactionResponse(Base58String raw)
         {
             if (string.IsNullOrWhiteSpace(raw))
                 throw new ArgumentException("Should be not empty string", nameof(raw));

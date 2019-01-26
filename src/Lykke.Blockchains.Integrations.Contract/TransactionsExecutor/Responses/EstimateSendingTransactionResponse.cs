@@ -14,9 +14,9 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
         /// Estimated transaction fee for particular asset ID.
         /// </summary>
         [JsonProperty("assetEstimatedFee")]
-        public IDictionary<string, CoinsAmount> AssetEstimatedFee { get; }
+        public IDictionary<AssetId, CoinsAmount> AssetEstimatedFee { get; }
 
-        public EstimateSendingTransactionResponse(IDictionary<string, CoinsAmount> assetEstimatedFee)
+        public EstimateSendingTransactionResponse(IDictionary<AssetId, CoinsAmount> assetEstimatedFee)
         {
             AssetEstimatedFee = assetEstimatedFee ?? throw new ArgumentNullException(nameof(assetEstimatedFee));
         }

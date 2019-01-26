@@ -42,6 +42,14 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
         /// and will not be included to the any blockchain block.
         /// </summary>
         [EnumMember(Value = "transientFailure")]
-        TransientFailure
+        TransientFailure,
+
+        /// <summary>
+        /// Integration can’t serve request right now due to workload or any other reason.
+        /// Request should be retried later. It should be guaranteed that the transaction
+        /// is not included and will not be included to the any blockchain block.
+        /// </summary>
+        [EnumMember(Value = "retryLater")]
+        RetryLater 
     }
 }

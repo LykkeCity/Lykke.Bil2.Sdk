@@ -16,7 +16,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public Base64String AddressContext { get; set; }
+        public Base58String AddressContext { get; set; }
 
         /// <summary>
         /// Optional.
@@ -26,7 +26,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         [JsonProperty("type")]
         public AddressTagType? Type { get; set; }
 
-        public CreateAddressTagRequest(Base64String addressContext = null, AddressTagType? type = null)
+        public CreateAddressTagRequest(Base58String addressContext = null, AddressTagType? type = null)
         {
             AddressContext = addressContext;
             Type = type;

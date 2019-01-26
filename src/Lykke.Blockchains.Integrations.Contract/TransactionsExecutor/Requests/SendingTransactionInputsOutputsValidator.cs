@@ -34,8 +34,8 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
                 })
                 .OrderBy(x => x.AssetId)
                 .ToArray();
-            var inputAssets = inputByAssets.Select(x => x.AssetId).ToArray();
-            var outputAssets = outputByAssets.Select(x => x.AssetId).ToArray();
+            var inputAssets = inputByAssets.Select(x => x.AssetId.ToString()).ToArray();
+            var outputAssets = outputByAssets.Select(x => x.AssetId.ToString()).ToArray();
 
             if (!inputAssets.SequenceEqual(outputAssets))
                 throw new RequestValidationException(

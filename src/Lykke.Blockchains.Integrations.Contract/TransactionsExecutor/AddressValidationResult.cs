@@ -41,6 +41,12 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
         /// Address requires a tag, but it isn’t specified.
         /// </summary>
         [EnumMember(Value = "requiredTagMissed")]
-        RequiredTagMissed
+        RequiredTagMissed,
+
+        /// <summary>
+        /// Address type is not supported. For instance address is a contract and it’s not supported.
+        /// </summary>
+        [EnumMember(Value = "addressTypeNotSupported ")]
+        AddressTypeNotSupported 
     }
 }

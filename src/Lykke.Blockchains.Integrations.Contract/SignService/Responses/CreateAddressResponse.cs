@@ -21,7 +21,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// Generated address.
         /// </summary>
         [JsonProperty("address")]
-        public string Address { get; }
+        public Address Address { get; }
 
         /// <summary>
         /// Optional.
@@ -29,9 +29,9 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public Base64String AddressContext { get; }
+        public Base58String AddressContext { get; }
 
-        public CreateAddressResponse(EncryptedString privateKey, string address, Base64String addressContext = null)
+        public CreateAddressResponse(EncryptedString privateKey, Address address, Base58String addressContext = null)
         {
             if (string.IsNullOrWhiteSpace(address))
                 throw new ArgumentException("Should be not empty string", nameof(address));

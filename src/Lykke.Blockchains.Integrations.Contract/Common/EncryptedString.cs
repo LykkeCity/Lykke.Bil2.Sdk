@@ -18,14 +18,14 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
         /// <summary>
         /// Encrypted value
         /// </summary>
-        public Base64String EncryptedValue { get; }
+        public Base58String EncryptedValue { get; }
 
-        private EncryptedString(Base64String encryptedValue)
+        private EncryptedString(Base58String encryptedValue)
         {
             EncryptedValue = encryptedValue;
         }
 
-        public static EncryptedString Create(Base64String encryptedValue)
+        public static EncryptedString Create(Base58String encryptedValue)
         {
             if (encryptedValue == null)
                 throw new ArgumentNullException(nameof(encryptedValue));
@@ -33,7 +33,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             return new EncryptedString(encryptedValue);
         }
 
-        public static EncryptedString Encrypt(Base64String publicKey, string stringToEncrypt)
+        public static EncryptedString Encrypt(Base58String publicKey, string stringToEncrypt)
         {
             if (stringToEncrypt == null)
             {
@@ -45,7 +45,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             return Encrypt(publicKey, bytes);
         }
 
-        public static EncryptedString Encrypt(Base64String publicKey, byte[] bytesToEncrypt)
+        public static EncryptedString Encrypt(Base58String publicKey, byte[] bytesToEncrypt)
         {
             if(string.IsNullOrWhiteSpace(publicKey))
                 throw new ArgumentException("Should be not empty string", nameof(publicKey));
@@ -61,7 +61,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
                 aes.GenerateIV();
 
                 var aesKeys = new AesKeysEnvelope(aes.Key, aes.IV);
-                Base64String serializedAesKeys = JsonConvert.SerializeObject(aesKeys);
+                Base58String serializedAesKeys = JsonConvert.SerializeObject(aesKeys);
 
                 var encryptedAesKeys = RsaEncryption.Encrypt(serializedAesKeys, publicKey);
                 
@@ -77,24 +77,24 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
                     var encryptedBody = encryptedStream.ToArray();
                     var encryptedMessage = new EncryptedMessage(encryptedAesKeys, encryptedBody);
 
-                    Base64String serializedEncryptedMessage = JsonConvert.SerializeObject(encryptedMessage);
+                    Base58String serializedEncryptedMessage = JsonConvert.SerializeObject(encryptedMessage);
 
                     return new EncryptedString(serializedEncryptedMessage);
                 }
             }
         }
 
-        public string DecryptToString(Base64String privateKey)
+        public string DecryptToString(Base58String privateKey)
         {
             var bytes = DecryptToBytes(privateKey);
 
             return Encoding.UTF8.GetString(bytes);
         }
 
-        public byte[] DecryptToBytes(Base64String privateKey)
+        public byte[] DecryptToBytes(Base58String privateKey)
         {
             var encryptedMessage = JsonConvert.DeserializeObject<EncryptedMessage>(EncryptedValue);
-            Base64String decryptedAesKey = RsaEncryption.Decrypt(encryptedMessage.EncryptedAesKeys, privateKey);
+            Base58String decryptedAesKey = RsaEncryption.Decrypt(encryptedMessage.EncryptedAesKeys, privateKey);
             var aesKeys = JsonConvert.DeserializeObject<AesKeysEnvelope>(decryptedAesKey);
 
             using (var aes = new AesManaged())

@@ -14,13 +14,13 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// Asset ID to transfer.
         /// </summary>
         [JsonProperty("assetId")]
-        public string AssetId { get; }
+        public AssetId AssetId { get; }
 
         /// <summary>
         /// Address.
         /// </summary>
         [JsonProperty("address")]
-        public string Address { get; }
+        public Address Address { get; }
 
         /// <summary>
         /// Amount to transfer to the given address.
@@ -34,7 +34,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("tag")]
-        public string Tag { get; }
+        public AddressTag Tag { get; }
 
         /// <summary>
         /// Optional.
@@ -45,10 +45,10 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         public AddressTagType? TagType { get; }
 
         public Output(
-            string assetId,
-            string address,
+            AssetId assetId,
+            Address address,
             CoinsAmount amount,
-            string tag = null,
+            AddressTag tag = null,
             AddressTagType? tagType = null)
         {
             if (string.IsNullOrWhiteSpace(assetId))

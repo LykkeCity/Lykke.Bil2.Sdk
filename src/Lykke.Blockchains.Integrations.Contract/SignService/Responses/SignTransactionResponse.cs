@@ -15,7 +15,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// Implementation specific signed transaction.
         /// </summary>
         [JsonProperty("signedTransaction")]
-        public Base64String SignedTransaction { get; }
+        public Base58String SignedTransaction { get; }
 
         /// <summary>
         /// Hash of the signed transaction in the blockchain.
@@ -23,7 +23,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         [JsonProperty("transactionHash")]
         public string TransactionHash { get; }
 
-        public SignTransactionResponse(Base64String signedTransaction, string transactionHash)
+        public SignTransactionResponse(Base58String signedTransaction, string transactionHash)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction))
                 throw new ArgumentException("Should be not empty string", nameof(signedTransaction));

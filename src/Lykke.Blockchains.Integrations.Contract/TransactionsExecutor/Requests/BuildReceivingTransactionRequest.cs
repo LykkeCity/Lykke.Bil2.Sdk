@@ -18,9 +18,9 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// Address which wants to receive the “sending” transaction.
         /// </summary>
         [JsonProperty("receivingAddress")]
-        public string ReceivingAddress { get; }
+        public Address ReceivingAddress { get; }
 
-        public BuildReceivingTransactionRequest(string sendingTransactionHash, string receivingAddress)
+        public BuildReceivingTransactionRequest(string sendingTransactionHash, Address receivingAddress)
         {
             if (string.IsNullOrWhiteSpace(sendingTransactionHash))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(sendingTransactionHash));

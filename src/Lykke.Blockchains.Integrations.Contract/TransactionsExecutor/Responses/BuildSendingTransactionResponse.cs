@@ -15,9 +15,9 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
         /// Implementation specific transaction context. 
         /// </summary>
         [JsonProperty("transactionContext")]
-        public Base64String TransactionContext { get; }
+        public Base58String TransactionContext { get; }
 
-        public BuildSendingTransactionResponse(Base64String transactionContext)
+        public BuildSendingTransactionResponse(Base58String transactionContext)
         {
             if (string.IsNullOrWhiteSpace(transactionContext))
                 throw new ArgumentException("Should be not empty string", nameof(transactionContext));
