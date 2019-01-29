@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.Contract.SignService.Requests;
 using Lykke.Blockchains.Integrations.Contract.SignService.Responses;
 using Lykke.Blockchains.Integrations.Sdk;
@@ -26,7 +27,7 @@ namespace SignServiceExample.Services
 
             Console.WriteLine($"Generated address: {address}, privateKey: {privateKey}");
 
-            return Task.FromResult(new AddressCreationResult(address, privateKey, context));
+            return Task.FromResult(new AddressCreationResult(address, privateKey, context.ToBase58()));
         }
 
         public Task<CreateAddressTagResponse> CreateAddressTagAsync(string address, CreateAddressTagRequest request)

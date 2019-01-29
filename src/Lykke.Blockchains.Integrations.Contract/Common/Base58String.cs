@@ -26,20 +26,15 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             _formatRegex = new Regex("^[1-9A-HJ-NP-Za-km-z]*$", RegexOptions.Compiled);
         }
 
-        private Base58String(string value)
+        public Base58String(string value)
         {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
+            if (!_formatRegex.IsMatch(value))
+                throw new Base58StringConversionException("String is not valid Base58 string", value);
+
             Value = value;
-        }
-
-        public static Base58String Create(string base58Value)
-        {
-            if (base58Value == null)
-                throw new ArgumentNullException(nameof(base58Value));
-
-            if (!_formatRegex.IsMatch(base58Value))
-                throw new Base58StringConversionException("String is not valid Base58 string", base58Value);
-
-            return new Base58String(base58Value);
         }
 
         public static Base58String Encode(string stringValue)
@@ -66,26 +61,6 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             return new Base58String(value);
         }
 
-        public static implicit operator Base58String(string stringValue)
-        {
-            return Encode(stringValue);
-        }
-   
-        public static implicit operator Base58String(byte[] bytes)
-        {
-            return Encode(bytes);
-        }
-
-        public static implicit operator string(Base58String value)
-        {
-            return value?.DecodeToString();
-        }
-
-        public static implicit operator byte[](Base58String value)
-        {
-            return value?.DecodeToBytes().ToArray();
-        }
-
         public string DecodeToString()
         {
             var bytes = DecodeToBytes();
@@ -93,9 +68,9 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             return Encoding.UTF8.GetString(bytes);
         }
 
-        public Span<byte> DecodeToBytes()
+        public byte[] DecodeToBytes()
         {
-            return Base58.Bitcoin.Decode(Value);
+            return Base58.Bitcoin.Decode(Value).ToArray();
         }
 
         public override string ToString()

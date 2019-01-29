@@ -20,7 +20,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Tests
         {
             var obj = new TypeWithBase58Property
             {
-                Base58Property = stringValue
+                Base58Property = Base58String.Encode(stringValue)
             };
 
             return JsonConvert.SerializeObject(obj);
@@ -34,7 +34,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Tests
         {
             var obj = JsonConvert.DeserializeObject<TypeWithBase58Property>(json);
 
-            return obj.Base58Property;
+            return obj.Base58Property?.DecodeToString();
         }
     }
 }

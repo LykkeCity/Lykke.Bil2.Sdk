@@ -30,7 +30,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService.Controllers
                 throw new InvalidOperationException("Not null creation result object expected");
             }
 
-            var encryptedPrivateKey = EncryptedString.Encrypt(request.EncryptionPublicKey, creationResult.PrivateKey);
+            var encryptedPrivateKey = creationResult.PrivateKey.Encrypt(request.EncryptionPublicKey);
             
             var response = new CreateAddressResponse
             (

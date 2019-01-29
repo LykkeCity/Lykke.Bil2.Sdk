@@ -26,14 +26,14 @@ namespace Lykke.Blockchains.Integrations.Contract.Tests
         [TestCase(PublicKey1024, PrivateKey1024, "")]
         [TestCase(PublicKey1024, PrivateKey1024, "1")]
         [TestCase(PublicKey1024, PrivateKey1024, LongPlainString)]
-        [TestCase(PublicKey2048, PrivateKey2048, LongPlainString, TestName = "2048Key")]
+        [TestCase(PublicKey2048, PrivateKey2048, LongPlainString)]
         public void Can_encrypt_and_decrypt(string publicKey, string privateKey, string stringToEncrypt)
         {
-            var value = EncryptedString.Encrypt(Base58String.Create(publicKey), stringToEncrypt);
+            var value = EncryptedString.Encrypt(new Base58String(publicKey), stringToEncrypt);
             
             Assert.AreNotEqual(stringToEncrypt, value.EncryptedValue);
 
-            var decryptedString = value.DecryptToString(Base58String.Create(privateKey));
+            var decryptedString = value.DecryptToString(new Base58String(privateKey));
 
             Assert.AreEqual(stringToEncrypt, decryptedString);
         }
@@ -42,9 +42,9 @@ namespace Lykke.Blockchains.Integrations.Contract.Tests
         [TestCase(PrivateKey1024, EncryptedText, ExpectedResult = "1")]
         public string Can_create_from_encrypted_text(string privateKey, string encryptedString)
         {
-            var value = EncryptedString.Create(Base58String.Create(encryptedString));
+            var value = new EncryptedString(new Base58String(encryptedString));
 
-            var decryptedString = value.DecryptToString(Base58String.Create(privateKey));
+            var decryptedString = value.DecryptToString(new Base58String(privateKey));
 
             return decryptedString;
         }

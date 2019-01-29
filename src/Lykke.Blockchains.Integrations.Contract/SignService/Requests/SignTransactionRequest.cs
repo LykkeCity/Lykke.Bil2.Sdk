@@ -30,7 +30,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
             if (privateKeys == null || !privateKeys.Any() || privateKeys.Any(x => x == null))
                 throw RequestValidationException.ShouldBeNotEmptyCollection(nameof(privateKeys));
 
-            if (string.IsNullOrWhiteSpace(transactionContext))
+            if (string.IsNullOrWhiteSpace(transactionContext?.ToString()))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(transactionContext));
 
             PrivateKeys = privateKeys;

@@ -34,7 +34,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 try
                 {
-                    var value = Base58String.Create((string) reader.Value);
+                    var value = new Base58String((string) reader.Value);
                     return value;
                 }
                 catch (Base58StringConversionException ex)

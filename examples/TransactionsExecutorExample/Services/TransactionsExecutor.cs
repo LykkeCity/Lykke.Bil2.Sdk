@@ -34,7 +34,7 @@ namespace TransactionsExecutorExample.Services
                 throw new RequestValidationException("Only single input is supported", request.Inputs.Count, nameof(request.Inputs.Count));
             }
 
-            var context = JsonConvert.SerializeObject(request);
+            var context = JsonConvert.SerializeObject(request).ToBase58();
 
             return Task.FromResult(new BuildSendingTransactionResponse(context));
         }
@@ -51,14 +51,14 @@ namespace TransactionsExecutorExample.Services
 
             try
             {
-                signed = JsonConvert.DeserializeObject<dynamic>(request.SignedTransaction);
+                signed = JsonConvert.DeserializeObject<dynamic>(request.SignedTransaction.DecodeToString());
             }
             catch (JsonException ex)
             {
                 throw new RequestValidationException("Failed to deserialize signed transaction", request.SignedTransaction, ex, nameof(request.SignedTransaction));
             }
 
-            var serializedContext = Base58String.Create((string)signed.Context);
+            var serializedContext = new Base58String((string)signed.Context).DecodeToString();
 
             if (string.IsNullOrWhiteSpace(serializedContext))
             {
@@ -69,7 +69,7 @@ namespace TransactionsExecutorExample.Services
 
             try
             {
-                context = JsonConvert.DeserializeObject<BuildSendingTransactionRequest>(serializedContext.DecodeToString());
+                context = JsonConvert.DeserializeObject<BuildSendingTransactionRequest>(serializedContext);
             }
             catch (JsonException ex)
             {

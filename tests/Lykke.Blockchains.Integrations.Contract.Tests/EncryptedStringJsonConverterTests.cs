@@ -21,7 +21,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Tests
         {
             var obj = new TypeWithEncryptedStringProperty
             {
-                EncryptedString = encryptedString != null ? EncryptedString.Create(Base58String.Create(encryptedString)) : null
+                EncryptedString = encryptedString != null ? new EncryptedString(new Base58String(encryptedString)) : null
             };
 
             return JsonConvert.SerializeObject(obj);

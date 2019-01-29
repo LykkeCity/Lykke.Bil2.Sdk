@@ -50,9 +50,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
                 integrationOptions.ServiceName = $"{options.IntegrationName} Sign service";
                 integrationOptions.UseSettings = settings =>
                 {
-                    var privateKey = Base58String.Create(settings.CurrentValue.EncryptionPrivateKey);
-
-                    services.AddSingleton(new EncryptionConfiguration(privateKey));
+                    services.AddSingleton(new EncryptionConfiguration(new Base58String(settings.CurrentValue.EncryptionPrivateKey)));
 
                     services.AddTransient(s => options.AddressGeneratorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
                     services.AddTransient(s => options.TransactionSignerFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));

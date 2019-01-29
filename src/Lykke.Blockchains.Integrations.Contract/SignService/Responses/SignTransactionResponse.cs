@@ -25,7 +25,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
 
         public SignTransactionResponse(Base58String signedTransaction, string transactionHash)
         {
-            if (string.IsNullOrWhiteSpace(signedTransaction))
+            if (string.IsNullOrWhiteSpace(signedTransaction?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(signedTransaction));
 
             if (string.IsNullOrWhiteSpace(transactionHash))

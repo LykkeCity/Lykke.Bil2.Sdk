@@ -19,7 +19,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
 
         public BuildSendingTransactionResponse(Base58String transactionContext)
         {
-            if (string.IsNullOrWhiteSpace(transactionContext))
+            if (string.IsNullOrWhiteSpace(transactionContext?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(transactionContext));
 
             TransactionContext = transactionContext;

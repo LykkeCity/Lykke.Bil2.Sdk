@@ -42,7 +42,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Repositories
             {
                 stream.Position = 0;
 
-                return await textReader.ReadToEndAsync();
+                return new Base58String(await textReader.ReadToEndAsync());
             }
         }
 

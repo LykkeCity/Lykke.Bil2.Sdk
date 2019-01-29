@@ -16,7 +16,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
 
         public BroadcastTransactionRequest(Base58String signedTransaction)
         {
-            if (string.IsNullOrWhiteSpace(signedTransaction))
+            if (string.IsNullOrWhiteSpace(signedTransaction?.ToString()))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(signedTransaction));
 
             SignedTransaction = signedTransaction;

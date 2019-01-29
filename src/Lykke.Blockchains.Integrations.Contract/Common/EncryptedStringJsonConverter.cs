@@ -13,9 +13,9 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 writer.WriteNull();
             }
-            else if (value is EncryptedString base58String)
+            else if (value is EncryptedString encryptedString)
             {
-                writer.WriteValue(base58String.EncryptedValue.Value);
+                writer.WriteValue(encryptedString.EncryptedValue.Value);
             }
             else
             {
@@ -34,7 +34,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 try
                 {
-                    var value = EncryptedString.Create(Base58String.Create((string)reader.Value));
+                    var value = new EncryptedString(new Base58String((string) reader.Value));
                     return value;
                 }
                 catch (Base58StringConversionException ex)

@@ -31,7 +31,7 @@ namespace SignServiceExample.Services
 
             Console.WriteLine($"Signed with private keys: [{string.Join(", ", privateKeys)}]");
 
-            var serializedSigned = JsonConvert.SerializeObject(signed);
+            var serializedSigned = JsonConvert.SerializeObject(signed).ToBase58();
 
             return Task.FromResult(new SignTransactionResponse(serializedSigned, hash));
         }

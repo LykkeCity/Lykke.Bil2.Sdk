@@ -21,7 +21,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
 
         public CreateAddressRequest(Base58String encryptionPublicKey)
         {
-            if (string.IsNullOrWhiteSpace(encryptionPublicKey))
+            if (string.IsNullOrWhiteSpace(encryptionPublicKey?.ToString()))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(encryptionPublicKey));
 
             EncryptionPublicKey = encryptionPublicKey;

@@ -19,7 +19,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
 
         public RawTransactionResponse(Base58String raw)
         {
-            if (string.IsNullOrWhiteSpace(raw))
+            if (string.IsNullOrWhiteSpace(raw?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(raw));
 
             Raw = raw;

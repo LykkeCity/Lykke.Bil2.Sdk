@@ -1,4 +1,4 @@
-﻿using Lykke.Blockchains.Integrations.Sdk;
+﻿using Lykke.Blockchains.Integrations.Sdk.Services;
 using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Settings;
 
 namespace TransactionsExecutorExample.Settings
