@@ -7,6 +7,9 @@ using Refit;
 
 namespace Lykke.Blockchains.Integrations.Client.TransactionsExecutor
 {
+    /// <summary>
+    /// Blockchain integration transactions executor HTTP API
+    /// </summary>
     [PublicAPI]
     public interface ITransactionsExecutorApi
     {

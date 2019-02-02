@@ -27,7 +27,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lykke.HttpClientGenerator" Version="2.3.0" />
+    <PackageReference Include="Lykke.Logs" Version="7.2.1" />
   </ItemGroup>
 
   <ItemGroup>

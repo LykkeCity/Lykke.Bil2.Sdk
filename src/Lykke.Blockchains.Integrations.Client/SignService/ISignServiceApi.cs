@@ -7,6 +7,9 @@ using Refit;
 
 namespace Lykke.Blockchains.Integrations.Client.SignService
 {
+    /// <summary>
+    /// Blockchain integration sign service HTTP API
+    /// </summary>
     [PublicAPI]
     public interface ISignServiceApi
     {

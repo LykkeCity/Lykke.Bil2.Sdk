@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Lykke.Blockchains.Integrations.Client;
 using Lykke.Blockchains.Integrations.Client.SignService;
 using Lykke.Blockchains.Integrations.Client.TransactionsExecutor;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.Contract.SignService.Requests;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests;
-using Lykke.HttpClientGenerator;
+using Lykke.Common.Log;
+using Lykke.Logs;
+using Lykke.Logs.Loggers.LykkeConsole;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace SingServiceAndTransactionsExecutorTestClient
 {
-    // TODO: Add error request/response logging to the client project
-    // TODO: Add generic Http client generator initialization to the client project
-
     internal sealed class Program
     {
         private static readonly Base58String MyPublicKey = new Base58String("Vj75CuZgqYqhewfDfF9KQEdejjqbnoDiRjuXUnwCo2jkLo8AJpqBF6jFovufKrvwqUaubTRrAwr3wBBHtFVWhxhrxwFMoeB3mrBXnreVkfRdL1L9NUpyn4qDTB1Hwm3kBjmnhdVm2ZxmZ696FKj6yeBMnPB7Lkoa4XxKg6a9TwPCfgUbNV9b8dCPXm1YdYMdFK9Hf8sestxpp6FphTxbrjnicpeiU");
@@ -25,63 +26,61 @@ namespace SingServiceAndTransactionsExecutorTestClient
         {
             Console.WriteLine("Creating clients...");
 
-            var signServiceClientGenerator = HttpClientGenerator.BuildForUrl("http://localhost:5000")
-                .WithoutRetries()
-                .WithoutCaching()
-                .Create();
-            
-            var signServiceClient = signServiceClientGenerator.Generate<ISignServiceApi>();
+            var services = new ServiceCollection();
 
-            var transactionsExecutorClientGenerator = HttpClientGenerator.BuildForUrl("http://localhost:5001")
-                .WithoutRetries()
-                .WithoutCaching()
-                .Create();
-            var transactionsExecutorClient = transactionsExecutorClientGenerator.Generate<ITransactionsExecutorApi>();
-            
-            Console.WriteLine("Press any key to start.");
+            services.AddSingleton(s => LogFactory.Create().AddUnbufferedConsole());
+            services.AddSignServiceClient("http://localhost:5000");
+            services.AddTransactionsExecutorClient("http://localhost:5001");
 
-            Console.ReadKey(true);
-
-            var tests = new Func<Task<object>>[]
+            using (var serviceProvider = services.BuildServiceProvider())
             {
-                () => GetIsAliveAsync(signServiceClient),
-                () => GetIsAliveAsync(transactionsExecutorClient),
-                () => CreateAddressAsync(signServiceClient),
-                () => CreateAddressTagAsync(signServiceClient),
-                () => BuildTransactionAsync(transactionsExecutorClient),
-                () => BuildInvalidTransactionAsync(transactionsExecutorClient),
-                () => SignTransactionAsync(signServiceClient),
-                () => BroadcastTransactionAsync(transactionsExecutorClient)
-            };
+                var log = serviceProvider.GetRequiredService<ILogFactory>().CreateLog(typeof(Program));
+                var signServiceClient = serviceProvider.GetRequiredService<ISignServiceApi>();
+                var transactionsExecutorClient = serviceProvider.GetRequiredService<ITransactionsExecutorApi>();
 
-            foreach (var step in tests)
-            {
-                try
+                Console.WriteLine("Press any key to start.");
+
+                Console.ReadKey(true);
+
+                var tests = new Func<Task<object>>[]
                 {
-                    var response = await step.Invoke();
+                    () => GetIsAliveAsync(signServiceClient),
+                    () => GetIsAliveAsync(transactionsExecutorClient),
+                    () => CreateAddressAsync(signServiceClient),
+                    () => CreateAddressTagAsync(signServiceClient),
+                    () => BuildTransactionAsync(transactionsExecutorClient),
+                    () => BuildInvalidTransactionAsync(transactionsExecutorClient),
+                    () => SignTransactionAsync(signServiceClient),
+                    () => BroadcastTransactionAsync(transactionsExecutorClient)
+                };
 
-                    if (response != null)
-                    {
-                        Console.WriteLine("Response:");
-                        
-                        var jsonResponse = JsonConvert.SerializeObject(response, Formatting.Indented);
-                        
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.WriteLine(jsonResponse);
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.WriteLine("Response is empty");
-                    }
-
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-                catch (Exception ex)
+                foreach (var step in tests)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(ex);
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    try
+                    {
+                        var response = await step.Invoke();
+
+                        if (response != null)
+                        {
+                            Console.WriteLine("Response:");
+
+                            var jsonResponse = JsonConvert.SerializeObject(response, Formatting.Indented);
+
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            Console.WriteLine(jsonResponse);
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            Console.WriteLine("Response is empty");
+                        }
+
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error(ex);
+                    }
                 }
             }
 
