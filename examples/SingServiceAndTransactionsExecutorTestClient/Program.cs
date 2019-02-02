@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Client;
 using Lykke.Blockchains.Integrations.Client.SignService;
 using Lykke.Blockchains.Integrations.Client.TransactionsExecutor;
 using Lykke.Blockchains.Integrations.Contract.Common;
