@@ -27,9 +27,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignServiceExample", "examp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SingServiceAndTransactionsExecutorTestClient", "examples\SingServiceAndTransactionsExecutorTestClient\SingServiceAndTransactionsExecutorTestClient.csproj", "{E462185E-0A5F-45FD-AF4C-26EE3815094D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Blockchains.Integrations.Client.SignService", "src\Lykke.Blockchains.Integrations.Client.SignService\Lykke.Blockchains.Integrations.Client.SignService.csproj", "{4620BD7D-23A2-4030-B6B4-1E5376227079}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.Client.SignService", "src\Lykke.Blockchains.Integrations.Client.SignService\Lykke.Blockchains.Integrations.Client.SignService.csproj", "{4620BD7D-23A2-4030-B6B4-1E5376227079}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Blockchains.Integrations.Client.TransactionsExecutor", "src\Lykke.Blockchains.Integrations.Client.TransactionsExecutor\Lykke.Blockchains.Integrations.Client.TransactionsExecutor.csproj", "{4B2D65C1-6038-4D1E-B9EA-9E86B771A25F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.Client.TransactionsExecutor", "src\Lykke.Blockchains.Integrations.Client.TransactionsExecutor\Lykke.Blockchains.Integrations.Client.TransactionsExecutor.csproj", "{4B2D65C1-6038-4D1E-B9EA-9E86B771A25F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.RabbitMq", "src\Lykke.Blockchains.Integrations.RabbitMq\Lykke.Blockchains.Integrations.RabbitMq.csproj", "{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlocksReaderExample", "examples\BlocksReaderExample\BlocksReaderExample.csproj", "{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -185,6 +189,30 @@ Global
 		{4B2D65C1-6038-4D1E-B9EA-9E86B771A25F}.Release|x64.Build.0 = Release|Any CPU
 		{4B2D65C1-6038-4D1E-B9EA-9E86B771A25F}.Release|x86.ActiveCfg = Release|Any CPU
 		{4B2D65C1-6038-4D1E-B9EA-9E86B771A25F}.Release|x86.Build.0 = Release|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Release|x64.Build.0 = Release|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}.Release|x86.Build.0 = Release|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Debug|x64.Build.0 = Debug|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Debug|x86.Build.0 = Debug|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Release|x64.ActiveCfg = Release|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Release|x64.Build.0 = Release|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Release|x86.ActiveCfg = Release|Any CPU
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -194,6 +222,7 @@ Global
 		{08DA861A-1C50-41BB-A7D9-41C70AC3D93A} = {95FBBE27-2E62-4E8B-AB6D-992C748A9ACE}
 		{6AB97095-7DC1-448B-8988-41C7001BB2DD} = {95FBBE27-2E62-4E8B-AB6D-992C748A9ACE}
 		{E462185E-0A5F-45FD-AF4C-26EE3815094D} = {95FBBE27-2E62-4E8B-AB6D-992C748A9ACE}
+		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF} = {95FBBE27-2E62-4E8B-AB6D-992C748A9ACE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE7931E9-23DA-419B-9806-769CE70D173E}
