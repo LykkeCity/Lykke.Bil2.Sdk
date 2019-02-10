@@ -14,6 +14,8 @@ namespace Lykke.Blockchains.Integrations.Client
         /// </summary>
         public static HttpClientGenerator.HttpClientGenerator Create(string url, ILogFactory logFactory)
         {
+            // TODO: Request timeout
+
             return HttpClientGenerator.HttpClientGenerator.BuildForUrl(url)
                 .WithoutRetries()
                 .WithoutCaching()
