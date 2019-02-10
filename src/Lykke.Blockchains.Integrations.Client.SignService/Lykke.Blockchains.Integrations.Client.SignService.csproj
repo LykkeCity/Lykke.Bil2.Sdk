@@ -39,4 +39,8 @@
     </Content>
   </ItemGroup>
   
+  <ItemGroup>
+    <ProjectReference Include="..\Lykke.Blockchains.Integrations.WebClient\Lykke.Blockchains.Integrations.WebClient.csproj" />
+  </ItemGroup>
+  
 </Project>

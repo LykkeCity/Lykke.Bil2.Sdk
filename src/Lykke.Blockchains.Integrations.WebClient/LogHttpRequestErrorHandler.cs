@@ -9,7 +9,7 @@ using Common.Log;
 using Lykke.Common.Log;
 using Newtonsoft.Json;
 
-namespace Lykke.Blockchains.Integrations.HttpClient
+namespace Lykke.Blockchains.Integrations.WebClient
 {
     internal class LogHttpRequestErrorHandler : DelegatingHandler
     {

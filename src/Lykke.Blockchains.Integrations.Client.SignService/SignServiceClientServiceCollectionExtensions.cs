@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.WebClient;
 using Lykke.Common.Log;
 using Microsoft.Extensions.DependencyInjection;
 

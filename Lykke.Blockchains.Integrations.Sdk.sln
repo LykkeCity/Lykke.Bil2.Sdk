@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlocksReaderExample", "exam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.Client.BlocksReader", "src\Lykke.Blockchains.Integrations.Client.BlocksReader\Lykke.Blockchains.Integrations.Client.BlocksReader.csproj", "{349CB663-0797-41A2-A95B-4D042155B11A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.HttpClient", "src\Lykke.Blockchains.Integrations.HttpClient\Lykke.Blockchains.Integrations.HttpClient.csproj", "{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.WebClient", "src\Lykke.Blockchains.Integrations.WebClient\Lykke.Blockchains.Integrations.WebClient.csproj", "{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -215,18 +215,18 @@ Global
 		{349CB663-0797-41A2-A95B-4D042155B11A}.Release|x64.Build.0 = Release|Any CPU
 		{349CB663-0797-41A2-A95B-4D042155B11A}.Release|x86.ActiveCfg = Release|Any CPU
 		{349CB663-0797-41A2-A95B-4D042155B11A}.Release|x86.Build.0 = Release|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|x64.Build.0 = Debug|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|x86.Build.0 = Debug|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|x64.ActiveCfg = Release|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|x64.Build.0 = Release|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|x86.ActiveCfg = Release|Any CPU
-		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|x86.Build.0 = Release|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Debug|x64.Build.0 = Debug|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Debug|x86.Build.0 = Debug|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Release|x64.ActiveCfg = Release|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Release|x64.Build.0 = Release|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Release|x86.ActiveCfg = Release|Any CPU
+		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
