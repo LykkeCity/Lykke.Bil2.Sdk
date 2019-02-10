@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.Contract", "src\Lykke.Blockchains.Integrations.Contract\Lykke.Blockchains.Integrations.Contract.csproj", "{CC23ED68-8B39-4D9F-AFB6-47BF794DF5AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.Client", "src\Lykke.Blockchains.Integrations.Client\Lykke.Blockchains.Integrations.Client.csproj", "{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CDF21CA8-1D14-4DEE-AC38-EF5FA113AC71}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.Contract.Tests", "tests\Lykke.Blockchains.Integrations.Contract.Tests\Lykke.Blockchains.Integrations.Contract.Tests.csproj", "{A30CDB80-2072-4F87-8EAF-F0E4C365E873}"
@@ -33,7 +31,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.RabbitMq", "src\Lykke.Blockchains.Integrations.RabbitMq\Lykke.Blockchains.Integrations.RabbitMq.csproj", "{C3BAE8A8-CACA-48A8-9B38-334A0A426ED4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlocksReaderExample", "examples\BlocksReaderExample\BlocksReaderExample.csproj", "{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlocksReaderExample", "examples\BlocksReaderExample\BlocksReaderExample.csproj", "{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.Client.BlocksReader", "src\Lykke.Blockchains.Integrations.Client.BlocksReader\Lykke.Blockchains.Integrations.Client.BlocksReader.csproj", "{349CB663-0797-41A2-A95B-4D042155B11A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.HttpClient", "src\Lykke.Blockchains.Integrations.HttpClient\Lykke.Blockchains.Integrations.HttpClient.csproj", "{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,18 +71,6 @@ Global
 		{CC23ED68-8B39-4D9F-AFB6-47BF794DF5AA}.Release|x64.Build.0 = Release|Any CPU
 		{CC23ED68-8B39-4D9F-AFB6-47BF794DF5AA}.Release|x86.ActiveCfg = Release|Any CPU
 		{CC23ED68-8B39-4D9F-AFB6-47BF794DF5AA}.Release|x86.Build.0 = Release|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Debug|x64.Build.0 = Debug|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Debug|x86.Build.0 = Debug|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Release|x64.ActiveCfg = Release|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Release|x64.Build.0 = Release|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Release|x86.ActiveCfg = Release|Any CPU
-		{C13F2DA8-8263-4EBF-AE71-2CC8DE0C50CA}.Release|x86.Build.0 = Release|Any CPU
 		{A30CDB80-2072-4F87-8EAF-F0E4C365E873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A30CDB80-2072-4F87-8EAF-F0E4C365E873}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A30CDB80-2072-4F87-8EAF-F0E4C365E873}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -213,6 +203,30 @@ Global
 		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Release|x64.Build.0 = Release|Any CPU
 		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Release|x86.ActiveCfg = Release|Any CPU
 		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF}.Release|x86.Build.0 = Release|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Debug|x64.Build.0 = Debug|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Debug|x86.Build.0 = Debug|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Release|x64.ActiveCfg = Release|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Release|x64.Build.0 = Release|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Release|x86.ActiveCfg = Release|Any CPU
+		{349CB663-0797-41A2-A95B-4D042155B11A}.Release|x86.Build.0 = Release|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|x64.Build.0 = Debug|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Debug|x86.Build.0 = Debug|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|x64.ActiveCfg = Release|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|x64.Build.0 = Release|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|x86.ActiveCfg = Release|Any CPU
+		{DC5A00E7-9D91-45AE-8A7E-AB16B7365C8D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

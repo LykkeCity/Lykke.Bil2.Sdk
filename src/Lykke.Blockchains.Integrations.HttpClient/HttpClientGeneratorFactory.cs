@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Lykke.Common.Log;
 
-namespace Lykke.Blockchains.Integrations.Client
+namespace Lykke.Blockchains.Integrations.HttpClient
 {
     /// <summary>
     /// Blockchain integration HTTP client generator factory
