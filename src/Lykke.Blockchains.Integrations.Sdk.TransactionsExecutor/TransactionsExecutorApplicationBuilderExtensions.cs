@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Contract.Common;
 using Microsoft.AspNetCore.Builder;
 
 namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
@@ -34,7 +35,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
 
             app.UseBlockchainIntegrationConfiguration(integrationOptions =>
             {
-                integrationOptions.ServiceName = $"{options.IntegrationName} Transactions executor";
+                integrationOptions.ServiceName = $"{IntegrationNameTools.ToCamelCase(options.IntegrationName)} Transactions executor";
             });
 
             return app;

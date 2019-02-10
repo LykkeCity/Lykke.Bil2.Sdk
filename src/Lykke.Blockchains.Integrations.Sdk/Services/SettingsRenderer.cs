@@ -1,27 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using Lykke.Blockchains.Integrations.Sdk.Services;
 using Lykke.Sdk.Settings;
 using Lykke.SettingsReader;
 
-namespace Lykke.Blockchains.Integrations.Sdk
+namespace Lykke.Blockchains.Integrations.Sdk.Services
 {
-    /// <inheritdoc />
-    public class SettingsRenderer<TAppSettings> : ISettingsRenderer
+    public abstract class SettingsRenderer
+    {
+        protected static readonly IReadOnlyCollection<Regex> SanitizingRegexps = new []
+        {
+            // Azure storage connection string
+            new Regex(@"(^|;|\s)(AccountKey=)(?<secure>.*?)(;)", RegexOptions.Compiled),
+            // RabbitMq connection string
+            new Regex(@"(amqp:\/\/)(?<secure>.*?)(@)", RegexOptions.Compiled),
+        };
+    }
+
+    /// <inheritdoc cref="ISettingsRenderer" />
+    public class SettingsRenderer<TAppSettings> : 
+        SettingsRenderer,
+        ISettingsRenderer
 
         where TAppSettings : class, IAppSettings
     {
-        private static readonly IReadOnlyCollection<Regex> SanitizingRegexps = new []
-        {
-            // Azure storage connection string
-            new Regex(@"(^|;|\s)(AccountKey=)(?<secure>.*?)(;)", RegexOptions.Compiled), 
-        };
-
         private readonly IReloadingManager<TAppSettings> _settings;
 
         public SettingsRenderer(IReloadingManager<TAppSettings> settings)
@@ -152,22 +158,22 @@ namespace Lykke.Blockchains.Integrations.Sdk
             return false;
         }
 
-        private bool IsCollection(Type type, object value)
+        private static bool IsCollection(Type type, object value)
         {
             return typeof(IEnumerable).IsAssignableFrom(type);
         }
 
-        private bool IsDictionary(Type type, object value)
+        private static bool IsDictionary(Type type, object value)
         {
             return typeof(IDictionary).IsAssignableFrom(type);
         }
 
-        private string RenderValue(Type type, object value)
+        private static string RenderValue(Type type, object value)
         {
             return value?.ToString();
         }
 
-        private string SanitizeValue(bool isSecure, Type type, string value)
+        private static string SanitizeValue(bool isSecure, Type type, string value)
         {
             if (isSecure)
             {

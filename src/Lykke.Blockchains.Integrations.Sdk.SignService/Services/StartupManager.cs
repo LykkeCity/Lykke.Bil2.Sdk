@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Lykke.Blockchains.Integrations.Sdk.Services;
 using Lykke.Common.Log;
 using Lykke.Sdk;
 

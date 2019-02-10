@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
+using Lykke.Blockchains.Integrations.Sdk.Services;
 using Lykke.Logs.Loggers.LykkeSlack;
 using Lykke.Sdk;
 using Lykke.Sdk.Settings;

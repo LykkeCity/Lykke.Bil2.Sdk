@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Lykke.Blockchains.Integrations.Sdk.Services;
 
-namespace Lykke.Blockchains.Integrations.Sdk
+namespace Lykke.Blockchains.Integrations.Sdk.Services
 {
     /// <summary>
     /// Renders settings to the flat dictionary of key/values. Takes into accounts secure values such as connections trings

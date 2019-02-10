@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses;
+using Lykke.Blockchains.Integrations.Sdk.Services;
 using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services;
 using Microsoft.AspNetCore.Mvc;
 

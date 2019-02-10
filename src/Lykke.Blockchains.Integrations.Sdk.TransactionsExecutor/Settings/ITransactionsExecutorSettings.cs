@@ -10,6 +10,8 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Settings
     /// <typeparam name="TDbSettings">Database settings type.</typeparam>
     [PublicAPI]
     public interface ITransactionsExecutorSettings<out TDbSettings> : IAppSettings
+
+        where TDbSettings : BaseTransactionsExecutorDbSettings
     {
         /// <summary>
         /// Database settings.

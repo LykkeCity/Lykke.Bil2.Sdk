@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AzureStorage;
 using AzureStorage.Blob;
 using Lykke.Blockchains.Integrations.Contract.Common;
+using Lykke.Blockchains.Integrations.Sdk.Repositories;
 using Lykke.SettingsReader;
 
 namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Repositories
@@ -23,14 +24,14 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Repositories
 
         private RawTransactionReadOnlyRepository(string integrationName, IBlobStorage blob)
         {
-            _containerName = $"raw-transactions-{integrationName.ToLower()}";
+            _containerName = RawTransactionRepositoryTools.GetContainerName(integrationName);
             _blob = blob;
         }
 
         public async Task<Base58String> GetOrDefaultAsync(string transactionHash)
         {
             var containerName = GetContainerName();
-            var blobName = GetBlobName(transactionHash);
+            var blobName = RawTransactionRepositoryTools.GetBlobName(transactionHash);
 
             if (!await _blob.HasBlobAsync(containerName, blobName))
             {
@@ -49,11 +50,6 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Repositories
         private string GetContainerName()
         {
             return _containerName;
-        }
-
-        private static string GetBlobName(string transactionHash)
-        {
-            return transactionHash;
         }
     }
 }

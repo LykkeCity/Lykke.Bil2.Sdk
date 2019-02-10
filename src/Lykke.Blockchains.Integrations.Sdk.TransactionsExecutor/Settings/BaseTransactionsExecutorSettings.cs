@@ -11,7 +11,9 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Settings
     [PublicAPI]
     public class BaseTransactionsExecutorSettings<TDbSettings> : 
         BaseAppSettings,
-        ITransactionsExecutorSettings<TDbSettings>
+        ITransactionsExecutorSettings<TDbSettings> 
+        
+        where TDbSettings : BaseTransactionsExecutorDbSettings
     {
         /// <inheritdoc />
         public TDbSettings Db { get; set; }

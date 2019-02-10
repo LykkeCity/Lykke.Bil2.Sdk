@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Contract.Common;
 using Microsoft.AspNetCore.Builder;
 
 namespace Lykke.Blockchains.Integrations.Sdk.SignService
@@ -34,7 +35,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
 
             app.UseBlockchainIntegrationConfiguration(integrationOptions =>
             {
-                integrationOptions.ServiceName = $"{options.IntegrationName} Sign service";
+                integrationOptions.ServiceName = $"{IntegrationNameTools.ToCamelCase(options.IntegrationName)} Sign service";
             });
 
             return app;
