@@ -28,8 +28,9 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
             ILogFactory logFactory, 
             Uri connectionString)
         {
-            _logFactory = logFactory;
-            _connectionString = connectionString;
+            _logFactory = logFactory ?? throw new ArgumentNullException(nameof(logFactory));
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+
             _log = logFactory.CreateLog(this);
 
             _subscribers = new List<IDisposable>();
@@ -38,6 +39,11 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// <inheritdoc />
         public void Start()
         {
+            if (_connection != null)
+            {
+                throw new InvalidOperationException("RabbitMqEndpoint already has been be started");
+            }
+
             var factory = new ConnectionFactory
             {
                 Uri = _connectionString,
@@ -56,6 +62,15 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// <inheritdoc />
         public void DeclareExchange(string exchangeName)
         {
+            if (string.IsNullOrWhiteSpace(exchangeName))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(exchangeName));
+            }
+            if (_connection == null)
+            {
+                throw new InvalidOperationException("RabbitMqEndpoint should be started first");
+            }
+
             _log.Info($"Declaring exchange {exchangeName}...");
 
             _publishingChannel.ExchangeDeclare(exchangeName, ExchangeType.Fanout, true);
@@ -64,6 +79,10 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// <inheritdoc />
         public IMessagePublisher CreatePublisher(string exchangeName, string corellationId = null)
         {
+            if (string.IsNullOrWhiteSpace(exchangeName))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(exchangeName));
+            }
             if (_connection == null)
             {
                 throw new InvalidOperationException("RabbitMqEndpoint should be started first");
@@ -80,6 +99,18 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
             string replyExchangeName = null,
             int parallelism = 1)
         {
+            if (string.IsNullOrWhiteSpace(listeningExchangeName))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(listeningExchangeName));
+            }
+            if (string.IsNullOrWhiteSpace(listeningRoute))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(listeningRoute));
+            }
+            if (subscriptionsRegistry == null)
+            {
+                throw new ArgumentNullException(nameof(subscriptionsRegistry));
+            }
             if (_connection == null)
             {
                 throw new InvalidOperationException("RabbitMqEndpoint should be started first");

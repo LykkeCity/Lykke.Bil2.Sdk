@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace Lykke.Blockchains.Integrations.RabbitMq
 {
@@ -14,6 +15,11 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// <param name="integrationName">Name of the blockchain integration in the kebab-notation</param>
         public static string GetIntegrationCommandsExchangeName(string integrationName)
         {
+            if (string.IsNullOrWhiteSpace(integrationName))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(integrationName));
+            }
+
             return $"bil-v2.bcn-{integrationName}.commands";
         }
 
@@ -23,6 +29,11 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// <param name="integrationName">Name of the blockchain integration in the kebab-notation</param>
         public static string GetIntegrationEventsExchangeName(string integrationName)
         {
+            if (string.IsNullOrWhiteSpace(integrationName))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(integrationName));
+            }
+
             return $"bil-v2.bcn-{integrationName}.events";
         }
     }

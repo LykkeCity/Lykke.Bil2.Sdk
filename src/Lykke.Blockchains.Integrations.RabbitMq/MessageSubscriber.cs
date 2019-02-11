@@ -26,7 +26,28 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
             IMessageSubscriptionsRegistry subscriptionsRegistry,
             int parallelism = 1)
         {
-            _subscriptionsRegistry = subscriptionsRegistry;
+            if (logFactory == null)
+            {
+                throw new ArgumentNullException(nameof(logFactory));
+            }
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+            if (string.IsNullOrWhiteSpace(exchangeName))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(exchangeName));
+            }
+            if (string.IsNullOrWhiteSpace(queueName))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(queueName));
+            }
+            if (parallelism <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(parallelism), parallelism, "Should be positive number");
+            }
+
+            _subscriptionsRegistry = subscriptionsRegistry ?? throw new ArgumentNullException(nameof(subscriptionsRegistry));
 
             _log = logFactory.CreateLog(this);
 

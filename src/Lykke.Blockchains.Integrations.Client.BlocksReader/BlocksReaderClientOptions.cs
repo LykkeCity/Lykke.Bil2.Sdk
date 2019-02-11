@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace Lykke.Blockchains.Integrations.Client.BlocksReader
@@ -37,6 +38,11 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader
         /// <param name="integrationName"></param>
         public void AddIntegration(string integrationName)
         {
+            if (string.IsNullOrWhiteSpace(integrationName))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(integrationName));
+            }
+
             _integrationNames.Add(integrationName);
         }
     }

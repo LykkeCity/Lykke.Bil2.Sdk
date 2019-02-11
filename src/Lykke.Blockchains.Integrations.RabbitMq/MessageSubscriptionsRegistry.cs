@@ -30,6 +30,11 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// <inheritdoc />
         public MessageSubscription GetSubscriptionOrDefault(string messageType)
         {
+            if (string.IsNullOrWhiteSpace(messageType))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(messageType));
+            }
+
             _subscriptions.TryGetValue(messageType, out var subscription);
 
             return subscription;
@@ -38,6 +43,11 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// <inheritdoc />
         public MessageSubscriptionsRegistry On<TMessage>(Func<TMessage, IMessagePublisher, Task> handler)
         {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
             var type = typeof(TMessage);
 
             _subscriptions = _subscriptions.Add(type.Name, new MessageSubscription(type.Name, type, handler));

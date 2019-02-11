@@ -19,10 +19,15 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// </summary>
         public MessageSubscription(string routingKey, Type messageType, Delegate handler)
         {
-            RoutingKey = routingKey;
-            MessageType = messageType;
+            if (string.IsNullOrWhiteSpace(routingKey))
+            {
+                throw new ArgumentException(nameof(routingKey));
+            }
 
-            _handler = handler;
+            RoutingKey = routingKey;
+            MessageType = messageType ?? throw new ArgumentNullException(nameof(messageType));
+
+            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         /// <summary>
@@ -30,6 +35,15 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// </summary>
         public async Task InvokeHandlerAsync(object message, IMessagePublisher publisher)
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+            if (publisher == null)
+            {
+                throw new ArgumentNullException(nameof(publisher));
+            }
+
             await (Task)_handler.DynamicInvoke(message, publisher);
         }
     }
