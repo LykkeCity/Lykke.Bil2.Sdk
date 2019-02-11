@@ -37,7 +37,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
 
             return services.BuildBlockchainIntegrationServiceProvider<TAppSettings>(integrationOptions =>
             {
-                integrationOptions.ServiceName = $"{IntegrationNameTools.ToCamelCase(options.IntegrationName)} Blocks reader";
+                integrationOptions.ServiceName = $"{options.IntegrationName} Blocks reader";
 
                 integrationOptions.UseSettings = settings =>
                 {                  
@@ -48,7 +48,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
                     options.UseSettings?.Invoke(settings);
                 };
                 
-                integrationOptions.LogsAzureTableName = $"{IntegrationNameTools.ToCamelCase(options.IntegrationName)}TransactionsExecutorLogs";
+                integrationOptions.LogsAzureTableName = $"{options.IntegrationName}TransactionsExecutorLogs";
                 integrationOptions.LogsAzureTableConnectionStringResolver = settings => settings.Db.LogsConnString;
 
                 integrationOptions.AddDefaultIsAliveController();

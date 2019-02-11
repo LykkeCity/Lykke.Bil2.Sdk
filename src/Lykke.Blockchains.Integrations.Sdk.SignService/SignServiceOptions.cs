@@ -15,7 +15,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
     {
         /// <summary>
         /// Required.
-        /// Name of the blockchain integration. Words should be separated by the space, each word should be started from the capital case.
+        /// Name of the blockchain integration in CamelCase
         /// </summary>
         public string IntegrationName { get; set; }
 

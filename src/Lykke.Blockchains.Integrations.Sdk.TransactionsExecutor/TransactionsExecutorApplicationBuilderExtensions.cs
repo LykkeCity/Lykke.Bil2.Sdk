@@ -35,7 +35,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
 
             app.UseBlockchainIntegrationConfiguration(integrationOptions =>
             {
-                integrationOptions.ServiceName = $"{IntegrationNameTools.ToCamelCase(options.IntegrationName)} Transactions executor";
+                integrationOptions.ServiceName = $"{options.IntegrationName} Transactions executor";
             });
 
             return app;

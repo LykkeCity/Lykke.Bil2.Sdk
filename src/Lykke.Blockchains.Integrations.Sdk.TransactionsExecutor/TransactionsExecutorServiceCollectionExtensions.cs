@@ -37,7 +37,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
 
             return services.BuildBlockchainIntegrationServiceProvider<TAppSettings>(integrationOptions =>
             {
-                integrationOptions.ServiceName = $"{IntegrationNameTools.ToCamelCase(options.IntegrationName)} Transactions executor service";
+                integrationOptions.ServiceName = $"{options.IntegrationName} Transactions executor service";
                 integrationOptions.UseSettings = settings =>
                 {
                     RegisterCommonServices(services, settings, options);
@@ -46,7 +46,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
                     options.UseSettings?.Invoke(settings);
                 };
 
-                integrationOptions.LogsAzureTableName = $"{IntegrationNameTools.ToCamelCase(options.IntegrationName)}TransactionsExecutorLogs";
+                integrationOptions.LogsAzureTableName = $"{options.IntegrationName}TransactionsExecutorLogs";
                 integrationOptions.LogsAzureTableConnectionStringResolver = settings => settings.Db.LogsConnString;
 
                 integrationOptions.AddController<IsAliveController>();

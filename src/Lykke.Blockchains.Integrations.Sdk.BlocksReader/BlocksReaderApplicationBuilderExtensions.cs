@@ -35,7 +35,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
 
             app.UseBlockchainIntegrationConfiguration(integrationOptions =>
             {
-                integrationOptions.ServiceName = $"{IntegrationNameTools.ToCamelCase(options.IntegrationName)} Blocks reader";
+                integrationOptions.ServiceName = $"{options.IntegrationName} Blocks reader";
             });
 
             return app;

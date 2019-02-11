@@ -35,7 +35,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService
 
             return services.BuildBlockchainIntegrationServiceProvider<TAppSettings>(integrationOptions =>
             {
-                integrationOptions.ServiceName = $"{IntegrationNameTools.ToCamelCase(options.IntegrationName)} Sign service";
+                integrationOptions.ServiceName = $"{options.IntegrationName} Sign service";
                 integrationOptions.UseSettings = settings =>
                 {
                     RegisterCommonServices(services, settings);
