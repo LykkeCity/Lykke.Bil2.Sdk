@@ -39,7 +39,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Lykke.Blockchains.Integrations.Client\Lykke.Blockchains.Integrations.RabbitMq.csproj" />
+    <ProjectReference Include="..\Lykke.Blockchains.Integrations.Contract\Lykke.Blockchains.Integrations.Contract.csproj" />
+    <ProjectReference Include="..\Lykke.Blockchains.Integrations.RabbitMq\Lykke.Blockchains.Integrations.RabbitMq.csproj" />
   </ItemGroup>
 
 </Project>
