@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
 {
@@ -16,7 +15,6 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// Type of the fee.
         /// </summary>
         [JsonProperty("type")]
-        [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
         public FeeType Type { get; }
 
         /// <summary>
@@ -25,9 +23,9 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("assetOptions")]
-        public IDictionary<string, AssetFeeOptions> AssetOptions { get; }
+        public IDictionary<AssetId, AssetFeeOptions> AssetOptions { get; }
 
-        public FeeOptions(FeeType type, IDictionary<string, AssetFeeOptions> assetOptions = null)
+        public FeeOptions(FeeType type, IDictionary<AssetId, AssetFeeOptions> assetOptions = null)
         {
             Type = type;
             AssetOptions = assetOptions;

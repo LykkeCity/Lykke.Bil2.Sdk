@@ -1,12 +1,16 @@
 ﻿using System.Runtime.Serialization;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
-namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
+namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
 {
     /// <summary>
     /// Enum describing the type of the fee.
     /// </summary>
     [PublicAPI]
+    [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
     public enum FeeType
     {
         /// <summary>

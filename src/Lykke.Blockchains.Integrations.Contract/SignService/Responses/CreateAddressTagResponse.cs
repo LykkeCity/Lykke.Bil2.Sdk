@@ -15,7 +15,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// Generated address tag.
         /// </summary>
         [JsonProperty("tag")]
-        public string Tag { get; }
+        public AddressTag Tag { get; }
 
         /// <summary>
         /// Optional.
@@ -23,9 +23,9 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// </summary>
         [CanBeNull]
         [JsonProperty("tagContext")]
-        public Base64String TagContext { get; }
+        public Base58String TagContext { get; }
 
-        public CreateAddressTagResponse(string tag, Base64String tagContext = null)
+        public CreateAddressTagResponse(AddressTag tag, Base58String tagContext = null)
         {
             if (string.IsNullOrWhiteSpace(tag))
                 throw new ArgumentException("Should be not empty string", nameof(tag));

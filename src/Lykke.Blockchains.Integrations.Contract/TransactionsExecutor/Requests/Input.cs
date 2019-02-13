@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
@@ -15,13 +14,13 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// Asset ID to transfer.
         /// </summary>
         [JsonProperty("assetId")]
-        public string AssetId { get; }
+        public AssetId AssetId { get; }
 
         /// <summary>
         /// Address.
         /// </summary>
         [JsonProperty("address")]
-        public string Address { get; }
+        public Address Address { get; }
         
         /// <summary>
         /// Amount to transfer from the given address.
@@ -35,27 +34,37 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public string AddressContext { get; }
+        public Base58String AddressContext { get; }
+
+        /// <summary>
+        /// Optional.
+        /// Nonce number of the transaction for the address.
+        /// </summary>
+        [CanBeNull]
+        [JsonProperty("nonce")]
+        public long? Nonce { get; }
 
         public Input(
-            string assetId, 
-            string address, 
+            AssetId assetId, 
+            Address address, 
             CoinsAmount amount,
-            string addressContext = null)
+            Base58String addressContext = null,
+            long? nonce = null)
         {
             if (string.IsNullOrWhiteSpace(assetId))
-                throw new ArgumentException("Should be not empty string", nameof(assetId));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
 
             if (string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be not empty string", nameof(address));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
 
-            if(amount == 0)
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, "Should be positive number");
+            if(amount <= 0)
+                throw RequestValidationException.ShouldBePositiveNumber(amount, nameof(amount));
 
             AssetId = assetId;
             Address = address;
             Amount = amount;
             AddressContext = addressContext;
+            Nonce = nonce;
         }
     }
 }

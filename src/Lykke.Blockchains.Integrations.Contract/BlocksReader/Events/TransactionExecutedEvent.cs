@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
-using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
@@ -43,7 +42,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         /// </summary>
         [CanBeNull]
         [JsonProperty("cancelledBalanceChanges")]
-        public ICollection<string> CancelledBalanceChanges { get; }
+        public ICollection<BalanceChangeId> CancelledBalanceChanges { get; }
 
         /// <summary>
         /// Optional.
@@ -52,7 +51,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         /// </summary>
         [CanBeNull]
         [JsonProperty("fee")]
-        public IDictionary<string, CoinsAmount> Fee { get; }
+        public IDictionary<AssetId, CoinsAmount> Fee { get; }
 
         /// <summary>
         /// Optional.
@@ -75,8 +74,8 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
             int transactionNumber,
             string transactionHash,
             ICollection<BalanceChange> balanceChanges,
-            ICollection<string> cancelledBalanceChanges = null,
-            IDictionary<string, CoinsAmount> fee = null,
+            ICollection<BalanceChangeId> cancelledBalanceChanges = null,
+            IDictionary<AssetId, CoinsAmount> fee = null,
             bool? isIrreversible = null,
             TransactionType? transactionType = null)
         {

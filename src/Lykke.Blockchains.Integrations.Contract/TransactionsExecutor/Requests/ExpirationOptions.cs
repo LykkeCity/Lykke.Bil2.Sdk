@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
@@ -27,10 +28,10 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         public ExpirationOptions(DateTime? afterMoment = null, long? afterBlockNumber = null)
         {
             if (!afterMoment.HasValue && !afterBlockNumber.HasValue)
-                throw new ArgumentException("At least one option should be specified");
+                throw new RequestValidationException("At least one option should be specified", new []{nameof(afterMoment), nameof(afterBlockNumber)});
 
             if (afterBlockNumber < 1)
-                throw new ArgumentOutOfRangeException(nameof(afterBlockNumber), afterBlockNumber, "Should be positive number");
+                throw RequestValidationException.ShouldBePositiveNumber(afterBlockNumber, nameof(afterBlockNumber));
 
             AfterMoment = afterMoment;
             AfterBlockNumber = afterBlockNumber;

@@ -3,10 +3,10 @@ using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.Common
 {
-    internal sealed class StringValueJsonReader
+    internal sealed class CoinsJsonReader
     {
         public TTarget ReadJson<TTarget>(JsonReader reader, Func<string, TTarget> factory)
-            where TTarget : class
+            where TTarget : CoinsBase
         {
             if (reader.TokenType == JsonToken.Null)
             {
@@ -17,8 +17,12 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 try
                 {
-                    var value = factory((string)reader.Value);
+                    var value = factory((string) reader.Value);
                     return value;
+                }
+                catch (CoinsConversionException ex)
+                {
+                    throw new RequestValidationException($"Failed to parse {typeof(TTarget)}", reader.Value, ex, reader.Path);
                 }
                 catch (Exception ex)
                 {

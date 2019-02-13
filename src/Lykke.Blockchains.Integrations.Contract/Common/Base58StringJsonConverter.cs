@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Lykke.Blockchains.Integrations.Contract.Common
 {
     [PublicAPI]
-    public class Base64StringJsonConverter : JsonConverter
+    public class Base58StringJsonConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -13,13 +13,13 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 writer.WriteNull();
             }
-            else if (value is Base64String base64String)
+            else if (value is Base58String base58String)
             {
-                writer.WriteValue(base64String.Base64Value);
+                writer.WriteValue(base58String.Value);
             }
             else
             {
-                throw new JsonSerializationException("Expected Base64String object value");
+                throw new JsonSerializationException("Expected Base58String object value");
             }
         }
 
@@ -34,21 +34,25 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
             {
                 try
                 {
-                    var value = Base64String.Create((string)reader.Value);
+                    var value = new Base58String((string) reader.Value);
                     return value;
+                }
+                catch (Base58StringConversionException ex)
+                {
+                    throw new RequestValidationException("Failed to parse Base58String", reader.Value, ex, reader.Path);
                 }
                 catch (Exception ex)
                 {
-                    throw new JsonSerializationException($"Error parsing Base64String: [{reader.Value}] at path [{reader.Path}]", ex);
+                    throw new JsonSerializationException($"Error parsing Base58String: [{reader.Value}] at path [{reader.Path}]", ex);
                 }
             }
 
-            throw new JsonSerializationException($"Unexpected token or value when parsing Base64String. Token [{reader.TokenType}], value [{reader.Value}]");
+            throw new JsonSerializationException($"Unexpected token or value when parsing Base58String. Token [{reader.TokenType}], value [{reader.Value}]");
         }
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(Base64String);
+            return objectType == typeof(Base58String);
         }
     }
 }
