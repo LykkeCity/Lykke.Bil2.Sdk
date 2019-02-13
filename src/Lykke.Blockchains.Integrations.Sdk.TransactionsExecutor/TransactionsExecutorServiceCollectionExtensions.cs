@@ -72,7 +72,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor
             ));
 
             services.AddSingleton(s => RawTransactionReadOnlyRepository.Create(
-                IntegrationNameTools.ToKebab(options.IntegrationName),
+                StringTools.CamelToKebab(options.IntegrationName),
                 settings.Nested(x => x.Db.AzureDataConnString)));
         }
 

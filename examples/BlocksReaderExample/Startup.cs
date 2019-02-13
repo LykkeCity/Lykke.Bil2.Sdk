@@ -11,14 +11,12 @@ namespace BlocksReaderExample
     [UsedImplicitly]
     public class Startup
     {
-        private const string IntegrationName = "Example";
-
         [UsedImplicitly]
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             return services.BuildBlockchainBlocksReaderServiceProvider<AppSettings>(options =>
             {
-                options.IntegrationName = IntegrationName;
+                options.IntegrationName = Program.IntegrationName;
 
                 options.BlockReaderFactory = c => new BlockReader();
                 options.AddIrreversibleBlockPulling(c => new IrreversibleBlockProvider());
@@ -35,7 +33,7 @@ namespace BlocksReaderExample
         {
             app.UseBlockchainBlocksReader(options =>
             {
-                options.IntegrationName = IntegrationName;
+                options.IntegrationName = Program.IntegrationName;
             });
         }
     }

@@ -15,6 +15,7 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader.Services
         private readonly IRabbitMqEndpoint _endpoint;
         private readonly IServiceProvider _serviceProvider;
         private readonly IReadOnlyCollection<string> _integrationNames;
+        private readonly string _clientName;
         private readonly int _listeningParallelism;
         
         public BlocksReaderClient(
@@ -22,17 +23,23 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader.Services
             IRabbitMqEndpoint endpoint,
             IServiceProvider serviceProvider,
             IReadOnlyCollection<string> integrationNames,
+            string clientName,
             int listeningParallelism)
         {
             if (logFactory == null)
             {
                 throw new ArgumentNullException(nameof(logFactory));
             }
+            if (string.IsNullOrWhiteSpace(clientName))
+            {
+                throw new ArgumentException("Should be not empty string", nameof(clientName));
+            }
 
             _log = logFactory.CreateLog(this);
             _endpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _integrationNames = integrationNames ?? throw new ArgumentNullException(nameof(integrationNames));
+            _clientName = clientName;
 
             if (listeningParallelism <= 0)
             {
@@ -50,7 +57,7 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader.Services
             {
                 _log.Info($"Registering blockchain integration {integrationName}");
 
-                var kebabIntegrationName = IntegrationNameTools.ToKebab(integrationName);
+                var kebabIntegrationName = StringTools.CamelToKebab(integrationName);
                 var commandsExchangeName = RabbitMqExchangeNamesFactory.GetIntegrationCommandsExchangeName(kebabIntegrationName);
                 var eventsExchangeName = RabbitMqExchangeNamesFactory.GetIntegrationEventsExchangeName(kebabIntegrationName);
 
@@ -60,11 +67,12 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader.Services
                 var subscriptions = new MessageSubscriptionsRegistry()
                     .On<BlockHeaderReadEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
                     .On<TransactionExecutedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
-                    .On<TransactionFailedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt));
+                    .On<TransactionFailedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
+                    .On<LastIrreversibleBlockUpdatedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt));
 
                 _endpoint.StartListening(
                     eventsExchangeName,
-                    "bil-v2.indexer",
+                    $"bil-v2.{_clientName}",
                     subscriptions,
                     parallelism: _listeningParallelism);
             }

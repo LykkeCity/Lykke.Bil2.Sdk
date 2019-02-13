@@ -24,5 +24,10 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader.Services
         /// Handles <see cref="TransactionFailedEvent"/>.
         /// </summary>
         Task Handle(string integrationName, TransactionFailedEvent evt);
+
+        /// <summary>
+        /// Handles <see cref="LastIrreversibleBlockUpdatedEvent"/>
+        /// </summary>
+        Task Handle(string integrationName, LastIrreversibleBlockUpdatedEvent evt);
     }
 }

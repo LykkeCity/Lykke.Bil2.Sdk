@@ -67,7 +67,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
             services.AddTransient<IStartupManager, StartupManager>();
 
             services.AddSingleton(s => RawTransactionWriteOnlyRepository.Create(
-                IntegrationNameTools.ToKebab(options.IntegrationName),
+                StringTools.CamelToKebab(options.IntegrationName),
                 settings.Nested(x => x.Db.AzureDataConnString)));
 
             services.AddSingleton<IRabbitMqEndpoint>(s =>
@@ -83,7 +83,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
                     s.GetRequiredService<IRabbitMqEndpoint>(),
                     s,
                     settings.CurrentValue.MessageListeningParallelism,
-                    IntegrationNameTools.ToKebab(options.IntegrationName)
+                    StringTools.CamelToKebab(options.IntegrationName)
                 ));
         }
 
@@ -104,7 +104,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
 
             where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
         {
-            var kebabIntegrationName = IntegrationNameTools.ToKebab(options.IntegrationName);
+            var kebabIntegrationName = StringTools.CamelToKebab(options.IntegrationName);
             var eventsExchangeName = RabbitMqExchangeNamesFactory.GetIntegrationEventsExchangeName(kebabIntegrationName);
 
             switch (options.IrreversbielBlockRetrievingStrategy)

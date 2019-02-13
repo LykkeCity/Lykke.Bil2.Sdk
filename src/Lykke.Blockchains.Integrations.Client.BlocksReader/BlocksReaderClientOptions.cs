@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Client.BlocksReader.Services;
 
 namespace Lykke.Blockchains.Integrations.Client.BlocksReader
 {
@@ -21,6 +22,12 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader
         /// Parallelism of the RabbitMq message listening for each blockchain integration.
         /// </summary>
         public int MessageListeningParallelism { get; set; }
+
+        /// <summary>
+        /// Required.
+        /// <see cref="IBlockEventsHandler"/> implementation factory. 
+        /// </summary>
+        public Func<IServiceProvider, IBlockEventsHandler> BlockEventsHandlerFactory { get; set; }
 
         internal IReadOnlyCollection<string> IntegrationNames => _integrationNames;
         

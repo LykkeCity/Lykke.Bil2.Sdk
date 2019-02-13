@@ -2,7 +2,9 @@
 using System.Linq;
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Client.BlocksReader.Services;
+using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.RabbitMq;
+using Lykke.Common;
 using Lykke.Common.Log;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -46,6 +48,10 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader
             {
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.IntegrationNames)} at least one integration should be registered.");
             }
+            if (options.BlockEventsHandlerFactory == null)
+            {
+                throw new InvalidOperationException($"{nameof(options)}.{nameof(options.BlockEventsHandlerFactory)} is required.");
+            }
 
             services.AddSingleton<IRabbitMqEndpoint>(s => new RabbitMqEndpoint
             (
@@ -59,10 +65,16 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader
                 s.GetRequiredService<IRabbitMqEndpoint>(),
                 s,
                 options.IntegrationNames,
+                StringTools.CamelToKebab
+                (
+                    string.Concat(AppEnvironment.Name.Split(".").Where(x => x != "Lykke" && x != "Service" && x != "Job"))
+                ),
                 options.MessageListeningParallelism
             ));
 
             services.AddTransient<IBlocksReaderApiFactory, BlocksReaderApiFactory>();
+
+            services.AddTransient(options.BlockEventsHandlerFactory);
         }
     }
 }

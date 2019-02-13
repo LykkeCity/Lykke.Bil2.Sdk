@@ -8,15 +8,12 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
     /// Tools to process blockchain integration name
     /// </summary>
     [PublicAPI]
-    public static class IntegrationNameTools
+    public static class StringTools
     {
         /// <summary>
-        /// Converts integration name to the kebab-notation
+        /// Converts the CamelCase notation to the kebab-notation
         /// </summary>
-        /// <param name="integrationName">
-        /// Name of the integration. Words should be separated by the space, each word should be started from the capital case.
-        /// </param>
-        public static string ToKebab(string integrationName)
+        public static string CamelToKebab(string integrationName)
         {
             var words = GetCamelCaseWords(integrationName);
 

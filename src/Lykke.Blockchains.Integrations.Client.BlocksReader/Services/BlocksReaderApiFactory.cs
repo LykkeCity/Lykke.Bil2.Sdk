@@ -15,7 +15,7 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader.Services
 
         public IBlocksReaderApi Create(string integrationName)
         {
-            var kebabIntegrationName = IntegrationNameTools.ToKebab(integrationName);
+            var kebabIntegrationName = StringTools.CamelToKebab(integrationName);
             var exchangeName = RabbitMqExchangeNamesFactory.GetIntegrationCommandsExchangeName(kebabIntegrationName);
             var publisher = _endpoint.CreatePublisher(exchangeName);
 

@@ -15,9 +15,11 @@ namespace Lykke.Blockchains.Integrations.Sdk.Services
         protected static readonly IReadOnlyCollection<Regex> SanitizingRegexps = new []
         {
             // Azure storage connection string
-            new Regex(@"(^|;|\s)(AccountKey=)(?<secure>.*?)(;)", RegexOptions.Compiled),
+            new Regex(@"(^|;|\s)(AccountKey\s*=\s*)(?<secure>.*?)($|;|\s)", RegexOptions.Compiled),
             // RabbitMq connection string
             new Regex(@"(amqp:\/\/)(?<secure>.*?)(@)", RegexOptions.Compiled),
+            // Connection string with "Password=XXX" pattern. Postgre for example
+            new Regex(@"(^|;|\s)(Password\s*=\s*)(?<secure>.*?)($|;|\s)"), 
         };
     }
 

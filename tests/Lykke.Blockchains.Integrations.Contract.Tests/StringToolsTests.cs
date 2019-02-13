@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Lykke.Blockchains.Integrations.Contract.Tests
 {
     [TestFixture]
-    public class IntegrationNameToolsTests
+    public class StringToolsTests
     {
         [Test]
         [TestCase("X", ExpectedResult = "x")]
@@ -15,7 +15,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Tests
         [TestCase("VeryLongBlockchainName", ExpectedResult = "very-long-blockchain-name")]
         public string Test_kebab(string integrationName)
         {
-            return IntegrationNameTools.ToKebab(integrationName);
+            return StringTools.CamelToKebab(integrationName);
         }
     }
 }

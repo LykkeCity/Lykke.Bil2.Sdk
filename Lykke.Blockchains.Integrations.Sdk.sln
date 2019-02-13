@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Blockchains.Integrations.WebClient", "src\Lykke.Blockchains.Integrations.WebClient\Lykke.Blockchains.Integrations.WebClient.csproj", "{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlocksReaderTestClient", "examples\BlocksReaderTestClient\BlocksReaderTestClient.csproj", "{341B1266-1B9A-4C02-9886-E49996033B6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -227,6 +229,18 @@ Global
 		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Release|x64.Build.0 = Release|Any CPU
 		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Release|x86.ActiveCfg = Release|Any CPU
 		{F602AAA5-CC6E-4EDC-BA76-A2AB91A365B9}.Release|x86.Build.0 = Release|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Debug|x64.Build.0 = Debug|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Debug|x86.Build.0 = Debug|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Release|x64.ActiveCfg = Release|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Release|x64.Build.0 = Release|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Release|x86.ActiveCfg = Release|Any CPU
+		{341B1266-1B9A-4C02-9886-E49996033B6F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -237,6 +251,7 @@ Global
 		{6AB97095-7DC1-448B-8988-41C7001BB2DD} = {95FBBE27-2E62-4E8B-AB6D-992C748A9ACE}
 		{E462185E-0A5F-45FD-AF4C-26EE3815094D} = {95FBBE27-2E62-4E8B-AB6D-992C748A9ACE}
 		{5B399189-FBEB-454B-8DBC-4D570FDAB7DF} = {95FBBE27-2E62-4E8B-AB6D-992C748A9ACE}
+		{341B1266-1B9A-4C02-9886-E49996033B6F} = {95FBBE27-2E62-4E8B-AB6D-992C748A9ACE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE7931E9-23DA-419B-9806-769CE70D173E}
