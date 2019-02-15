@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace Lykke.Blockchains.Integrations.Contract.Common.Cryptograhy
+namespace Lykke.Blockchains.Integrations.Contract.Common.Cryptography
 {
     internal static class RsaEncryption
     {

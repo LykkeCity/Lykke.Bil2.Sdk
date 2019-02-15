@@ -2,8 +2,8 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
+using Multiformats.Base;
 using Newtonsoft.Json;
-using SimpleBase;
 
 namespace Lykke.Blockchains.Integrations.Contract.Common
 {
@@ -56,7 +56,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
                 return null;
             }
 
-            var value = Base58.Bitcoin.Encode(bytesValue);
+            var value = Multibase.Base58.Encode(bytesValue);
 
             return new Base58String(value);
         }
@@ -70,7 +70,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
 
         public byte[] DecodeToBytes()
         {
-            return Base58.Bitcoin.Decode(Value).ToArray();
+            return Multibase.Base58.Decode(Value);
         }
 
         public override string ToString()

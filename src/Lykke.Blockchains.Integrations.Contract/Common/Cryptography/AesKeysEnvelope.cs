@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Lykke.Blockchains.Integrations.Contract.Common.Cryptograhy
+namespace Lykke.Blockchains.Integrations.Contract.Common.Cryptography
 {
     internal class AesKeysEnvelope
     {

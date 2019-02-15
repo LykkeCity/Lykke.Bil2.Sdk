@@ -7,7 +7,7 @@ using Newtonsoft.Json.Serialization;
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
 {
     /// <summary>
-    /// Enum describing reason of the transaction bulding failure.
+    /// Enum describing reason of the transaction building failure.
     /// </summary>
     [PublicAPI]
     [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
@@ -16,7 +16,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor
         /// <summary>
         /// There is not enough balance on the some of the input address.
         /// Transaction can be rebuilt later with exactly the same parameters or
-        /// transfered amount, including fee, should be reduced.
+        /// transferred amount, including fee, should be reduced.
         /// </summary>
         [EnumMember(Value = "notEnoughBalance")]
         NotEnoughBalance,

@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using JetBrains.Annotations;
-using Lykke.Blockchains.Integrations.Contract.Common.Cryptograhy;
+using Lykke.Blockchains.Integrations.Contract.Common.Cryptography;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.Common

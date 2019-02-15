@@ -8,6 +8,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
     /// <typeparam name="TErrorCode">Type of the error code. Should be enum</typeparam>
     [PublicAPI]
     public class BlockchainErrorResponse<TErrorCode> : BlockchainErrorResponse
+        where TErrorCode : Enum
     {
         /// <summary>
         /// Error code
@@ -63,6 +64,7 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         /// <param name="message">Summary error message</param>
         /// <typeparam name="TErrorCode">Type of the error code. Should be enum</typeparam>
         public static BlockchainErrorResponse<TErrorCode> CreateFromCode<TErrorCode>(TErrorCode errorCode, string message = null)
+            where TErrorCode : Enum
         {
             return new BlockchainErrorResponse<TErrorCode>(errorCode, message);
         }

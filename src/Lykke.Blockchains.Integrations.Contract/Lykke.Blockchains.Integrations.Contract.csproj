@@ -29,8 +29,8 @@
   
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
+    <PackageReference Include="Multiformats.Base" Version="2.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="SimpleBase" Version="1.7.1" />
     <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All" />
     <PackageReference Include="System.Memory" Version="4.5.2" />
   </ItemGroup>
