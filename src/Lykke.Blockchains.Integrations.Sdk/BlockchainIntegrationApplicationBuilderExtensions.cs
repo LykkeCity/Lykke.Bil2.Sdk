@@ -39,7 +39,18 @@ namespace Lykke.Blockchains.Integrations.Sdk
             app.UseLykkeConfiguration(lykkeSdkOptions =>
             {
                 lykkeSdkOptions.DisableValidationExceptionMiddleware();
-                lykkeSdkOptions.DefaultErrorHandler = BlockchainErrorResponse.Create;
+                lykkeSdkOptions.DefaultErrorHandler = ex =>
+                {
+                    switch (ex)
+                    {
+                        case OperationNotSupportedException _:
+                            return BlockchainErrorResponse.CreateBrief(ex);
+                        case RequestValidationException _:
+                            return BlockchainErrorResponse.CreateBrief(ex);
+                        default:
+                            return BlockchainErrorResponse.Create(ex);
+                    }
+                };
                 lykkeSdkOptions.UnhandledExceptionHttpStatusCodeResolver = ex =>
                 {
                     switch (ex)

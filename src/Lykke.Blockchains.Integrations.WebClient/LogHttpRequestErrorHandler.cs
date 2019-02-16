@@ -47,7 +47,7 @@ namespace Lykke.Blockchains.Integrations.WebClient
         {
             var message = new StringBuilder();
 
-            message.AppendLine($"Failed request -> {id}: {request.Method.ToString().ToUpper()}");
+            message.AppendLine($"Failed request -> {id:N}: {request.Method.ToString().ToUpper()}");
 
             foreach (var header in request.Headers)
             {
@@ -81,7 +81,7 @@ namespace Lykke.Blockchains.Integrations.WebClient
         {
             var message = new StringBuilder();
 
-            message.AppendLine($"Failed request <- {id}: {(int)response.StatusCode} {response.StatusCode} - {response.ReasonPhrase}");
+            message.AppendLine($"Failed request <- {id:N}: {(int)response.StatusCode} {response.StatusCode} - {response.ReasonPhrase}");
 
             foreach (var header in response.Headers)
             {

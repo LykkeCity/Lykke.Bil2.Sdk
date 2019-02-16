@@ -1,5 +1,7 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Lykke.Common.Log;
+using Refit;
 
 namespace Lykke.Blockchains.Integrations.WebClient
 {
@@ -19,6 +21,7 @@ namespace Lykke.Blockchains.Integrations.WebClient
             return HttpClientGenerator.HttpClientGenerator.BuildForUrl(url)
                 .WithoutRetries()
                 .WithoutCaching()
+                .WithAdditionalCallsWrapper(new MapExceptionCallWrapper())
                 .WithAdditionalDelegatingHandler(new LogHttpRequestErrorHandler(logFactory))
                 .Create();
         }

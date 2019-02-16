@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -50,11 +51,41 @@ namespace Lykke.Blockchains.Integrations.Contract.Common.Responses
         }
 
         /// <summary>
-        /// Creates <see cref="BlockchainErrorResponse"/> with summary error message
+        /// Creates <see cref="BlockchainErrorResponse"/> with detailed (including call stack) summary error message
         /// </summary>
         public static BlockchainErrorResponse Create(Exception exception)
         {
             return new BlockchainErrorResponse(exception.ToString());
+        }
+
+        /// <summary>
+        /// Creates <see cref="BlockchainErrorResponse"/> with brief (without call stack) summary error message
+        /// </summary>
+        public static BlockchainErrorResponse CreateBrief(Exception exception)
+        {
+            var ex = exception;
+            var sb = new StringBuilder();
+
+            while (true)
+            {
+                if (ex.InnerException != null)
+                {
+                    sb.AppendLine(ex.Message);
+                }
+                else
+                {
+                    sb.Append(ex.Message);
+                }
+
+                ex = ex.InnerException;
+
+                if (ex == null)
+                {
+                    return new BlockchainErrorResponse(sb.ToString());
+                }
+
+                sb.Append(" -> ");
+            }
         }
 
         /// <summary>
