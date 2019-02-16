@@ -45,7 +45,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Controllers
             }
             catch (SendingTransactionBuildingException ex)
             {
-                var errorResponse = BlockchainErrorResponse.CreateFromCode(ex.Error, ex.ToString());
+                var errorResponse = BlockchainErrorResponse.CreateFromCode(ex.Error, ex.Message);
 
                 return BadRequest(errorResponse);
             }
@@ -84,7 +84,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Controllers
             }
             catch (TransactionBroadcastingException ex)
             {
-                var errorResponse = BlockchainErrorResponse.CreateFromCode(ex.Error, ex.ToString());
+                var errorResponse = BlockchainErrorResponse.CreateFromCode(ex.Error, ex.Message);
 
                 return BadRequest(errorResponse);
             }
