@@ -12,16 +12,16 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
     public class CreateAddressResponse
     {
         /// <summary>
-        /// Encrypted private key of the address.
+        /// Private key of the address.
         /// </summary>
-        [JsonProperty("encryptedPrivateKey")]
-        public string EncryptedPrivateKey { get; }
+        [JsonProperty("privateKey")]
+        public EncryptedString PrivateKey { get; }
         
         /// <summary>
         /// Generated address.
         /// </summary>
         [JsonProperty("address")]
-        public string Address { get; }
+        public Address Address { get; }
 
         /// <summary>
         /// Optional.
@@ -29,17 +29,14 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Responses
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public Base64String AddressContext { get; }
+        public Base58String AddressContext { get; }
 
-        public CreateAddressResponse(string encryptedPrivateKey, string address, Base64String addressContext = null)
+        public CreateAddressResponse(EncryptedString privateKey, Address address, Base58String addressContext = null)
         {
-            if (string.IsNullOrWhiteSpace(encryptedPrivateKey))
-                throw new ArgumentException("Should be not empty string", nameof(encryptedPrivateKey));
-
             if (string.IsNullOrWhiteSpace(address))
                 throw new ArgumentException("Should be not empty string", nameof(address));
 
-            EncryptedPrivateKey = encryptedPrivateKey;
+            PrivateKey = privateKey ?? throw new ArgumentNullException(nameof(privateKey));
             Address = address;
             AddressContext = addressContext;
         }

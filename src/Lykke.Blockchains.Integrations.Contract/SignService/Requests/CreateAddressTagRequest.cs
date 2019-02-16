@@ -1,8 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 
 namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
 {
@@ -18,7 +16,7 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public Base64String AddressContext { get; set; }
+        public Base58String AddressContext { get; set; }
 
         /// <summary>
         /// Optional.
@@ -26,10 +24,9 @@ namespace Lykke.Blockchains.Integrations.Contract.SignService.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("type")]
-        [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
         public AddressTagType? Type { get; set; }
 
-        public CreateAddressTagRequest(Base64String addressContext = null, AddressTagType? type = null)
+        public CreateAddressTagRequest(Base58String addressContext = null, AddressTagType? type = null)
         {
             AddressContext = addressContext;
             Type = type;

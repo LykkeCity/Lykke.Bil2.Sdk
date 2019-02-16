@@ -7,7 +7,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
 {
     /// <inheritdoc />
     [PublicAPI]
-    public class TransactionsExecutorIsAliveResponse : IsAliveResponse
+    public class TransactionsExecutorIsAliveResponse : BlockchainIsAliveResponse
     {
         /// <summary>
         /// Optional.
@@ -25,7 +25,6 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
             string name, 
             Version version, 
             string envInfo, 
-            bool isDebug, 
             Version contractVersion, 
             string disease = null) : 
 
@@ -33,8 +32,7 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
             (
                 name, 
                 version, 
-                envInfo, 
-                isDebug, 
+                envInfo,
                 contractVersion
             )
         {

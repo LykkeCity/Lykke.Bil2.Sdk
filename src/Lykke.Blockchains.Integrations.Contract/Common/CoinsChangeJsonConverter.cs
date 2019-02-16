@@ -8,12 +8,12 @@ namespace Lykke.Blockchains.Integrations.Contract.Common
     public class CoinsChangeJsonConverter : JsonConverter
     {
         private CoinsJsonWriter _writer;
-        private StringValueJsonReader _reader;
+        private CoinsJsonReader _reader;
 
         public CoinsChangeJsonConverter()
         {
             _writer = new CoinsJsonWriter();
-            _reader = new StringValueJsonReader();
+            _reader = new CoinsJsonReader();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

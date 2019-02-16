@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor;
 using Newtonsoft.Json;
 
@@ -33,7 +35,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         /// Code of the error.
         /// </summary>
         [JsonProperty("errorCode")]
-        public TransactionExecutionError ErrorCode { get; }
+        public TransactionBroadcastingError ErrorCode { get; }
 
         /// <summary>
         /// Clean error description.
@@ -41,12 +43,22 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         [JsonProperty("errorMessage")]
         public string ErrorMessage { get; }
 
+        /// <summary>
+        /// Optional.
+        /// Fee in the particular asset ID, that was spent for the transaction.
+        /// Can be omitted, if there was no fee spent for the transaction.
+        /// </summary>
+        [CanBeNull]
+        [JsonProperty("fee")]
+        public IDictionary<AssetId, CoinsAmount> Fee { get; }
+
         public TransactionFailedEvent(
             string blockHash,
             int transactionNumber,
             string transactionHash,
-            TransactionExecutionError errorCode,
-            string errorMessage)
+            TransactionBroadcastingError errorCode,
+            string errorMessage,
+            IDictionary<AssetId, CoinsAmount> fee = null)
         {
             if (string.IsNullOrWhiteSpace(blockHash))
                 throw new ArgumentException("Should be not empty string", nameof(blockHash));
@@ -62,6 +74,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
             TransactionHash = transactionHash;
             ErrorCode = errorCode;
             ErrorMessage = errorMessage;
+            Fee = fee;
         }
     }
 }

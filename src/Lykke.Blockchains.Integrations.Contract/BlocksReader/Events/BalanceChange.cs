@@ -16,7 +16,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         /// For example, for Bitcoin it would be transactionHash + outputNumber.
         /// </summary>
         [JsonProperty("id")]
-        public string Id { get; }
+        public BalanceChangeId Id { get; }
 
         /// <summary>
         /// ID of the transfer within the transaction.
@@ -30,7 +30,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         /// ID of the asset.
         /// </summary>
         [JsonProperty("assetId")]
-        public string AssetId { get; }
+        public AssetId AssetId { get; }
 
         /// <summary>
         /// Value for which the balance of the address was changed.
@@ -43,7 +43,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         /// Address.
         /// </summary>
         [JsonProperty("address")]
-        public string Address { get; }
+        public Address Address { get; }
 
         /// <summary>
         /// Optional.
@@ -51,7 +51,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         /// </summary>
         [CanBeNull]
         [JsonProperty("tag")]
-        public string Tag { get; }
+        public AddressTag Tag { get; }
 
         /// <summary>
         /// Optional.
@@ -61,14 +61,23 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
         [JsonProperty("tagType")]
         public AddressTagType? TagType { get; }
 
+        /// <summary>
+        /// Optional.
+        /// Nonnce number of the transaction for the address.
+        /// </summary>
+        [CanBeNull]
+        [JsonProperty("nonce")]
+        public long? Nonce { get; }
+
         public BalanceChange(
-            string id, 
+            BalanceChangeId id, 
             string transferId, 
-            string assetId, 
+            AssetId assetId, 
             CoinsChange value, 
-            string address, 
-            string tag = null, 
-            AddressTagType? tagType = null)
+            Address address, 
+            AddressTag tag = null, 
+            AddressTagType? tagType = null,
+            long? nonce = null)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException("Should be not empty string", nameof(id));
@@ -92,6 +101,7 @@ namespace Lykke.Blockchains.Integrations.Contract.BlocksReader.Events
             Address = address;
             Tag = tag;
             TagType = tagType;
+            Nonce = nonce;
         }
     }
 }

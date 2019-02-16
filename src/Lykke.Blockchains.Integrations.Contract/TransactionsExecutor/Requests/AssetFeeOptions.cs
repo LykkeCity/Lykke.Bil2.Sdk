@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
@@ -37,22 +36,22 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         public AssetFeeOptions(CoinsAmount limit, CoinsAmount exact, decimal? multiplier)
         {
             if (limit == null && exact == null && !multiplier.HasValue)
-                throw new ArgumentException("At least one option should be specified");
+                throw new RequestValidationException("At least one option should be specified", new[] {nameof(limit), nameof(exact), nameof(multiplier)});
 
             if (limit != null && exact != null)
-                throw new ArgumentException("Only one of limit or exact values can be specified");
+                throw new RequestValidationException($"Only one of limit or exact values can be specified. Limit: {limit}, exact: {exact}", new [] {nameof(limit), nameof(exact)});
 
             if (multiplier.HasValue && exact != null)
-                throw new ArgumentException("Only one of multipler or exact values can be specified");
+                throw new RequestValidationException($"Only one of multipler or exact values can be specified. Multiplier: {multiplier}, exact: {exact}", new [] {nameof(multiplier), nameof(exact)});
 
             if (limit <= 0)
-                throw new ArgumentOutOfRangeException(nameof(limit), "Should be positive number");
+                throw RequestValidationException.ShouldBePositiveNumber(limit, nameof(limit));
 
             if (exact <= 0)
-                throw new ArgumentOutOfRangeException(nameof(limit), "Should be positive number");
+                throw RequestValidationException.ShouldBePositiveNumber(exact, nameof(exact));
 
             if (multiplier <= 0)
-                throw new ArgumentOutOfRangeException(nameof(limit), "Should be positive number");
+                throw RequestValidationException.ShouldBePositiveNumber(multiplier, nameof(multiplier));
 
             Limit = limit;
             Exact = exact;

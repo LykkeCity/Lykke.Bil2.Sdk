@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Lykke.Blockchains.Integrations.Contract.Common;
 using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
@@ -18,15 +18,15 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests
         /// Address which wants to receive the “sending” transaction.
         /// </summary>
         [JsonProperty("receivingAddress")]
-        public string ReceivingAddress { get; }
+        public Address ReceivingAddress { get; }
 
-        public BuildReceivingTransactionRequest(string sendingTransactionHash, string receivingAddress)
+        public BuildReceivingTransactionRequest(string sendingTransactionHash, Address receivingAddress)
         {
             if (string.IsNullOrWhiteSpace(sendingTransactionHash))
-                throw new ArgumentException("Should be not empty string", nameof(sendingTransactionHash));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(sendingTransactionHash));
 
             if (string.IsNullOrWhiteSpace(receivingAddress))
-                throw new ArgumentException("Should be not empty string", nameof(receivingAddress));
+                throw RequestValidationException.ShouldBeNotEmptyString(nameof(receivingAddress));
 
             SendingTransactionHash = sendingTransactionHash;
             ReceivingAddress = receivingAddress;
