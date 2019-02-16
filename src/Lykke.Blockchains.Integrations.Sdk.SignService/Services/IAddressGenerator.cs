@@ -15,7 +15,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService.Services
         /// <exception cref="OperationNotSupportedException">
         /// Should be thrown by implementation if offline address creation is not supported by the blockchain.
         /// </exception>
-        Task<AddressCreationResult> CreateAddresAsync();
+        Task<AddressCreationResult> CreateAddressAsync();
 
         /// <summary>
         /// Should create a new address tag for the specified address.

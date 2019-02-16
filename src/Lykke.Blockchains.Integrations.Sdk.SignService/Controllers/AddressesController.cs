@@ -24,7 +24,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.SignService.Controllers
         [HttpPost]
         public async Task<ActionResult<CreateAddressResponse>> CreateAddress(CreateAddressRequest request)
         {
-            var creationResult = await _addressGenerator.CreateAddresAsync();
+            var creationResult = await _addressGenerator.CreateAddressAsync();
             if (creationResult == null)
             {
                 throw new InvalidOperationException("Not null creation result object expected");

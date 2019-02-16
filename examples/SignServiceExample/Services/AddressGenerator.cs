@@ -19,7 +19,7 @@ namespace SignServiceExample.Services
             _network = network;
         }
 
-        public Task<AddressCreationResult> CreateAddresAsync()
+        public Task<AddressCreationResult> CreateAddressAsync()
         {
             var address = $"{_network}:{Guid.NewGuid():N}";
             var privateKey = Guid.NewGuid().ToString("N").Substring(0, 8);
