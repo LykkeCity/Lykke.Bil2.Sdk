@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 
 namespace Lykke.Blockchains.Integrations.WebClient
 {
+    // TODO: Add correlationId to the request/response
+
     internal class LogHttpRequestErrorHandler : DelegatingHandler
     {
         private readonly ILog _log;
@@ -68,9 +70,19 @@ namespace Lykke.Blockchains.Integrations.WebClient
                     IsTextBasedContentType(request.Content.Headers))
                 {
                     var content = await request.Content.ReadAsStringAsync();
-                    context = JsonConvert.DeserializeObject(content);
 
-                    message.AppendLine(content);
+                    try
+                    {
+                        context = JsonConvert.DeserializeObject(content);
+                    }
+                    catch(JsonException)
+                    {
+                    }
+
+                    if (context == null)
+                    {
+                        message.AppendLine(content);
+                    }
                 }
             }
 
@@ -88,6 +100,8 @@ namespace Lykke.Blockchains.Integrations.WebClient
                 message.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
             }
 
+            object context = null;
+
             if (response.Content != null)
             {
                 foreach (var header in response.Content.Headers)
@@ -101,11 +115,22 @@ namespace Lykke.Blockchains.Integrations.WebClient
                 {
                     var content = await response.Content.ReadAsStringAsync();
 
-                    message.AppendLine(content);
+                    try
+                    {
+                        context = JsonConvert.DeserializeObject(content);
+                    }
+                    catch(JsonException)
+                    {
+                    }
+
+                    if (context == null)
+                    {
+                        message.AppendLine(content);
+                    }
                 }
             }
 
-            _log.Warning(url, message.ToString());
+            _log.Warning(url, message.ToString(), context: context);
         }
 
         private static bool IsTextBasedContentType(HttpHeaders headers)
