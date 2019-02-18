@@ -107,7 +107,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
             var kebabIntegrationName = options.IntegrationName.CamelToKebab();
             var eventsExchangeName = RabbitMqExchangeNamesFactory.GetIntegrationEventsExchangeName(kebabIntegrationName);
 
-            switch (options.IrreversbielBlockRetrievingStrategy)
+            switch (options.IrreversibleBlockRetrievingStrategy)
             {
                 case IrreversibleBlockRetrievingStrategy.NotSupported:
                     break;
@@ -133,7 +133,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(options.IrreversbielBlockRetrievingStrategy), options.IrreversbielBlockRetrievingStrategy, "Unknown strategy");
+                    throw new ArgumentOutOfRangeException(nameof(options.IrreversibleBlockRetrievingStrategy), options.IrreversibleBlockRetrievingStrategy, "Unknown strategy");
             }
         }
 

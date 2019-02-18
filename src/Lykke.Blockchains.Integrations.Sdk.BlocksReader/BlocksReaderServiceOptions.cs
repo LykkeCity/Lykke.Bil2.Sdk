@@ -33,7 +33,7 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
         /// </summary>
         public Func<ServiceFactoryContext<TAppSettings>, IBlockReader> BlockReaderFactory { get; set; }
 
-        internal IrreversibleBlockRetrievingStrategy IrreversbielBlockRetrievingStrategy { get; private set; }
+        internal IrreversibleBlockRetrievingStrategy IrreversibleBlockRetrievingStrategy { get; private set; }
 
         internal Func<ServiceFactoryContext<TAppSettings>, IIrreversibleBlockProvider> IrreversibleBlockProviderFactory { get; private set; }
 
@@ -42,12 +42,12 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
         /// </summary>
         public void AddIrreversibleBlockPulling(Func<ServiceFactoryContext<TAppSettings>, IIrreversibleBlockProvider> irreversibleBlockProviderFactory)
         {
-            if (IrreversbielBlockRetrievingStrategy != IrreversibleBlockRetrievingStrategy.NotSupported)
+            if (IrreversibleBlockRetrievingStrategy != IrreversibleBlockRetrievingStrategy.NotSupported)
             {
-                throw new InvalidOperationException($"Irreversible block retrieving strategy has been already set to {IrreversbielBlockRetrievingStrategy}");
+                throw new InvalidOperationException($"Irreversible block retrieving strategy has been already set to {IrreversibleBlockRetrievingStrategy}");
             }
 
-            IrreversbielBlockRetrievingStrategy = IrreversibleBlockRetrievingStrategy.Pulling;
+            IrreversibleBlockRetrievingStrategy = IrreversibleBlockRetrievingStrategy.Pulling;
             IrreversibleBlockProviderFactory = irreversibleBlockProviderFactory ?? throw new ArgumentNullException(nameof(irreversibleBlockProviderFactory));
         }
 
@@ -59,12 +59,12 @@ namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader
         /// </remarks>
         public void AddIrreversibleBlockPushing()
         {
-            if (IrreversbielBlockRetrievingStrategy != IrreversibleBlockRetrievingStrategy.NotSupported)
+            if (IrreversibleBlockRetrievingStrategy != IrreversibleBlockRetrievingStrategy.NotSupported)
             {
-                throw new InvalidOperationException($"Irreversible block retrieving strategy has been already set to {IrreversbielBlockRetrievingStrategy}");
+                throw new InvalidOperationException($"Irreversible block retrieving strategy has been already set to {IrreversibleBlockRetrievingStrategy}");
             }
 
-            IrreversbielBlockRetrievingStrategy = IrreversibleBlockRetrievingStrategy.Pushing;
+            IrreversibleBlockRetrievingStrategy = IrreversibleBlockRetrievingStrategy.Pushing;
         }
     }
 }
