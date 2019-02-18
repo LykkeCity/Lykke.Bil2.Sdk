@@ -11,24 +11,24 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
     [PublicAPI]
     public class MessageSubscriptionsRegistry : IMessageSubscriptionsRegistry
     {
-        private IImmutableDictionary<string, MessageSubscription> _subscriptions;
+        private IImmutableDictionary<string, IMessageSubscription> _subscriptions;
 
         /// <summary>
         /// Registry of the message subscriptions
         /// </summary>
         public MessageSubscriptionsRegistry()
         {
-            _subscriptions = new Dictionary<string, MessageSubscription>().ToImmutableDictionary();
+            _subscriptions = new Dictionary<string, IMessageSubscription>().ToImmutableDictionary();
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<MessageSubscription> GetAllSubscriptions()
+        public IReadOnlyCollection<IMessageSubscription> GetAllSubscriptions()
         {
             return _subscriptions.Values.ToArray();
         }
 
         /// <inheritdoc />
-        public MessageSubscription GetSubscriptionOrDefault(string messageType)
+        public IMessageSubscription GetSubscriptionOrDefault(string messageType)
         {
             if (string.IsNullOrWhiteSpace(messageType))
             {
@@ -50,7 +50,7 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
 
             var type = typeof(TMessage);
 
-            _subscriptions = _subscriptions.Add(type.Name, new MessageSubscription(type.Name, type, handler));
+            _subscriptions = _subscriptions.Add(type.Name, new MessageSubscription<TMessage>(type.Name, type, handler));
 
             return this;
         }

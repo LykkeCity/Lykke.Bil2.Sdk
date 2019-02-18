@@ -15,12 +15,12 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// Returns all registered subscriptions
         /// </summary>
         /// <returns></returns>
-        IReadOnlyCollection<MessageSubscription> GetAllSubscriptions();
+        IReadOnlyCollection<IMessageSubscription> GetAllSubscriptions();
 
         /// <summary>
-        /// Returns subscribtion by the message type or null
+        /// Returns subscription by the message type or null
         /// </summary>
-        MessageSubscription GetSubscriptionOrDefault(string messageType);
+        IMessageSubscription GetSubscriptionOrDefault(string messageType);
 
         /// <summary>
         /// Register handler for the message

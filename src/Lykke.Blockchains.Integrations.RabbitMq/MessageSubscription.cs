@@ -3,21 +3,18 @@ using System.Threading.Tasks;
 
 namespace Lykke.Blockchains.Integrations.RabbitMq
 {
-    /// <summary>
-    /// Metadata of the message subscription
-    /// </summary>
-    public class MessageSubscription
+    internal class MessageSubscription<TMessage> : IMessageSubscription
     {
         public string RoutingKey { get; }
 
         public Type MessageType { get; }
 
-        private readonly Delegate _handler;
+        private readonly Func<TMessage, IMessagePublisher, Task> _handler;
 
         /// <summary>
         /// Metadata of the message subscription
         /// </summary>
-        public MessageSubscription(string routingKey, Type messageType, Delegate handler)
+        public MessageSubscription(string routingKey, Type messageType, Func<TMessage, IMessagePublisher, Task> handler)
         {
             if (string.IsNullOrWhiteSpace(routingKey))
             {
@@ -30,9 +27,6 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
-        /// <summary>
-        /// Invokes the message handler
-        /// </summary>
         public async Task InvokeHandlerAsync(object message, IMessagePublisher publisher)
         {
             if (message == null)
@@ -44,7 +38,14 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
                 throw new ArgumentNullException(nameof(publisher));
             }
 
-            await (Task)_handler.DynamicInvoke(message, publisher);
+            if (message is TMessage typedMessage)
+            {
+                await _handler.Invoke(typedMessage, publisher);
+            }
+            else
+            {
+                throw new ArgumentException($"Object of type {typeof(TMessage)} is expected, but {message.GetType()} is passed", nameof(message));
+            }
         }
     }
 }
