@@ -18,7 +18,7 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         /// <summary>
         /// Creates message publisher
         /// </summary>
-        IMessagePublisher CreatePublisher(string exchangeName, string corellationId = null);
+        IMessagePublisher CreatePublisher(string exchangeName, string correlationId = null);
 
         /// <summary>
         /// Starts listening for the messages

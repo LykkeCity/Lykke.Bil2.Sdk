@@ -21,7 +21,7 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         private readonly List<IDisposable> _subscribers;
 
         /// <summary>
-        /// RabbitMq endpoint - represents RabbitMq connection and provides entrypoints
+        /// RabbitMq endpoint - represents RabbitMq connection and provides entry points
         /// to start listening for the messages and publish messages.
         /// </summary>
         public RabbitMqEndpoint(
@@ -77,7 +77,7 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
         }
 
         /// <inheritdoc />
-        public IMessagePublisher CreatePublisher(string exchangeName, string corellationId = null)
+        public IMessagePublisher CreatePublisher(string exchangeName, string correlationId = null)
         {
             if (string.IsNullOrWhiteSpace(exchangeName))
             {
@@ -88,7 +88,7 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
                 throw new InvalidOperationException("RabbitMqEndpoint should be started first");
             }
 
-            return new MessagePublisher(_publishingChannel, exchangeName, corellationId);
+            return new MessagePublisher(_publishingChannel, exchangeName, correlationId);
         }
 
         /// <inheritdoc />
@@ -128,7 +128,7 @@ namespace Lykke.Blockchains.Integrations.RabbitMq
 
             if (replyExchangeName != null)
             {
-                subscriber.WithRepliesPublisher(corellationId => CreatePublisher(replyExchangeName, corellationId));
+                subscriber.WithRepliesPublisher(correlationId => CreatePublisher(replyExchangeName, correlationId));
             }
 
             _subscribers.Add(subscriber);
