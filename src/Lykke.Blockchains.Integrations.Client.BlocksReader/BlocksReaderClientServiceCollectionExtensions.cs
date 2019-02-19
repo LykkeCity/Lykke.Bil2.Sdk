@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Client.BlocksReader.Services;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.RabbitMq;
+using Lykke.Blockchains.Integrations.WebClient;
 using Lykke.Common;
 using Lykke.Common.Log;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,7 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader
     public static class BlocksReaderClientServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds blockchain integration blocks reader client services.
+        /// Adds the messaging client of the blockchain integration blocks reader to the app services as <see cref="IBlocksReaderClient"/>
         /// </summary>
         /// <remarks>
         /// In order to use <see cref="IBlocksReaderClient"/>, call <see cref="IBlocksReaderClient.Start"/> first
@@ -74,6 +75,31 @@ namespace Lykke.Blockchains.Integrations.Client.BlocksReader
             services.AddTransient<IBlocksReaderApiFactory, BlocksReaderApiFactory>();
 
             services.AddTransient(options.BlockEventsHandlerFactory);
+        }
+
+        /// <summary>
+        /// Adds the HTTP client of the blockchain integration blocks reader to the app services as <see cref="IBlocksReaderHttpApi"/>
+        /// </summary>
+        public static IServiceCollection AddBlocksReaderHttpClient(this IServiceCollection services, string url)
+        {
+            if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _))
+            {
+                throw new ArgumentException($"Should be a valid URL. Actual value: {url}", nameof(url));
+            }
+
+            if (services.All(x => x.ServiceType != typeof(ILogFactory)))
+            {
+                throw new InvalidOperationException($"{typeof(ILogFactory)} service should be registered");
+            }
+
+            services.AddSingleton(s =>
+            {
+                var generator = HttpClientGeneratorFactory.Create(url, s.GetRequiredService<ILogFactory>());
+
+                return generator.Generate<IBlocksReaderHttpApi>();
+            });
+
+            return services;
         }
     }
 }

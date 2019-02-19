@@ -28,6 +28,7 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="Refit" Version="4.6.90" />
     <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All" />
   </ItemGroup>
   
@@ -41,6 +42,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Lykke.Blockchains.Integrations.Contract\Lykke.Blockchains.Integrations.Contract.csproj" />
     <ProjectReference Include="..\Lykke.Blockchains.Integrations.RabbitMq\Lykke.Blockchains.Integrations.RabbitMq.csproj" />
+    <ProjectReference Include="..\Lykke.Blockchains.Integrations.WebClient\Lykke.Blockchains.Integrations.WebClient.csproj" />
   </ItemGroup>
 
 </Project>

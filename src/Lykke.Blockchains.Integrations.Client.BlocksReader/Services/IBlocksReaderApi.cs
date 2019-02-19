@@ -5,7 +5,7 @@ using Lykke.Blockchains.Integrations.Contract.BlocksReader.Commands;
 namespace Lykke.Blockchains.Integrations.Client.BlocksReader.Services
 {
     /// <summary>
-    /// Blockchain integration blocks reader API.
+    /// Blockchain integration blocks reader messaging API.
     /// </summary>
     [PublicAPI]
     public interface IBlocksReaderApi
