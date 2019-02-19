@@ -12,16 +12,6 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
     public class IntegrationInfoResponse
     {
         /// <summary>
-        /// Configuration of the integration. Should contain
-        /// all settings. Secure settings should be
-        /// sanitized. For instance connection string to the storage
-        /// is secure setting and password/access token should be replaced with
-        /// some kind of dummy text.
-        /// </summary>
-        [JsonProperty("configuration")]
-        public IDictionary<string, string> Configuration { get; }
-
-        /// <summary>
         /// Blockchain specific information.
         /// </summary>
         [JsonProperty("blockchain")]
@@ -34,11 +24,9 @@ namespace Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses
         public IDictionary<string, DependencyInfo> Dependencies { get; }
 
         public IntegrationInfoResponse(
-            IDictionary<string, string> configuration,
             BlockchainInfo blockchain,
             IDictionary<string, DependencyInfo> dependencies)
         {
-            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             Blockchain = blockchain ?? throw new ArgumentNullException(nameof(blockchain));
             Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
         }

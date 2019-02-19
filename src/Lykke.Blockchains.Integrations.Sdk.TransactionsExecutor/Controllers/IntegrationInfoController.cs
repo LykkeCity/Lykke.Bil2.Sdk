@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses;
-using Lykke.Blockchains.Integrations.Sdk.Services;
 using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,14 +12,10 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Controllers
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     internal class IntegrationInfoController : ControllerBase
     {
-        private readonly ISettingsRenderer _settingsRenderer;
         private readonly IIntegrationInfoService _integrationInfoService;
 
-        public IntegrationInfoController(
-            ISettingsRenderer settingsRenderer,
-            IIntegrationInfoService integrationInfoService)
+        public IntegrationInfoController(IIntegrationInfoService integrationInfoService)
         {
-            _settingsRenderer = settingsRenderer;
             _integrationInfoService = integrationInfoService;
         }
 
@@ -35,7 +30,6 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Controllers
 
             var response = new IntegrationInfoResponse
             (
-                _settingsRenderer.RenderSettings(),
                 info.Blockchain,
                 info.Dependencies
             );
