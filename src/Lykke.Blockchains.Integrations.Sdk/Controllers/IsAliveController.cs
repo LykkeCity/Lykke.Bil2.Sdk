@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.Contract.Common.Responses;
 using Lykke.Common;
@@ -16,9 +17,9 @@ namespace Lykke.Blockchains.Integrations.Sdk.Controllers
         {
             var response = new BlockchainIsAliveResponse(
                 AppEnvironment.Name,
-                Constants.ContractVersion,
+                new Version(AppEnvironment.Version),
                 AppEnvironment.EnvInfo,
-                typeof(BlockchainIsAliveResponse).Assembly.GetName().Version);
+                Constants.ContractVersion);
 
             return Ok(response);
         }
