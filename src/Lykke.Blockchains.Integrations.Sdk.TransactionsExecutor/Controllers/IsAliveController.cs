@@ -27,9 +27,9 @@ namespace Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Controllers
             var disease = _healthMonitor.Disease;
             var response = new TransactionsExecutorIsAliveResponse(
                 AppEnvironment.Name,
-                Constants.ContractVersion,
+                new Version(AppEnvironment.Version),
                 AppEnvironment.EnvInfo,
-                typeof(BlockchainIsAliveResponse).Assembly.GetName().Version,
+                Constants.ContractVersion,
                 disease);
 
             return Ok(response);
