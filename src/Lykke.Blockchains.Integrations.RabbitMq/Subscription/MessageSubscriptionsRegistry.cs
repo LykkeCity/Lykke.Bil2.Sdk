@@ -4,8 +4,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.RabbitMq.Publication;
 
-namespace Lykke.Blockchains.Integrations.RabbitMq
+namespace Lykke.Blockchains.Integrations.RabbitMq.Subscription
 {
     /// <inheritdoc />
     [PublicAPI]

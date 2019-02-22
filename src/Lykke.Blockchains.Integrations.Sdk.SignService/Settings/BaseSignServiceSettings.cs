@@ -2,7 +2,7 @@
 using Lykke.Blockchains.Integrations.Sdk.Services;
 using Lykke.Sdk.Settings;
 
-namespace Lykke.Blockchains.Integrations.Sdk.SignService
+namespace Lykke.Blockchains.Integrations.Sdk.SignService.Settings
 {
     /// <summary>
     /// Base settings for a sign service application.

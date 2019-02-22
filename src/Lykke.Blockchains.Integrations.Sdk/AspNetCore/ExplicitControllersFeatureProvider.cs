@@ -3,7 +3,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
-namespace Lykke.Blockchains.Integrations.Sdk
+namespace Lykke.Blockchains.Integrations.Sdk.AspNetCore
 {
     internal class ExplicitControllersFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
     {

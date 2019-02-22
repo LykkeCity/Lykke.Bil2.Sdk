@@ -4,7 +4,7 @@ using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor;
 using Lykke.Blockchains.Integrations.WebClient.Exceptions;
 using Refit;
 
-namespace Lykke.Blockchains.Integrations.Client.TransactionsExecutor
+namespace Lykke.Blockchains.Integrations.Client.TransactionsExecutor.Exceptions
 {
     [PublicAPI]
     public class TransactionBroadcastingWebApiException : BadRequestWebApiException
@@ -16,7 +16,10 @@ namespace Lykke.Blockchains.Integrations.Client.TransactionsExecutor
         public TransactionBroadcastingWebApiException(ApiException inner) : 
             base(inner)
         {
-            var response = inner.GetContentAs<BlockchainErrorResponse<TransactionBroadcastingError>>();
+            var response = inner.GetContentAsAsync<BlockchainErrorResponse<TransactionBroadcastingError>>()
+                .ConfigureAwait(false)
+                .GetAwaiter()
+                .GetResult();
 
             ErrorCode = response.Code;
             ErrorMessage = response.Message;

@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Lykke.Blockchains.Integrations.Contract.Common;
 using Microsoft.AspNetCore.Builder;
 
 namespace Lykke.Blockchains.Integrations.Sdk.SignService

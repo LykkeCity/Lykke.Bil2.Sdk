@@ -6,7 +6,7 @@
     <Company>Lykke</Company>
     <Product>Lykke.Blockchains.Integrations.Sdk</Product>
     <Description>SDK for Lykke blockchains integration contract v2</Description>
-    <PackageLicenseUrl>https://github.com/LykkeCorp/Lykke.Blockchains.Integrations.Sdk/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>https://github.com/LykkeCorp/Lykke.Blockchains.Integrations.Sdk/blob/master/LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/LykkeCorp/Lykke.Blockchains.Integrations.Sdk</PackageProjectUrl>
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/14153330?v=3&amp;s=200</PackageIconUrl>
     <RepositoryUrl>https://github.com/LykkeCorp/Lykke.Blockchains.Integrations.Sdk.git</RepositoryUrl>
@@ -27,16 +27,52 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   
-  <ItemGroup Label="dotnet pack instructions">
-    <Content Include="$(OutputPath)$(AssemblyName).pdb">
-      <Pack>true</Pack>
-      <PackagePath>lib/netcoreapp2.2</PackagePath>
-    </Content>
+  <ItemGroup>
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup Label="RabbitMq dependencies">
+    <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
+    <PackageReference Include="Lykke.Common" Version="7.3.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
+  </ItemGroup>
+  
+  <ItemGroup Label="Sdk dependencies">
+    <PackageReference Include="Lykke.Logs" Version="7.2.1" />
+    <PackageReference Include="Lykke.Sdk" Version="5.10.2" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.2" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
+  </ItemGroup>
+  
+  <ItemGroup Label="Contract dependencies">
+    <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Multiformats.Base" Version="2.0.1" />
+    <PackageReference Include="System.Memory" Version="4.5.2" />
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Lykke.Blockchains.Integrations.RabbitMq\Lykke.Blockchains.Integrations.RabbitMq.csproj" />
-    <ProjectReference Include="..\Lykke.Blockchains.Integrations.Sdk\Lykke.Blockchains.Integrations.Sdk.csproj" />
+    <ProjectReference Include="..\Lykke.Blockchains.Integrations.RabbitMq\Lykke.Blockchains.Integrations.RabbitMq.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\Lykke.Blockchains.Integrations.Sdk\Lykke.Blockchains.Integrations.Sdk.csproj" PrivateAssets="All" />
   </ItemGroup>
+  
+  <!--
+    The following solves the problem that 'dotnet pack' does not include the DLLs from referenced projects.
+    See https://github.com/NuGet/Home/issues/3891 for a description of the problem
+    and for newer versions / workarounds / built-in methods.
+  -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>
+      $(TargetsForTfmSpecificBuildOutput);PackReferencedProjectOutputs
+    </TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="PackReferencedProjectOutputs" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+    </ItemGroup>
+  </Target>
 
 </Project>

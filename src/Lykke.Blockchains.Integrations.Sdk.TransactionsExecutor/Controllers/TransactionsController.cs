@@ -5,6 +5,7 @@ using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.Contract.Common.Responses;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses;
+using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Exceptions;
 using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Repositories;
 using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services;
 using Microsoft.AspNetCore.Mvc;

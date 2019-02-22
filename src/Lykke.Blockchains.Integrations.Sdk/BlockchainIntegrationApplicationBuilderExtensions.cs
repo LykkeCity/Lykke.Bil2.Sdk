@@ -3,6 +3,7 @@ using System.Net;
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.Contract.Common.Responses;
+using Lykke.Blockchains.Integrations.Sdk.Exceptions;
 using Lykke.Sdk;
 using Microsoft.AspNetCore.Builder;
 

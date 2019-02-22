@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lykke.Blockchains.Integrations.RabbitMq
+namespace Lykke.Blockchains.Integrations.RabbitMq.Publication
 {
     internal class ProhibitedRepliesMessagePublisher : IMessagePublisher
     {

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Lykke.Blockchains.Integrations.RabbitMq.Publication;
 
-namespace Lykke.Blockchains.Integrations.RabbitMq
+namespace Lykke.Blockchains.Integrations.RabbitMq.Subscription
 {
     internal class MessageSubscription<TMessage> : IMessageSubscription
     {
