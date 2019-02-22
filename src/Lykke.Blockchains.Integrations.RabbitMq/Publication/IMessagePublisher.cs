@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace Lykke.Blockchains.Integrations.RabbitMq
+namespace Lykke.Blockchains.Integrations.RabbitMq.Publication
 {
     /// <summary>
     /// Publishes messages to the RabbitMq.

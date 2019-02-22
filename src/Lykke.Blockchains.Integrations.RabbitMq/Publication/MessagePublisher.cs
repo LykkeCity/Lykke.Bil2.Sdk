@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing;
 
-namespace Lykke.Blockchains.Integrations.RabbitMq
+namespace Lykke.Blockchains.Integrations.RabbitMq.Publication
 {
     internal class MessagePublisher : IMessagePublisher
     {

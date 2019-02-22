@@ -1,4 +1,4 @@
-﻿using Lykke.Blockchains.Integrations.Sdk.SignService;
+﻿using Lykke.Blockchains.Integrations.Sdk.SignService.Settings;
 
 namespace SignServiceExample.Settings
 {

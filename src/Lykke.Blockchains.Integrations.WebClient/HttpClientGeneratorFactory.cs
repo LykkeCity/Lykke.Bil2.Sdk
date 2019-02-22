@@ -1,7 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Lykke.Common.Log;
-using Refit;
 
 namespace Lykke.Blockchains.Integrations.WebClient
 {

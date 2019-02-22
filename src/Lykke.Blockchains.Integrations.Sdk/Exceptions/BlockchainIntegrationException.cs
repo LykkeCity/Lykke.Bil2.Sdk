@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Lykke.Blockchains.Integrations.Sdk
+namespace Lykke.Blockchains.Integrations.Sdk.Exceptions
 {
     /// <summary>
     /// Base blockchain integration exception 

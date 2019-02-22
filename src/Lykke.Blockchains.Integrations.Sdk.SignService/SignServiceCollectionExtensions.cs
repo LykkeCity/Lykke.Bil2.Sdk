@@ -4,6 +4,7 @@ using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.Sdk.SignService.Controllers;
 using Lykke.Blockchains.Integrations.Sdk.SignService.Models;
 using Lykke.Blockchains.Integrations.Sdk.SignService.Services;
+using Lykke.Blockchains.Integrations.Sdk.SignService.Settings;
 using Lykke.Sdk;
 using Lykke.SettingsReader;
 using Microsoft.Extensions.DependencyInjection;

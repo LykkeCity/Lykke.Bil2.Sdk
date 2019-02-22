@@ -1,6 +1,7 @@
 ﻿using System;
 using Lykke.Blockchains.Integrations.Contract.BlocksReader.Commands;
 using Lykke.Blockchains.Integrations.RabbitMq;
+using Lykke.Blockchains.Integrations.RabbitMq.Subscription;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Blockchains.Integrations.Sdk.BlocksReader.Services

@@ -1,8 +1,9 @@
 ﻿using System.Net;
+using Lykke.Blockchains.Integrations.Client.TransactionsExecutor.Exceptions;
 using Lykke.Blockchains.Integrations.WebClient;
 using Refit;
 
-namespace Lykke.Blockchains.Integrations.Client.TransactionsExecutor
+namespace Lykke.Blockchains.Integrations.Client.TransactionsExecutor.ExceptionsMappers
 {
     internal class TransactionBroadcastingExceptionMapper : IExceptionMapper
     {

@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Contract.SignService.Requests;
 using Lykke.Blockchains.Integrations.Contract.SignService.Responses;
+using Lykke.Blockchains.Integrations.Sdk.Exceptions;
 using Lykke.Blockchains.Integrations.Sdk.SignService.Models;
 
 namespace Lykke.Blockchains.Integrations.Sdk.SignService.Services

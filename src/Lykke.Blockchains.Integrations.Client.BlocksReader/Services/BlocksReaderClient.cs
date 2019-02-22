@@ -4,6 +4,7 @@ using Common.Log;
 using Lykke.Blockchains.Integrations.Contract.BlocksReader.Events;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.RabbitMq;
+using Lykke.Blockchains.Integrations.RabbitMq.Subscription;
 using Lykke.Common.Log;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Lykke.Blockchains.Integrations.Sdk.SignService.Services;
+using Lykke.Blockchains.Integrations.Sdk.SignService.Settings;
 using Lykke.SettingsReader;
 
 namespace Lykke.Blockchains.Integrations.Sdk.SignService

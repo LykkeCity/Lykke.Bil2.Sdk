@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Common.Log;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.RabbitMq.Publication;
+using Lykke.Blockchains.Integrations.RabbitMq.Subscription;
 using Lykke.Common;
 using Lykke.Common.Log;
 using RabbitMQ.Client;

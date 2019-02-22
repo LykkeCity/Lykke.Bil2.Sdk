@@ -1,5 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.RabbitMq.Publication;
+using Lykke.Blockchains.Integrations.RabbitMq.Subscription;
 
 namespace Lykke.Blockchains.Integrations.RabbitMq
 {

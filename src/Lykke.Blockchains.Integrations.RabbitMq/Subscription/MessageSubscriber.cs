@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Lykke.Blockchains.Integrations.RabbitMq.Publication;
 using Lykke.Common.Log;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Lykke.Blockchains.Integrations.RabbitMq
+namespace Lykke.Blockchains.Integrations.RabbitMq.Subscription
 {
     internal class MessageSubscriber : IDisposable
     {

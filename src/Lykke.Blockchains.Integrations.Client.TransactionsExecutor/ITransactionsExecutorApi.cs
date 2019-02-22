@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Lykke.Blockchains.Integrations.Client.TransactionsExecutor.Exceptions;
+using Lykke.Blockchains.Integrations.Client.TransactionsExecutor.ExceptionsMappers;
 using Lykke.Blockchains.Integrations.Contract.Common;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests;
 using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses;

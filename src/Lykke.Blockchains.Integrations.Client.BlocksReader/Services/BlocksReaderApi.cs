@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Lykke.Blockchains.Integrations.Contract.BlocksReader.Commands;
-using Lykke.Blockchains.Integrations.RabbitMq;
+using Lykke.Blockchains.Integrations.RabbitMq.Publication;
 
 namespace Lykke.Blockchains.Integrations.Client.BlocksReader.Services
 {
