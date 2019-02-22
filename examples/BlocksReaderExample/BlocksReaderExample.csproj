@@ -17,9 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.RabbitMq\Lykke.Blockchains.Integrations.RabbitMq.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Sdk.BlocksReader\Lykke.Blockchains.Integrations.Sdk.BlocksReader.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Sdk\Lykke.Blockchains.Integrations.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.RabbitMq\Lykke.Bil2.RabbitMq.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Sdk.BlocksReader\Lykke.Bil2.Sdk.BlocksReader.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Sdk\Lykke.Bil2.Sdk.csproj" />
   </ItemGroup>
 
   <ItemGroup>

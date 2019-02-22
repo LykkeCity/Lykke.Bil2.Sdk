@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services;
+using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 
 namespace TransactionsExecutorExample.Services
 {

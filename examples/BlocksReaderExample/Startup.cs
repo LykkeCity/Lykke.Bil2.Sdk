@@ -2,7 +2,7 @@
 using BlocksReaderExample.Services;
 using BlocksReaderExample.Settings;
 using JetBrains.Annotations;
-using Lykke.Blockchains.Integrations.Sdk.BlocksReader;
+using Lykke.Bil2.Sdk.BlocksReader;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 

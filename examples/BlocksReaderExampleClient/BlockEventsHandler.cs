@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Client.BlocksReader.Services;
-using Lykke.Blockchains.Integrations.Contract.BlocksReader.Events;
+using Lykke.Bil2.Client.BlocksReader.Services;
+using Lykke.Bil2.Contract.BlocksReader.Events;
 
 namespace BlocksReaderExampleClient
 {

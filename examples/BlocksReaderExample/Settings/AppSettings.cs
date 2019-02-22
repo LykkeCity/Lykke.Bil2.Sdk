@@ -1,5 +1,5 @@
-﻿using Lykke.Blockchains.Integrations.Sdk.BlocksReader.Settings;
-using Lykke.Blockchains.Integrations.Sdk.Services;
+﻿using Lykke.Bil2.Sdk.BlocksReader.Settings;
+using Lykke.Bil2.Sdk.Services;
 
 namespace BlocksReaderExample.Settings
 {

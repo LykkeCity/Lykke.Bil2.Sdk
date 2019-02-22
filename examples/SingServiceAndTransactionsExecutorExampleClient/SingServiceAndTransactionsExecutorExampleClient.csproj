@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Client.SignService\Lykke.Blockchains.Integrations.Client.SignService.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Client.TransactionsExecutor\Lykke.Blockchains.Integrations.Client.TransactionsExecutor.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.WebClient\Lykke.Blockchains.Integrations.WebClient.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Client.SignService\Lykke.Bil2.Client.SignService.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Client.TransactionsExecutor\Lykke.Bil2.Client.TransactionsExecutor.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.WebClient\Lykke.Bil2.WebClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses;
-using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Models;
-using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services;
+using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
+using Lykke.Bil2.Sdk.TransactionsExecutor.Models;
+using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 
 namespace TransactionsExecutorExample.Services
 {

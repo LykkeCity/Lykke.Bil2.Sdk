@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Contract.Common;
-using Lykke.Blockchains.Integrations.Contract.SignService.Requests;
-using Lykke.Blockchains.Integrations.Contract.SignService.Responses;
-using Lykke.Blockchains.Integrations.Sdk.Exceptions;
-using Lykke.Blockchains.Integrations.Sdk.SignService.Models;
-using Lykke.Blockchains.Integrations.Sdk.SignService.Services;
+using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.SignService.Requests;
+using Lykke.Bil2.Contract.SignService.Responses;
+using Lykke.Bil2.Sdk.Exceptions;
+using Lykke.Bil2.Sdk.SignService.Models;
+using Lykke.Bil2.Sdk.SignService.Services;
 using SignServiceExample.Settings;
 
 namespace SignServiceExample.Services

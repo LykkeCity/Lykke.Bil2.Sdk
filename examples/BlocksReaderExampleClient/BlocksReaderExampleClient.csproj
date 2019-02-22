@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Client.BlocksReader\Lykke.Blockchains.Integrations.Client.BlocksReader.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Contract\Lykke.Blockchains.Integrations.Contract.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.RabbitMq\Lykke.Blockchains.Integrations.RabbitMq.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Client.BlocksReader\Lykke.Bil2.Client.BlocksReader.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Contract\Lykke.Bil2.Contract.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.RabbitMq\Lykke.Bil2.RabbitMq.csproj" />
   </ItemGroup>
 
   <ItemGroup>

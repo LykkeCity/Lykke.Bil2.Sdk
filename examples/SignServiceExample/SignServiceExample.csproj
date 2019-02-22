@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Sdk.SignService\Lykke.Blockchains.Integrations.Sdk.SignService.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Sdk\Lykke.Blockchains.Integrations.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Sdk.SignService\Lykke.Bil2.Sdk.SignService.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Sdk\Lykke.Bil2.Sdk.csproj" />
   </ItemGroup>
 
   <ItemGroup>

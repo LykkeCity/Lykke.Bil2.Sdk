@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Contract.Common;
-using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor;
-using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests;
-using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Responses;
-using Lykke.Blockchains.Integrations.Sdk.Exceptions;
-using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Exceptions;
-using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.Services;
+using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.TransactionsExecutor;
+using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
+using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
+using Lykke.Bil2.Sdk.Exceptions;
+using Lykke.Bil2.Sdk.TransactionsExecutor.Exceptions;
+using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 using Newtonsoft.Json;
 
 namespace TransactionsExecutorExample.Services

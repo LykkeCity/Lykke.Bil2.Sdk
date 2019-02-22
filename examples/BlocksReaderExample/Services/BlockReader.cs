@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Contract.BlocksReader.Events;
-using Lykke.Blockchains.Integrations.Contract.Common;
-using Lykke.Blockchains.Integrations.Sdk.BlocksReader.Services;
+using Lykke.Bil2.Contract.BlocksReader.Events;
+using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Sdk.BlocksReader.Services;
 
 namespace BlocksReaderExample.Services
 {
