@@ -1,4 +1,4 @@
-﻿using Lykke.Blockchains.Integrations.Sdk.BlocksReader.Settings;
+﻿using Lykke.Bil2.Sdk.BlocksReader.Settings;
 
 namespace BlocksReaderExample.Settings
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Client.BlocksReader;
-using Lykke.Blockchains.Integrations.Client.BlocksReader.Services;
-using Lykke.Blockchains.Integrations.Contract.BlocksReader.Commands;
+using Lykke.Bil2.Client.BlocksReader;
+using Lykke.Bil2.Client.BlocksReader.Services;
+using Lykke.Bil2.Contract.BlocksReader.Commands;
 using Lykke.Logs;
 using Lykke.Logs.Loggers.LykkeConsole;
 using Microsoft.Extensions.Configuration;

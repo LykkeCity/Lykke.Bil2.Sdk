@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor\Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Sdk\Lykke.Blockchains.Integrations.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Sdk.TransactionsExecutor\Lykke.Bil2.Sdk.TransactionsExecutor.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Sdk\Lykke.Bil2.Sdk.csproj" />
   </ItemGroup>
 
   <ItemGroup>

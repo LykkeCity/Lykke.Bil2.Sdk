@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Lykke.Blockchains.Integrations.Client.SignService;
-using Lykke.Blockchains.Integrations.Client.TransactionsExecutor;
-using Lykke.Blockchains.Integrations.Contract.Common;
-using Lykke.Blockchains.Integrations.Contract.SignService.Requests;
-using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor;
-using Lykke.Blockchains.Integrations.Contract.TransactionsExecutor.Requests;
+using Lykke.Bil2.Client.SignService;
+using Lykke.Bil2.Client.TransactionsExecutor;
+using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.SignService.Requests;
+using Lykke.Bil2.Contract.TransactionsExecutor;
+using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Common.Log;
 using Lykke.Logs;
 using Lykke.Logs.Loggers.LykkeConsole;

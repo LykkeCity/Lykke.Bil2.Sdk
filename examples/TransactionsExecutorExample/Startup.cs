@@ -1,6 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Lykke.Blockchains.Integrations.Sdk.TransactionsExecutor;
+using Lykke.Bil2.Sdk.TransactionsExecutor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using TransactionsExecutorExample.Services;
