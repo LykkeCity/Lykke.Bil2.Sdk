@@ -37,6 +37,9 @@ namespace Lykke.Bil2.Contract.Common.Responses
         [JsonConverter(typeof(VersionConverter))]
         public Version ContractVersion { get; }
 
+        /// <summary>
+        /// Endpoint: [GET] /api/isalive
+        /// </summary>
         public BlockchainIsAliveResponse(
             string name,
             Version version,

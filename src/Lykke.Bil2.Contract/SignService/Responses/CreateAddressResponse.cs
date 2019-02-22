@@ -31,6 +31,9 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         [JsonProperty("addressContext")]
         public Base58String AddressContext { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/addresses
+        /// </summary>
         public CreateAddressResponse(EncryptedString privateKey, Address address, Base58String addressContext = null)
         {
             if (string.IsNullOrWhiteSpace(address))

@@ -25,6 +25,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         [JsonProperty("afterBlockNumber")]
         public long? AfterBlockNumber { get; }
 
+        /// <summary>
+        /// Transaction expiration options.
+        /// </summary>
         public ExpirationOptions(DateTime? afterMoment = null, long? afterBlockNumber = null)
         {
             if (!afterMoment.HasValue && !afterBlockNumber.HasValue)

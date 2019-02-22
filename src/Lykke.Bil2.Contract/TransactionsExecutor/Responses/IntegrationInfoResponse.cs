@@ -23,6 +23,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         [JsonProperty("dependencies")]
         public IDictionary<string, DependencyInfo> Dependencies { get; }
 
+        /// <summary>
+        /// Endpoint: [GET] /api/integration-info
+        /// </summary>
         public IntegrationInfoResponse(
             BlockchainInfo blockchain,
             IDictionary<string, DependencyInfo> dependencies)

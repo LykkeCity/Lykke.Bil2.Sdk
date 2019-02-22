@@ -25,6 +25,9 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         [JsonProperty("tagContext")]
         public Base58String TagContext { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/addresses/{address}/tags
+        /// </summary>
         public CreateAddressTagResponse(AddressTag tag, Base58String tagContext = null)
         {
             if (string.IsNullOrWhiteSpace(tag))

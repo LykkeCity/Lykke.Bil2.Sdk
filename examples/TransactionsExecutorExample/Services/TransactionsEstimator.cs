@@ -12,19 +12,19 @@ namespace TransactionsExecutorExample.Services
     {
         public Task<EstimateSendingTransactionResponse> EstimateSendingAsync(EstimateSendingTransactionRequest request)
         {
-            if (request.Inputs.Count > 1)
+            if (request.Transfers.Count > 1)
             {
-                throw new RequestValidationException("Only single input is supported", request.Inputs.Count, nameof(request.Inputs.Count));
+                throw new RequestValidationException("Only single transfer is supported", request.Transfers.Count, nameof(request.Transfers.Count));
             }
 
-            var fee = request.Outputs.Count * 0.01M + request.Outputs.Sum(o => o.Amount.ToDecimal()) * 0.00001M;
+            var fee = request.Transfers.Single().Amount.ToDecimal() * 0.00001M;
 
             return Task.FromResult(new EstimateSendingTransactionResponse
             (
                 new Dictionary<AssetId, CoinsAmount>
                 {
                     {
-                        request.Inputs.Single().AssetId,
+                        request.Transfers.Single().AssetId,
                         CoinsAmount.FromDecimal(fee, accuracy: 6)
                     }
                 }

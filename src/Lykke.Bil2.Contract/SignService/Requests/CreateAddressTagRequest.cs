@@ -26,6 +26,9 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         [JsonProperty("type")]
         public AddressTagType? Type { get; set; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/addresses/{address}/tags
+        /// </summary>
         public CreateAddressTagRequest(Base58String addressContext = null, AddressTagType? type = null)
         {
             AddressContext = addressContext;
