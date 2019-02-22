@@ -51,9 +51,9 @@
   </ItemGroup>
  
   <ItemGroup>
-    <ProjectReference Include="..\Lykke.Bil2.Contract\Lykke.Bil2.Contract.csproj" />
-    <ProjectReference Include="..\Lykke.Bil2.RabbitMq\Lykke.Bil2.RabbitMq.csproj" />
-    <ProjectReference Include="..\Lykke.Bil2.WebClient\Lykke.Bil2.WebClient.csproj" />
+    <ProjectReference Include="..\Lykke.Bil2.Contract\Lykke.Bil2.Contract.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\Lykke.Bil2.RabbitMq\Lykke.Bil2.RabbitMq.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\Lykke.Bil2.WebClient\Lykke.Bil2.WebClient.csproj" PrivateAssets="All" />
   </ItemGroup>
   
   <!--

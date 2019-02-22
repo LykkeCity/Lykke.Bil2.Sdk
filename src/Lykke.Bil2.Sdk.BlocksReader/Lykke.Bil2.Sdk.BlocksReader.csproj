@@ -54,8 +54,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Lykke.Bil2.RabbitMq\Lykke.Bil2.RabbitMq.csproj" />
-    <ProjectReference Include="..\Lykke.Bil2.Sdk\Lykke.Bil2.Sdk.csproj" />
+    <ProjectReference Include="..\Lykke.Bil2.RabbitMq\Lykke.Bil2.RabbitMq.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\Lykke.Bil2.Sdk\Lykke.Bil2.Sdk.csproj" PrivateAssets="All" />
   </ItemGroup>
   
   <!--
