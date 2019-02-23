@@ -23,6 +23,9 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         [JsonProperty("transactionHash")]
         public string TransactionHash { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/transactions/signed
+        /// </summary>
         public SignTransactionResponse(Base58String signedTransaction, string transactionHash)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction?.ToString()))

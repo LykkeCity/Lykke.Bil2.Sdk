@@ -17,6 +17,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         [JsonProperty("raw")]
         public Base58String Raw { get; }
 
+        /// <summary>
+        /// Endpoint: [GET] /api/transactions/{transactionHash}/raw
+        /// </summary>
         public RawTransactionResponse(Base58String raw)
         {
             if (string.IsNullOrWhiteSpace(raw?.ToString()))

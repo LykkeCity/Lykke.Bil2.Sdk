@@ -29,9 +29,9 @@ namespace TransactionsExecutorExample.Services
                 throw new SendingTransactionBuildingException(SendingTransactionBuildingError.RetryLater, "Node is too busy");
             }
 
-            if (request.Inputs.Count > 1)
+            if (request.Transfers.Count > 1)
             {
-                throw new RequestValidationException("Only single input is supported", request.Inputs.Count, nameof(request.Inputs.Count));
+                throw new RequestValidationException("Only single input is supported", request.Transfers.Count, nameof(request.Transfers.Count));
             }
 
             var context = JsonConvert.SerializeObject(request).ToBase58();

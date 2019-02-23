@@ -21,6 +21,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         [JsonProperty("disease")]
         public string Disease { get; }
 
+        /// <inheritdoc />
         public TransactionsExecutorIsAliveResponse(
             string name, 
             Version version, 

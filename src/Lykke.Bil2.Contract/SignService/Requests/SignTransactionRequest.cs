@@ -25,6 +25,9 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         [JsonProperty("transactionContext")]
         public Base58String TransactionContext { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/transactions/signed
+        /// </summary>
         public SignTransactionRequest(ICollection<EncryptedString> privateKeys, Base58String transactionContext)
         {
             if (privateKeys == null || !privateKeys.Any() || privateKeys.Any(x => x == null))

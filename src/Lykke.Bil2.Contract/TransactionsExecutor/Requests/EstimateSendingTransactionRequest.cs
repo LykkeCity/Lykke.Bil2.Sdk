@@ -10,16 +10,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
     public class EstimateSendingTransactionRequest
     {
         /// <summary>
-        /// Transaction inputs.
+        /// Transaction transfers.
         /// </summary>
-        [JsonProperty("inputs")]
-        public ICollection<Input> Inputs { get; }
-
-        /// <summary>
-        /// Transaction outputs.
-        /// </summary>
-        [JsonProperty("outputs")]
-        public ICollection<Output> Outputs { get; }
+        [JsonProperty("transfers")]
+        public ICollection<Transfer> Transfers { get; }
 
         /// <summary>
         /// Fee options.
@@ -27,15 +21,16 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         [JsonProperty("fee")]
         public FeeOptions Fee { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/transactions/sending/estimated
+        /// </summary>
         public EstimateSendingTransactionRequest(
-            ICollection<Input> inputs,
-            ICollection<Output> outputs,
+            ICollection<Transfer> transfers,
             FeeOptions fee)
         {
-            SendingTransactionInputsOutputsValidator.Validate(inputs, outputs);
+            SendingTransactionTransfersValidator.Validate(transfers);
 
-            Inputs = inputs;
-            Outputs = outputs;
+            Transfers = transfers;
             Fee = fee ?? throw RequestValidationException.ShouldBeNotNull(nameof(fee));
         }
     }

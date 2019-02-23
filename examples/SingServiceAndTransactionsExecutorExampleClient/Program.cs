@@ -138,20 +138,12 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                 (
                     new[]
                     {
-                        new Input
-                        (
+                        new Transfer
+                        ( 
                             "STEEM",
+                            CoinsAmount.FromDecimal(100, 3),
                             "Test:c021d892538b4a7a8520ae46f368c00f",
-                            CoinsAmount.FromDecimal(100, 3)
-                        )
-                    },
-                    new[]
-                    {
-                        new Output
-                        (
-                            "STEEM",
-                            "Test:0662c0c7b9954373a5803fab41d97774",
-                            CoinsAmount.FromDecimal(100, 3)
+                            "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
                     new FeeOptions(FeeType.AddToAmount)
@@ -169,20 +161,19 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                 (
                     new[]
                     {
-                        new Input
-                        (
+                        new Transfer
+                        ( 
                             "STEEM",
+                            CoinsAmount.FromDecimal(100, 3),
                             "Test:c021d892538b4a7a8520ae46f368c00f",
-                            CoinsAmount.FromDecimal(10, 3)
-                        )
-                    },
-                    new[]
-                    {
-                        new Output
-                        (
+                            "Test:0662c0c7b9954373a5803fab41d97774"
+                        ),
+                        new Transfer
+                        ( 
                             "STEEM",
-                            "Test:0662c0c7b9954373a5803fab41d97774",
-                            CoinsAmount.FromDecimal(100, 3)
+                            CoinsAmount.FromDecimal(50, 3),
+                            "Test:c021d892538b4a7a8520ae46f368c00f",
+                            "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
                     new FeeOptions(FeeType.AddToAmount)

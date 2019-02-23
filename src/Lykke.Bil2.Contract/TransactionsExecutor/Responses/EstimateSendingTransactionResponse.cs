@@ -16,6 +16,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         [JsonProperty("assetEstimatedFee")]
         public IDictionary<AssetId, CoinsAmount> AssetEstimatedFee { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/transactions/sending/estimated
+        /// </summary>
         public EstimateSendingTransactionResponse(IDictionary<AssetId, CoinsAmount> assetEstimatedFee)
         {
             AssetEstimatedFee = assetEstimatedFee ?? throw new ArgumentNullException(nameof(assetEstimatedFee));

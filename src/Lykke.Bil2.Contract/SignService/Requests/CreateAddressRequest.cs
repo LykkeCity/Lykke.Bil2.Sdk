@@ -19,6 +19,9 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         [JsonProperty("encryptionPublicKey")]
         public Base58String EncryptionPublicKey { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/addresses
+        /// </summary>
         public CreateAddressRequest(Base58String encryptionPublicKey)
         {
             if (string.IsNullOrWhiteSpace(encryptionPublicKey?.ToString()))

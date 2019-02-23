@@ -15,6 +15,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         [JsonProperty("result")]
         public AddressValidationResult Result { get; }
 
+        /// <summary>
+        /// Endpoint: [GET] /api/addresses/{address}/validity?[tag=string]
+        /// </summary>
         public AddressValidityResponse(AddressValidationResult result)
         {
             Result = result;

@@ -17,6 +17,7 @@ namespace Lykke.Bil2.Contract.Common.Responses
         [JsonProperty("code")]
         public TErrorCode Code { get; }
 
+        /// <inheritdoc />
         public BlockchainErrorResponse(TErrorCode code, string message) :
             base(message)
         {
@@ -36,6 +37,9 @@ namespace Lykke.Bil2.Contract.Common.Responses
         [JsonProperty("message")]
         public string Message { get; }
 
+        /// <summary>
+        /// General API error response
+        /// </summary>
         public BlockchainErrorResponse(string message)
         {
             Message = message;

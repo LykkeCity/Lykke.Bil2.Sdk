@@ -33,6 +33,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         [JsonProperty("multiplier")]
         public decimal? Multiplier { get; }
 
+        /// <summary>
+        /// Transaction fee options for particular asset
+        /// </summary>
         public AssetFeeOptions(CoinsAmount limit, CoinsAmount exact, decimal? multiplier)
         {
             if (limit == null && exact == null && !multiplier.HasValue)
@@ -42,7 +45,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
                 throw new RequestValidationException($"Only one of limit or exact values can be specified. Limit: {limit}, exact: {exact}", new [] {nameof(limit), nameof(exact)});
 
             if (multiplier.HasValue && exact != null)
-                throw new RequestValidationException($"Only one of multipler or exact values can be specified. Multiplier: {multiplier}, exact: {exact}", new [] {nameof(multiplier), nameof(exact)});
+                throw new RequestValidationException($"Only one of multiplier or exact values can be specified. Multiplier: {multiplier}, exact: {exact}", new [] {nameof(multiplier), nameof(exact)});
 
             if (limit <= 0)
                 throw RequestValidationException.ShouldBePositiveNumber(limit, nameof(limit));

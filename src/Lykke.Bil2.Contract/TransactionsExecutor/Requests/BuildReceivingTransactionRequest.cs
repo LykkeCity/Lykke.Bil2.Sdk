@@ -20,6 +20,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         [JsonProperty("receivingAddress")]
         public Address ReceivingAddress { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/transactions/receiving/built
+        /// </summary>
         public BuildReceivingTransactionRequest(string sendingTransactionHash, Address receivingAddress)
         {
             if (string.IsNullOrWhiteSpace(sendingTransactionHash))

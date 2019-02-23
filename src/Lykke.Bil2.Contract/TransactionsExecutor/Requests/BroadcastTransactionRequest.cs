@@ -14,6 +14,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         [JsonProperty("signedTransaction")]
         public Base58String SignedTransaction { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/transactions/broadcasted
+        /// </summary>
         public BroadcastTransactionRequest(Base58String signedTransaction)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction?.ToString()))

@@ -17,6 +17,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         [JsonProperty("transactionContext")]
         public Base58String TransactionContext { get; }
 
+        /// <summary>
+        /// Endpoint: [POST] /api/transactions/receiving/built
+        /// </summary>
         public BuildReceivingTransactionResponse(Base58String transactionContext)
         {
             if (string.IsNullOrWhiteSpace(transactionContext?.ToString()))
