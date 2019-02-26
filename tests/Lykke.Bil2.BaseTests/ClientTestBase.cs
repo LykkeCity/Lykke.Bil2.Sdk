@@ -11,7 +11,7 @@ namespace Lykke.Bil2.BaseTests
 
         public TestServer CreateTestServer<TStartup>() where TStartup : class
         {
-            LykkeWebHostFactory factory = new LykkeWebHostFactory();
+            WebHostFactory factory = new WebHostFactory();
             var webHostBuilder = factory.CreateWebHostBuilder<TStartup>(options =>
             {
                 options.Port = 5000;
