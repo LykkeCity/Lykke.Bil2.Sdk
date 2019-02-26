@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Base.Tests.Extensions
+namespace Lykke.Bil2.BaseTests.Extensions
 {
     internal static class HttpRequestMessageTestExtension
     {

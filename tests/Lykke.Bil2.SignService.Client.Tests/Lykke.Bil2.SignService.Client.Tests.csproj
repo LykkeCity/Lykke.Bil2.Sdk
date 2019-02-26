@@ -15,15 +15,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lykke.Sdk" Version="5.11.0-beta.1" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="1.1.0" />
+    <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.12.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lykke.Blockchains.Integrations.Contract\Lykke.Blockchains.Integrations.Contract.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Client.SignService\Lykke.Bil2.Client.SignService.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Contract\Lykke.Bil2.Contract.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Sdk.SignService\Lykke.Bil2.Sdk.SignService.csproj" />
+    <ProjectReference Include="..\Base.Tests\Lykke.Bil2.BaseTests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.tests.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

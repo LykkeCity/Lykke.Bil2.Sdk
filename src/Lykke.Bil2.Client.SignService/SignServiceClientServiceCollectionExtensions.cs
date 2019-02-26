@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using JetBrains.Annotations;
 using Lykke.Bil2.WebClient;
 using Lykke.Common.Log;
@@ -13,7 +14,7 @@ namespace Lykke.Bil2.Client.SignService
         /// <summary>
         /// Adds the client of the blockchain integration sign service to the app services as <see cref="ISignServiceApi"/>
         /// </summary>
-        public static IServiceCollection AddSignServiceClient(this IServiceCollection services, string url)
+        public static IServiceCollection AddSignServiceClient(this IServiceCollection services, string url, params DelegatingHandler[] handlers)
         {
             if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _))
             {
@@ -27,7 +28,12 @@ namespace Lykke.Bil2.Client.SignService
 
             services.AddSingleton(s =>
             {
-                var generator = HttpClientGeneratorFactory.Create(url, s.GetRequiredService<ILogFactory>());
+                var generator = HttpClientGeneratorFactory.Create(options =>
+                {
+                    options.Url = url;
+                    options.LogFactory = s.GetRequiredService<ILogFactory>();
+                    options.Handlers = handlers;
+                });
 
                 return generator.Generate<ISignServiceApi>();
             });

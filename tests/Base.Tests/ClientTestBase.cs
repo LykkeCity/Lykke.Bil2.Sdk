@@ -1,9 +1,9 @@
 ﻿using Lykke.Sdk;
 using Microsoft.AspNetCore.TestHost;
 
-namespace Base.Tests
+namespace Lykke.Bil2.BaseTests
 {
-    public class ClientTestBase
+    public abstract class ClientTestBase
     {
         public ClientTestBase()
         {
