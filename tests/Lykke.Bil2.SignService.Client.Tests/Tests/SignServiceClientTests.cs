@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Lykke.Bil2.Sdk.Exceptions;
+using Lykke.Bil2.WebClient.Exceptions;
 
 namespace Lykke.Bil2.SignService.Client.Tests.Tests
 {
@@ -144,6 +146,65 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
             Assert.True(result != null);
             Assert.True(result.TransactionHash == transactionHash);
             Assert.True(result.SignedTransaction.DecodeToString() == signedTransaction);
+        }
+
+        [Test]
+        public async Task Not_supported_private_key_creation()
+        {
+            //ARRANGE
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                Mock<IAddressGenerator> addressGenerator = new Mock<IAddressGenerator>();
+                Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
+
+                addressGenerator.Setup(x => x.CreateAddressAsync())
+                    .ThrowsAsync(new OperationNotSupportedException("Address creation is not supported"));
+
+                options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_create_private_key)}";
+                options.AddressGeneratorFactory = (context) => addressGenerator.Object;
+                options.TransactionSignerFactory = (context) => transactionSigner.Object;
+            });
+
+            //ACT && ASSERT
+            var base58EncryptionKey = MyPublicKey;
+            var request = new CreateAddressRequest(base58EncryptionKey);
+
+            Assert.ThrowsAsync<NotImplementedWebApiException>(async () =>
+            {
+                CreateAddressResponse result = await client.CreateAddressAsync(request);
+                var decryptedPk = result?.PrivateKey?.DecryptToString(MyPrivateKey);
+            });
+        }
+
+        [Test]
+        public async Task Not_Supported_address_tag_creation()
+        {
+            //ARRANGE
+            var address = Guid.NewGuid().ToString();
+            var tag = Guid.NewGuid().ToString();
+            var addressContext = "AddressContext";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                Mock<IAddressGenerator> addressGenerator = new Mock<IAddressGenerator>();
+                Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
+
+                addressGenerator.Setup(x => x.CreateAddressTagAsync(It.IsAny<string>(), It.IsAny<CreateAddressTagRequest>()))
+                    .ThrowsAsync(new OperationNotSupportedException("Tag creation operation is not supported."));
+
+                options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_create_address_tag)}";
+                options.AddressGeneratorFactory = (context) => addressGenerator.Object;
+                options.TransactionSignerFactory = (context) => transactionSigner.Object;
+            });
+
+            //ACT && ASSERT
+
+            Assert.ThrowsAsync<NotImplementedWebApiException>(async () =>
+            {
+                var request = new CreateAddressTagRequest(Base58String.Encode(addressContext), AddressTagType.Text);
+                CreateAddressTagResponse result = await client.CreateAddressTagAsync(address, request);
+            });
+            
         }
 
         private void PrepareSettings()
