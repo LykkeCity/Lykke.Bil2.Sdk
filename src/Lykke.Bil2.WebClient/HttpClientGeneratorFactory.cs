@@ -1,5 +1,5 @@
-﻿using JetBrains.Annotations;
-using Lykke.Common.Log;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace Lykke.Bil2.WebClient
 {
@@ -12,16 +12,27 @@ namespace Lykke.Bil2.WebClient
         /// <summary>
         /// Creates blockchain integration HTTP client generator
         /// </summary>
-        public static HttpClientGenerator.HttpClientGenerator Create(string url, ILogFactory logFactory)
+        public static HttpClientGenerator.HttpClientGenerator Create(Action<HttpClientGeneratorOptions> optionConfiguration)
         {
-            // TODO: Request timeout
+            if (optionConfiguration == null)
+                throw new ArgumentNullException(nameof(optionConfiguration));
 
-            return HttpClientGenerator.HttpClientGenerator.BuildForUrl(url)
+            // TODO: Request timeout
+            var options = new HttpClientGeneratorOptions();
+            optionConfiguration(options);
+
+            var clientBuilder = HttpClientGenerator.HttpClientGenerator.BuildForUrl(options.Url)
                 .WithoutRetries()
                 .WithoutCaching()
                 .WithAdditionalCallsWrapper(new MapExceptionCallWrapper())
-                .WithAdditionalDelegatingHandler(new LogHttpRequestErrorHandler(logFactory))
-                .Create();
+                .WithAdditionalDelegatingHandler(new LogHttpRequestErrorHandler(options.LogFactory));
+
+            foreach (var handler in options?.Handlers)
+            {
+                clientBuilder.WithAdditionalDelegatingHandler(handler);
+            }
+
+            return clientBuilder.Create();
         }
     }
 }

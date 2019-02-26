@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using JetBrains.Annotations;
 using Lykke.Bil2.Client.BlocksReader.Services;
 using Lykke.Bil2.Contract.Common.Extensions;
@@ -80,7 +81,7 @@ namespace Lykke.Bil2.Client.BlocksReader
         /// <summary>
         /// Adds the HTTP client of the blockchain integration blocks reader to the app services as <see cref="IBlocksReaderHttpApi"/>
         /// </summary>
-        public static IServiceCollection AddBlocksReaderHttpClient(this IServiceCollection services, string url)
+        public static IServiceCollection AddBlocksReaderHttpClient(this IServiceCollection services, string url, params DelegatingHandler[] handlers)
         {
             if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _))
             {
@@ -94,7 +95,12 @@ namespace Lykke.Bil2.Client.BlocksReader
 
             services.AddSingleton(s =>
             {
-                var generator = HttpClientGeneratorFactory.Create(url, s.GetRequiredService<ILogFactory>());
+                var generator = HttpClientGeneratorFactory.Create(options =>
+                {
+                    options.Url = url;
+                    options.Handlers = handlers;
+                    options.LogFactory = s.GetRequiredService<ILogFactory>();
+                });
 
                 return generator.Generate<IBlocksReaderHttpApi>();
             });

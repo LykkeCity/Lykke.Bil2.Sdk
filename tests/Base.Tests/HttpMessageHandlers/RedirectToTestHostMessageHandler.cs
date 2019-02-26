@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Base.Tests.Extensions;
+using Lykke.Bil2.BaseTests.Extensions;
 
-namespace Base.Tests.HttpMessageHandlers
+namespace Lykke.Bil2.BaseTests.HttpMessageHandlers
 {
-    public class RedirectToTestHostMessageHandler : HttpMessageHandler
+    public class RedirectToTestHostMessageHandler : DelegatingHandler
     {
         private readonly HttpClient _memoryPipelineClient;
 
