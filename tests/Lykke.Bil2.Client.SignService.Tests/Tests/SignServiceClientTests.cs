@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Lykke.Bil2.Contract.Common.Responses;
 using Lykke.Bil2.Sdk.Exceptions;
 using Lykke.Bil2.WebClient.Exceptions;
 
@@ -149,6 +150,27 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
         }
 
         [Test]
+        public async Task Get_is_alive()
+        {
+            //ARRANGE
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                Mock<IAddressGenerator> addressGenerator = new Mock<IAddressGenerator>();
+                Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
+
+                options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_sign_transaction)}";
+                options.AddressGeneratorFactory = (context) => addressGenerator.Object;
+                options.TransactionSignerFactory = (context) => transactionSigner.Object;
+            });
+
+            //ACT
+            BlockchainIsAliveResponse result = await client.GetIsAliveAsync();
+
+            //ASSERT
+            Assert.True(result != null);
+        }
+
+        [Test]
         public async Task Not_supported_private_key_creation()
         {
             //ARRANGE
@@ -181,7 +203,6 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
         {
             //ARRANGE
             var address = Guid.NewGuid().ToString();
-            var tag = Guid.NewGuid().ToString();
             var addressContext = "AddressContext";
 
             var client = PrepareClient<AppSettings>((options) =>
@@ -239,24 +260,6 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
             var client = base.CreateClientApi<StartupTemplate>("http://localhost:5000");
 
             return client;
-        }
-
-        private (Base58String publicKey, Base58String privateKey) GetKeyPair()
-        {
-            using (var rsa = new RSACryptoServiceProvider(1024))
-            {
-                try
-                {
-                    var withPrivate = rsa.ExportParameters(true);
-                    var publicOnly = rsa.ExportParameters(false);
-                }
-                finally
-                {
-                    rsa.PersistKeyInCsp = false;
-                }
-            }
-
-            return (null, null);
         }
     }
 }
