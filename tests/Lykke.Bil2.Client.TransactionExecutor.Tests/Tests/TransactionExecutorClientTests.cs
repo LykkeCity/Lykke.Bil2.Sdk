@@ -14,8 +14,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Lykke.Bil2.Client.TransactionsExecutor.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
+using Lykke.Bil2.Sdk.TransactionsExecutor.Exceptions;
+using Lykke.Bil2.WebClient.Exceptions;
 
 namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 {
@@ -208,6 +211,191 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             Assert.True(result.TransactionContext.DecodeToString() == transactionResponse);
         }
 
+        [Test]
+        public async Task Bad_request_while_building_sending_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
+                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
+                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
+                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
+                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionExecutor.Setup(x => x.BuildSendingAsync(It.IsAny<BuildSendingTransactionRequest>()))
+                    .ThrowsAsync(new RequestValidationException("NOT VALID"));
+
+                options.AddressValidatorFactory = c => addressValidator.Object;
+                options.HealthProviderFactory = c => healthProvider.Object;
+                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
+                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
+                options.TransactionExecutorFactory = c => transactionExecutor.Object;
+                options.DisableLogging = true;
+            });
+
+            //ACT && ASSERT
+
+            Assert.ThrowsAsync<SendingTransactionBuildingWebApiException>(async () =>
+            {
+                var transfers = new Transfer[]
+                {
+                    new Transfer(
+                        new AssetId("asset"),
+                        CoinsAmount.FromDecimal(1000000000, 4),
+                        new Address("x1"),
+                        new Address("x2")),
+                };
+                var request = new BuildSendingTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
+                var result = await client.BuildSendingTransactionAsync(request);
+            });
+        }
+
+        [Test]
+        public async Task Node_issues_while_building_sending_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
+                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
+                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
+                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
+                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionExecutor.Setup(x => x.BuildSendingAsync(It.IsAny<BuildSendingTransactionRequest>()))
+                    .ThrowsAsync(
+                        new SendingTransactionBuildingException(
+                            SendingTransactionBuildingError.RetryLater,
+                            "Node is too busy"));
+
+                options.AddressValidatorFactory = c => addressValidator.Object;
+                options.HealthProviderFactory = c => healthProvider.Object;
+                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
+                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
+                options.TransactionExecutorFactory = c => transactionExecutor.Object;
+                options.DisableLogging = true;
+            });
+
+            //ACT && ASSERT
+
+            Assert.ThrowsAsync<SendingTransactionBuildingWebApiException>(async () =>
+            {
+                var transfers = new Transfer[]
+                {
+                    new Transfer(
+                        new AssetId("asset"),
+                        CoinsAmount.FromDecimal(1000000000, 4),
+                        new Address("x1"),
+                        new Address("x2")),
+                };
+                var request = new BuildSendingTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
+                var result = await client.BuildSendingTransactionAsync(request);
+            });
+        }
+
+        [Test]
+        public async Task Estimate_sending_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+            var dict = new Dictionary<AssetId, CoinsAmount>()
+            {
+                { new AssetId("asset"), CoinsAmount.FromDecimal(1000, 4) }
+            };
+
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
+                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
+                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
+                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
+                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionEstimator.Setup(x => x.EstimateSendingAsync(It.IsAny<EstimateSendingTransactionRequest>()))
+                    .ReturnsAsync(new EstimateSendingTransactionResponse(dict));
+
+                options.AddressValidatorFactory = c => addressValidator.Object;
+                options.HealthProviderFactory = c => healthProvider.Object;
+                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
+                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
+                options.TransactionExecutorFactory = c => transactionExecutor.Object;
+                options.DisableLogging = true;
+            });
+
+            //ACT
+            var transfers = new Transfer[]
+            {
+                new Transfer(
+                    new AssetId("asset"),
+                    CoinsAmount.FromDecimal(1000000000, 4),
+                    new Address("x1"),
+                    new Address("x2")),
+            };
+            var request = new EstimateSendingTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
+            var result = await client.EstimateSendingTransactionAsync(request);
+
+            //ASSERT
+            var estimation = result.AssetEstimatedFee.First();
+            Assert.True(result != null);
+            Assert.True(estimation.Key == "asset");
+            Assert.True(estimation.Value.ToDecimal() == CoinsAmount.FromDecimal(1000, 4).ToDecimal());
+        }
+
+        [Test]
+        public async Task Bad_request_while_estimating_sending_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
+                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
+                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
+                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
+                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionEstimator.Setup(x => x.EstimateSendingAsync(It.IsAny<EstimateSendingTransactionRequest>()))
+                    .ThrowsAsync(new RequestValidationException("Not VALID"));
+
+                options.AddressValidatorFactory = c => addressValidator.Object;
+                options.HealthProviderFactory = c => healthProvider.Object;
+                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
+                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
+                options.TransactionExecutorFactory = c => transactionExecutor.Object;
+                options.DisableLogging = true;
+            });
+
+            //ACT && ASSERT
+            Assert.ThrowsAsync<BadRequestWebApiException>(async () =>
+            {
+                var transfers = new Transfer[]
+                {
+                    new Transfer(
+                        new AssetId("asset"),
+                        CoinsAmount.FromDecimal(1000000000, 4),
+                        new Address("x1"),
+                        new Address("x2")),
+                };
+                var request = new EstimateSendingTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
+                var result = await client.EstimateSendingTransactionAsync(request);
+            });
+        }
+
         private void PrepareSettings()
         {
             Environment.SetEnvironmentVariable("DisableAutoRegistrationInMonitoring", "true");
@@ -226,10 +414,6 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 NodePassword = "password",
                 MonitoringServiceClient = new MonitoringServiceClientSettings()
                 { MonitoringServiceUrl = "http://localhost:5431" },
-                //SlackNotifications = new SlackNotificationsSettings()
-                //{
-                //    AzureQueue = "empty"
-                //}
             };
 
             string serializedSettings = Newtonsoft.Json.JsonConvert.SerializeObject(prepareSettings);
