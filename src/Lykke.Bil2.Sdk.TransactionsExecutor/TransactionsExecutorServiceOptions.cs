@@ -67,5 +67,12 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
         {
             AddressFormatsProviderFactory = c => new NotSupportedAddressFormatsProvider();
         }
+
+        /// <summary>
+        /// Not Required.
+        /// Used to disable logging in test scenarios
+        /// </summary>
+        public bool DisableLogging { get; set; } = false;
+
     }
 }

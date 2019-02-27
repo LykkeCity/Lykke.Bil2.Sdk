@@ -46,6 +46,11 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
                     options.UseSettings?.Invoke(settings);
                 };
 
+                if (options.DisableLogging)
+                {
+                    integrationOptions.DisableLogging();
+                }
+
                 integrationOptions.LogsAzureTableName = $"{options.IntegrationName}TransactionsExecutorLogs";
                 integrationOptions.LogsAzureTableConnectionStringResolver = settings => settings.Db.LogsConnString;
 
