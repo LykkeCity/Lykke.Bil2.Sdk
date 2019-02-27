@@ -34,7 +34,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Balance changing operations.
         /// </summary>
         [JsonProperty("balanceChanges")]
-        public ICollection<BalanceChange> BalanceChanges { get; }
+        public IReadOnlyCollection<BalanceChange> BalanceChanges { get; }
 
         /// <summary>
         /// Optional.
@@ -42,7 +42,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </summary>
         [CanBeNull]
         [JsonProperty("cancelledBalanceChanges")]
-        public ICollection<BalanceChangeId> CancelledBalanceChanges { get; }
+        public IReadOnlyCollection<BalanceChangeId> CancelledBalanceChanges { get; }
 
         /// <summary>
         /// Optional.
@@ -51,7 +51,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </summary>
         [CanBeNull]
         [JsonProperty("fee")]
-        public IDictionary<AssetId, CoinsAmount> Fee { get; }
+        public IReadOnlyDictionary<AssetId, CoinsAmount> Fee { get; }
 
         /// <summary>
         /// Optional.
@@ -69,13 +69,16 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         [JsonProperty("transactionType")]
         public TransactionType? TransactionType { get; }
 
+        /// <summary>
+        /// Should be published for each executed transaction in the block being read.
+        /// </summary>
         public TransactionExecutedEvent(
             string blockHash,
             int transactionNumber,
             string transactionHash,
-            ICollection<BalanceChange> balanceChanges,
-            ICollection<BalanceChangeId> cancelledBalanceChanges = null,
-            IDictionary<AssetId, CoinsAmount> fee = null,
+            IReadOnlyCollection<BalanceChange> balanceChanges,
+            IReadOnlyCollection<BalanceChangeId> cancelledBalanceChanges = null,
+            IReadOnlyDictionary<AssetId, CoinsAmount> fee = null,
             bool? isIrreversible = null,
             TransactionType? transactionType = null)
         {

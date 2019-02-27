@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Exceptions;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 {
     internal static class SendingTransactionTransfersValidator
     {
-        public static void Validate(ICollection<Transfer> transfers)
+        public static void Validate(IReadOnlyCollection<Transfer> transfers)
         {
             if(transfers == null || !transfers.Any())
                 throw RequestValidationException.ShouldBeNotEmptyCollection(nameof(transfers));

@@ -19,11 +19,11 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Models
         /// <summary>
         /// Info concerning services on which integration is dependent. This should include node and all intermediate APIs.
         /// </summary>
-        public IDictionary<string, DependencyInfo> Dependencies { get; }
+        public IReadOnlyDictionary<string, DependencyInfo> Dependencies { get; }
 
         public IntegrationInfo(
             BlockchainInfo blockchain,
-            IDictionary<string, DependencyInfo> dependencies)
+            IReadOnlyDictionary<string, DependencyInfo> dependencies)
         {
             Blockchain = blockchain ?? throw new ArgumentNullException(nameof(blockchain));
             Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));

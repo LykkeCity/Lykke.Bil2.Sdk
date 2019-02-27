@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Exceptions;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
@@ -15,7 +15,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// Transaction transfers.
         /// </summary>
         [JsonProperty("transfers")]
-        public ICollection<Transfer> Transfers { get; }
+        public IReadOnlyCollection<Transfer> Transfers { get; }
 
         /// <summary>
         /// Fee options.
@@ -41,7 +41,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// Endpoint: [POST] /api/transactions/sending/built
         /// </summary>
         public BuildSendingTransactionRequest(
-            ICollection<Transfer> transfers, 
+            IReadOnlyCollection<Transfer> transfers, 
             FeeOptions fee, 
             ExpirationOptions expiration = null)
         {

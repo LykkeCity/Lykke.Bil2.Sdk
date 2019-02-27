@@ -23,12 +23,12 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("assetOptions")]
-        public IDictionary<AssetId, AssetFeeOptions> AssetOptions { get; }
+        public IReadOnlyDictionary<AssetId, AssetFeeOptions> AssetOptions { get; }
 
         /// <summary>
         /// Transaction fee options
         /// </summary>
-        public FeeOptions(FeeType type, IDictionary<AssetId, AssetFeeOptions> assetOptions = null)
+        public FeeOptions(FeeType type, IReadOnlyDictionary<AssetId, AssetFeeOptions> assetOptions = null)
         {
             Type = type;
             AssetOptions = assetOptions;
