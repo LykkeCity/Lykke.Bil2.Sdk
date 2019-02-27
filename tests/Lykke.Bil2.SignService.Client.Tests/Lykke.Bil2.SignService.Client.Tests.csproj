@@ -25,6 +25,8 @@
     <ProjectReference Include="..\..\src\Lykke.Bil2.Client.SignService\Lykke.Bil2.Client.SignService.csproj" />
     <ProjectReference Include="..\..\src\Lykke.Bil2.Contract\Lykke.Bil2.Contract.csproj" />
     <ProjectReference Include="..\..\src\Lykke.Bil2.Sdk.SignService\Lykke.Bil2.Sdk.SignService.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.Sdk\Lykke.Bil2.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Bil2.WebClient\Lykke.Bil2.WebClient.csproj" />
     <ProjectReference Include="..\Lykke.Bil2.BaseTests\Lykke.Bil2.BaseTests.csproj" />
   </ItemGroup>
 
