@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Common.Log;
 using Lykke.Bil2.Contract.BlocksReader.Events;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.RabbitMq;
 using Lykke.Bil2.RabbitMq.Subscription;
 using Lykke.Common.Log;

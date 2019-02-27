@@ -2,6 +2,8 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
+using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Bil2.Contract.Common.JsonConverters;
 using Multiformats.Base;
 using Newtonsoft.Json;
 

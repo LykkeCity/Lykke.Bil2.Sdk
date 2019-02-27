@@ -4,7 +4,7 @@ using System.Reflection;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace Lykke.Bil2.Contract.Common
+namespace Lykke.Bil2.Contract.Common.JsonConverters
 {
     [PublicAPI]
     public class ImplicitToStringJsonConverter : JsonConverter

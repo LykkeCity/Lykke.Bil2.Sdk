@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;

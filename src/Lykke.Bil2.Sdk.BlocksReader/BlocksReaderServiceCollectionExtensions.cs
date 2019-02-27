@@ -1,6 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.RabbitMq;
 using Lykke.Bil2.Sdk.BlocksReader.Repositories;
 using Lykke.Bil2.Sdk.BlocksReader.Services;

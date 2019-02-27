@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.SignService.Requests;
 using Lykke.Bil2.Contract.SignService.Responses;
 using Lykke.Bil2.Sdk.Exceptions;

@@ -63,7 +63,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
 
         /// <summary>
         /// Optional.
-        /// Nonnce number of the transaction for the address.
+        /// Nonce number of the transaction for the address.
         /// </summary>
         [CanBeNull]
         [JsonProperty("nonce")]

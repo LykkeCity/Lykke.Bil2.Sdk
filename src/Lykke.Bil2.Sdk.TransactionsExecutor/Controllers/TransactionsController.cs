@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.Common.Responses;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
