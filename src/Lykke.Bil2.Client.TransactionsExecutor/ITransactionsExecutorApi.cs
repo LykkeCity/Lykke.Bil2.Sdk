@@ -45,6 +45,18 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/addresses/{address}/validity")]
         Task<AddressValidityResponse> GetAddressValidityAsync(string address, [Query] AddressTagType? tagType = null, [Query] string tag = null);
+        
+        /// <summary>
+        /// Optional.
+        /// Should return all formats of the given <paramref name="address"/>.
+        /// </summary>
+        /// <exception cref="BadRequestWebApiException">Invalid request parameters</exception>
+        /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
+        /// <exception cref="NotImplementedWebApiException">Method is not implemented by the blockchain integration</exception>
+        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="Exception">Any other error</exception>
+        [Get("/api/addresses/{address}/formats")]
+        Task<AddressFormatsResponse> GetAddressFormatsAsync(string address);
 
         /// <summary>
         /// Should build a not signed transaction. For the blockchains where “sending” and “receiving”

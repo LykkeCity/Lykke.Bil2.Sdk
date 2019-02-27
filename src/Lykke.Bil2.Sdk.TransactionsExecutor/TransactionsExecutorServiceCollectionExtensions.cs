@@ -88,6 +88,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
             services.AddTransient(s => options.IntegrationInfoServiceFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransactionEstimatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransactionExecutorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+            services.AddTransient(s => options.AddressFormatsProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
         }
 
         private static TransactionsExecutorServiceOptions<TAppSettings> GetOptions<TAppSettings>(
@@ -131,6 +132,12 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
             {
                 throw new InvalidOperationException(
                     $"{nameof(options)}.{nameof(options.TransactionExecutorFactory)} is required.");
+            }
+
+            if (options.AddressFormatsProviderFactory == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(options)}.{nameof(options.AddressFormatsProviderFactory)} is required.");
             }
 
             return options;
