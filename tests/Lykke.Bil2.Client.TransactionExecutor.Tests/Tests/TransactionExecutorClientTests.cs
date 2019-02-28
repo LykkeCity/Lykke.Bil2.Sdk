@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Lykke.Bil2.Client.TransactionsExecutor.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
+using Lykke.Bil2.Sdk.Exceptions;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Exceptions;
 using Lykke.Bil2.WebClient.Exceptions;
 
@@ -52,11 +53,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
-                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
-                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
-                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
-                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+                 CreateMocks(
+                    out var addressValidator, 
+                    out var healthProvider, 
+                    out var integrationInfoService, 
+                    out var transactionEstimator, 
+                    out var transactionExecutor);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_is_alive)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -92,23 +94,24 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
-                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
-                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
-                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
-                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_integration_info)}";
                 integrationInfoService.Setup(x => x.GetInfoAsync())
                     .ReturnsAsync(new IntegrationInfo(blockchainInfo, dependencies));
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
 
-                options.AddressValidatorFactory = c => addressValidator.Object;
-                options.HealthProviderFactory = c => healthProvider.Object;
-                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
-                options.TransactionExecutorFactory = c => transactionExecutor.Object;
-                options.DisableLogging = true;
+                ConfigureFactories(options,
+                    addressValidator, 
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
             });
 
             //ACT
@@ -137,23 +140,24 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
-                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
-                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
-                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
-                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
                 addressValidator.Setup(x => x.ValidateAsync(address, tagType, tag))
                     .ReturnsAsync(new AddressValidityResponse(validationResult));
 
-                options.AddressValidatorFactory = c => addressValidator.Object;
-                options.HealthProviderFactory = c => healthProvider.Object;
-                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
-                options.TransactionExecutorFactory = c => transactionExecutor.Object;
-                options.DisableLogging = true;
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
             });
 
             //ACT
@@ -174,23 +178,24 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
-                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
-                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
-                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
-                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_sending_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
                 transactionExecutor.Setup(x => x.BuildSendingAsync(It.IsAny<BuildSendingTransactionRequest>()))
                     .ReturnsAsync(new BuildSendingTransactionResponse(Base58String.Encode(transactionResponse)));
 
-                options.AddressValidatorFactory = c => addressValidator.Object;
-                options.HealthProviderFactory = c => healthProvider.Object;
-                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
-                options.TransactionExecutorFactory = c => transactionExecutor.Object;
-                options.DisableLogging = true;
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
             });
 
             //ACT
@@ -219,23 +224,24 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
-                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
-                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
-                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
-                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_building_sending_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
                 transactionExecutor.Setup(x => x.BuildSendingAsync(It.IsAny<BuildSendingTransactionRequest>()))
                     .ThrowsAsync(new RequestValidationException("NOT VALID"));
 
-                options.AddressValidatorFactory = c => addressValidator.Object;
-                options.HealthProviderFactory = c => healthProvider.Object;
-                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
-                options.TransactionExecutorFactory = c => transactionExecutor.Object;
-                options.DisableLogging = true;
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
             });
 
             //ACT && ASSERT
@@ -263,13 +269,14 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
-                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
-                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
-                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
-                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Node_issues_while_building_sending_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
                 transactionExecutor.Setup(x => x.BuildSendingAsync(It.IsAny<BuildSendingTransactionRequest>()))
                     .ThrowsAsync(
@@ -277,12 +284,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                             SendingTransactionBuildingError.RetryLater,
                             "Node is too busy"));
 
-                options.AddressValidatorFactory = c => addressValidator.Object;
-                options.HealthProviderFactory = c => healthProvider.Object;
-                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
-                options.TransactionExecutorFactory = c => transactionExecutor.Object;
-                options.DisableLogging = true;
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
             });
 
             //ACT && ASSERT
@@ -315,23 +322,24 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
-                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
-                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
-                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
-                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Estimate_sending_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
                 transactionEstimator.Setup(x => x.EstimateSendingAsync(It.IsAny<EstimateSendingTransactionRequest>()))
                     .ReturnsAsync(new EstimateSendingTransactionResponse(dict));
 
-                options.AddressValidatorFactory = c => addressValidator.Object;
-                options.HealthProviderFactory = c => healthProvider.Object;
-                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
-                options.TransactionExecutorFactory = c => transactionExecutor.Object;
-                options.DisableLogging = true;
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
             });
 
             //ACT
@@ -361,23 +369,24 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressValidator> addressValidator = new Mock<IAddressValidator>();
-                Mock<IHealthProvider> healthProvider = new Mock<IHealthProvider>();
-                Mock<IIntegrationInfoService> integrationInfoService = new Mock<IIntegrationInfoService>();
-                Mock<ITransactionEstimator> transactionEstimator = new Mock<ITransactionEstimator>();
-                Mock<ITransactionExecutor> transactionExecutor = new Mock<ITransactionExecutor>();
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_estimating_sending_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
                 transactionEstimator.Setup(x => x.EstimateSendingAsync(It.IsAny<EstimateSendingTransactionRequest>()))
                     .ThrowsAsync(new RequestValidationException("Not VALID"));
 
-                options.AddressValidatorFactory = c => addressValidator.Object;
-                options.HealthProviderFactory = c => healthProvider.Object;
-                options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
-                options.TransactionExecutorFactory = c => transactionExecutor.Object;
-                options.DisableLogging = true;
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
             });
 
             //ACT && ASSERT
@@ -394,6 +403,310 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 var request = new EstimateSendingTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
                 var result = await client.EstimateSendingTransactionAsync(request);
             });
+        }
+
+        [Test]
+        public async Task Build_receiving_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+            string transactionContext = "cotext";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_receiving_transaction)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionExecutor.Setup(x => x.BuildReceivingAsync(It.IsAny<BuildReceivingTransactionRequest>()))
+                    .ReturnsAsync(new BuildReceivingTransactionResponse(Base58String.Encode(transactionContext)));
+
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
+            });
+
+            //ACT
+            var transfers = new Transfer[]
+            {
+                new Transfer(
+                    new AssetId("asset"),
+                    CoinsAmount.FromDecimal(1000000000, 4),
+                    new Address("x1"),
+                    new Address("x2")),
+            };
+            var request = new BuildReceivingTransactionRequest("transactionHash", new Address("hx...1"));
+            var result = await client.BuildReceivingTransactionAsync(request);
+
+            //ASSERT
+            Assert.True(result != null);
+            Assert.True(result.TransactionContext.DecodeToString() == transactionContext);
+        }
+
+        [Test]
+        public async Task Not_supported_build_receiving_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_receiving_transaction)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionExecutor.Setup(x => x.BuildReceivingAsync(It.IsAny<BuildReceivingTransactionRequest>()))
+                    .ThrowsAsync(new OperationNotSupportedException());
+
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
+            });
+
+            //ACT && ASSERT
+
+            Assert.ThrowsAsync<NotImplementedWebApiException>(async () =>
+            {
+                var transfers = new Transfer[]
+                {
+                    new Transfer(
+                        new AssetId("asset"),
+                        CoinsAmount.FromDecimal(1000000000, 4),
+                        new Address("x1"),
+                        new Address("x2")),
+                };
+                var request = new BuildReceivingTransactionRequest("transactionHash", new Address("hx...1"));
+                var result = await client.BuildReceivingTransactionAsync(request);
+            });
+        }
+
+        [Test]
+        public async Task Bad_request_while_building_receiving_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_receiving_transaction)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionExecutor.Setup(x => x.BuildReceivingAsync(It.IsAny<BuildReceivingTransactionRequest>()))
+                    .ThrowsAsync(new RequestValidationException("Not VALID"));
+
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
+            });
+
+            //ACT && ASSERT
+
+            Assert.ThrowsAsync<BadRequestWebApiException>(async () =>
+            {
+                var transfers = new Transfer[]
+                {
+                    new Transfer(
+                        new AssetId("asset"),
+                        CoinsAmount.FromDecimal(1000000000, 4),
+                        new Address("x1"),
+                        new Address("x2")),
+                };
+                var request = new BuildReceivingTransactionRequest("transactionHash", new Address("hx...1"));
+                var result = await client.BuildReceivingTransactionAsync(request);
+            });
+        }
+
+        [Test]
+        public async Task Broadcast_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+            string signedTransaction = "signedTransaction";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionExecutor.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
+                    .Returns(Task.CompletedTask);
+
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
+            });
+
+            //ACT && ASSERT
+            var transfers = new Transfer[]
+            {
+                new Transfer(
+                    new AssetId("asset"),
+                    CoinsAmount.FromDecimal(1000000000, 4),
+                    new Address("x1"),
+                    new Address("x2")),
+            };
+            var request = new BroadcastTransactionRequest(Base58String.Encode(signedTransaction));
+            await client.BroadcastTransactionAsync(request);
+
+            //Assume everything is ok if no exceptions here
+        }
+
+        [Test]
+        public async Task Bad_request_broadcast_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+            string signedTransaction = "signedTransaction";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionExecutor.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
+                    .ThrowsAsync(new TransactionBroadcastingException(TransactionBroadcastingError.RetryLater, "Error"));
+
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
+            });
+
+            //ACT && ASSERT
+            Assert.ThrowsAsync<TransactionBroadcastingWebApiException>(async () =>
+            {
+                var transfers = new Transfer[]
+                {
+                    new Transfer(
+                        new AssetId("asset"),
+                        CoinsAmount.FromDecimal(1000000000, 4),
+                        new Address("x1"),
+                        new Address("x2")),
+                };
+                var request = new BroadcastTransactionRequest(Base58String.Encode(signedTransaction));
+                await client.BroadcastTransactionAsync(request);
+            });
+        }
+
+        [Test]
+        public async Task Internal_server_error_broadcast_transaction()
+        {
+            //ARRANGE
+            string disease = "Disease";
+            string signedTransaction = "signedTransaction";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
+
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                transactionExecutor.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
+                    .ThrowsAsync(new Exception("Error"));
+
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
+            });
+
+            //ACT && ASSERT
+            Assert.ThrowsAsync<InternalServerErrorWebApiException>(async () =>
+            {
+                var transfers = new Transfer[]
+                {
+                    new Transfer(
+                        new AssetId("asset"),
+                        CoinsAmount.FromDecimal(1000000000, 4),
+                        new Address("x1"),
+                        new Address("x2")),
+                };
+                var request = new BroadcastTransactionRequest(Base58String.Encode(signedTransaction));
+                await client.BroadcastTransactionAsync(request);
+            });
+        }
+
+        //TODO: It is impossible to mock IRawTransactionReadOnlyRepository
+        [Test]
+        public async Task Transaction_raw()
+        {
+        }
+
+        private static void CreateMocks(out Mock<IAddressValidator> addressValidator,
+            out Mock<IHealthProvider> healthProvider,
+            out Mock<IIntegrationInfoService> integrationInfoService,
+            out Mock<ITransactionEstimator> transactionEstimator,
+            out Mock<ITransactionExecutor> transactionExecutor)
+        {
+            addressValidator = new Mock<IAddressValidator>();
+            healthProvider = new Mock<IHealthProvider>();
+            integrationInfoService = new Mock<IIntegrationInfoService>();
+            transactionEstimator = new Mock<ITransactionEstimator>();
+            transactionExecutor = new Mock<ITransactionExecutor>();
+        }
+
+        private static void ConfigureFactories(TransactionsExecutorServiceOptions<AppSettings> options,
+            Mock<IAddressValidator> addressValidator,
+            Mock<IHealthProvider> healthProvider,
+            Mock<IIntegrationInfoService> integrationInfoService, 
+            Mock<ITransactionEstimator> transactionEstimator,
+            Mock<ITransactionExecutor> transactionExecutor)
+        {
+            options.AddressValidatorFactory = c => addressValidator.Object;
+            options.HealthProviderFactory = c => healthProvider.Object;
+            options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
+            options.TransactionEstimatorFactory = c => transactionEstimator.Object;
+            options.TransactionExecutorFactory = c => transactionExecutor.Object;
+            options.DisableLogging = true;
         }
 
         private void PrepareSettings()
