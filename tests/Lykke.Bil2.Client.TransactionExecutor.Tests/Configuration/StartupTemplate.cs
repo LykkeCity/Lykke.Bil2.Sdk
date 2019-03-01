@@ -16,8 +16,9 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Configuration
         [UsedImplicitly]
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            return services.BuildBlockchainTransactionsExecutorServiceProvider<AppSettings>(
-                StartupDependencyFactorySingleton.Instance.GetOptionsConfiguration<AppSettings>());
+            var optionsConfiguration =
+                StartupDependencyFactorySingleton.Instance.GetOptionsConfiguration<AppSettings>();
+            return services.BuildBlockchainTransactionsExecutorServiceProvider<AppSettings>(optionsConfiguration);
         }
 
         [UsedImplicitly]
