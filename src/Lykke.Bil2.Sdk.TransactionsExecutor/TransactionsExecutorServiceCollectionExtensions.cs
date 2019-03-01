@@ -43,7 +43,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
                     RegisterCommonServices(services, settings, options);
                     RegisterImplementationServices(services, options, settings);
 
-                    options.UseSettings?.Invoke(settings);
+                    options.UseSettings?.Invoke(services, settings);
                 };
 
                 if (options.DisableLogging)
@@ -76,9 +76,9 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
                 settings.CurrentValue.HealthMonitoringPeriod
             ));
 
-            services.AddSingleton(s => RawTransactionReadOnlyRepository.Create(
-                options.IntegrationName.CamelToKebab(),
-                settings.Nested(x => x.Db.AzureDataConnString)));
+            services.AddSingleton<IRawTransactionReadOnlyRepository>(s =>
+                options.RawTransactionReadOnlyRepositoryFactory(options.IntegrationName.CamelToKebab(), 
+                    new ServiceFactoryContext<TAppSettings>(s, settings)));
         }
 
         private static void RegisterImplementationServices<TAppSettings>(

@@ -30,9 +30,9 @@ namespace TransactionsExecutorExample
                 options.TransactionExecutorFactory = c => new TransactionsExecutor();
                 options.AddressFormatsProviderFactory = c => new AddressFormatsProvider();
 
-                options.UseSettings = settings =>
+                options.UseSettings = (s, settings) =>
                 {
-                    services.AddSingleton<INodeClient>(new NodeClient(settings.CurrentValue.NodeUrl));
+                    s.AddSingleton<INodeClient>(new NodeClient(settings.CurrentValue.NodeUrl));
                 };
             });
         }

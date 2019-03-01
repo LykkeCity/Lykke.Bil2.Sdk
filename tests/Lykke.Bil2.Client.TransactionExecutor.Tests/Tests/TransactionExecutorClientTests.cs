@@ -19,7 +19,10 @@ using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Bil2.Sdk.Exceptions;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Exceptions;
+using Lykke.Bil2.Sdk.TransactionsExecutor.Repositories;
 using Lykke.Bil2.WebClient.Exceptions;
+using Lykke.SettingsReader;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 {
@@ -675,10 +678,45 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             });
         }
 
-        //TODO: It is impossible to mock IRawTransactionReadOnlyRepository
         [Test]
         public async Task Transaction_raw()
         {
+            //ARRANGE
+            string disease = "Disease";
+            string transactionHash = "transactionHash";
+            string transactionResult = "result";
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                CreateMocks(
+                    out var addressValidator,
+                    out var healthProvider,
+                    out var integrationInfoService,
+                    out var transactionEstimator,
+                    out var transactionExecutor);
+
+                var rawTransactionReadOnlyRepository = new Mock<IRawTransactionReadOnlyRepository>();
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
+                rawTransactionReadOnlyRepository.Setup(x => x.GetOrDefaultAsync(transactionHash))
+                    .ReturnsAsync(Base58String.Encode(transactionResult));
+
+                options.RawTransactionReadOnlyRepositoryFactory = (name, context) => rawTransactionReadOnlyRepository.Object;
+
+                ConfigureFactories(options,
+                    addressValidator,
+                    healthProvider,
+                    integrationInfoService,
+                    transactionEstimator,
+                    transactionExecutor);
+            });
+
+            //ACT
+            var result = await client.GetRawTransactionAsync(transactionHash);
+
+            //ASSERT
+            Assert.True(result != null);
+            Assert.True(result.Raw.DecodeToString() == transactionResult);
         }
 
         private static void CreateMocks(out Mock<IAddressValidator> addressValidator,
