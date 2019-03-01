@@ -1,5 +1,5 @@
 ﻿using System;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.RabbitMq;
 
 namespace Lykke.Bil2.Client.BlocksReader.Services

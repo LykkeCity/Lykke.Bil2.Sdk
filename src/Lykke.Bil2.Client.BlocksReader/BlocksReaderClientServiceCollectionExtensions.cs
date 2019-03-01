@@ -2,7 +2,7 @@
 using System.Linq;
 using JetBrains.Annotations;
 using Lykke.Bil2.Client.BlocksReader.Services;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.RabbitMq;
 using Lykke.Bil2.WebClient;
 using Lykke.Common;

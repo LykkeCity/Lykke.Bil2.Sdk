@@ -57,5 +57,15 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
         /// </summary>
         public Func<ServiceFactoryContext<TAppSettings>, ITransactionExecutor> TransactionExecutorFactory { get; set; }
 
+        /// <summary>
+        /// Optional, default implementation assumes that multiple address formats are not supported.
+        /// <see cref="IAddressFormatsProvider"/> implementation factory.
+        /// </summary>
+        public Func<ServiceFactoryContext<TAppSettings>, IAddressFormatsProvider> AddressFormatsProviderFactory { get; set; }
+
+        internal TransactionsExecutorServiceOptions()
+        {
+            AddressFormatsProviderFactory = c => new NotSupportedAddressFormatsProvider();
+        }
     }
 }

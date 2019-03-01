@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 
-namespace Lykke.Bil2.Contract.Common
+namespace Lykke.Bil2.Contract.Common.Exceptions
 {
     /// <summary>
     /// Blockchain integration incoming request validation exception.

@@ -1,5 +1,6 @@
 ﻿using System;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Exceptions;
 using NUnit.Framework;
 
 namespace Lykke.Bil2.Contract.Tests

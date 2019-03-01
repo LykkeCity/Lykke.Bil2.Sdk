@@ -50,15 +50,18 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </summary>
         [CanBeNull]
         [JsonProperty("fee")]
-        public IDictionary<AssetId, CoinsAmount> Fee { get; }
+        public IReadOnlyDictionary<AssetId, CoinsAmount> Fee { get; }
 
+        /// <summary>
+        /// Should be published for each failed transaction in the block being read.
+        /// </summary>
         public TransactionFailedEvent(
             string blockHash,
             int transactionNumber,
             string transactionHash,
             TransactionBroadcastingError errorCode,
             string errorMessage,
-            IDictionary<AssetId, CoinsAmount> fee = null)
+            IReadOnlyDictionary<AssetId, CoinsAmount> fee = null)
         {
             if (string.IsNullOrWhiteSpace(blockHash))
                 throw new ArgumentException("Should be not empty string", nameof(blockHash));

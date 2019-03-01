@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lykke.Bil2.Contract.Common
+namespace Lykke.Bil2.Contract.Common.Exceptions
 {
     /// <summary>
     /// Coins conversion exception

@@ -1,7 +1,8 @@
 ﻿using System;
+using Lykke.Bil2.Contract.Common.Exceptions;
 using Newtonsoft.Json;
 
-namespace Lykke.Bil2.Contract.Common
+namespace Lykke.Bil2.Contract.Common.JsonConverters
 {
     internal sealed class CoinsJsonReader
     {

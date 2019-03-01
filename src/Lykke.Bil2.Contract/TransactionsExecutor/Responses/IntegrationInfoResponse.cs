@@ -21,14 +21,14 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// Info concerning services on which integration is dependent. This should include node and all intermediate APIs.
         /// </summary>
         [JsonProperty("dependencies")]
-        public IDictionary<string, DependencyInfo> Dependencies { get; }
+        public IReadOnlyDictionary<string, DependencyInfo> Dependencies { get; }
 
         /// <summary>
         /// Endpoint: [GET] /api/integration-info
         /// </summary>
         public IntegrationInfoResponse(
             BlockchainInfo blockchain,
-            IDictionary<string, DependencyInfo> dependencies)
+            IReadOnlyDictionary<string, DependencyInfo> dependencies)
         {
             Blockchain = blockchain ?? throw new ArgumentNullException(nameof(blockchain));
             Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));

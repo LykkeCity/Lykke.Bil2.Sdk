@@ -2,6 +2,7 @@
 using System.Linq;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Exceptions;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.SignService.Requests
@@ -17,7 +18,7 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// Multiple keys can be used for the/ transactions with multiple inputs.
         /// </summary>
         [JsonProperty("privateKeys")]
-        public ICollection<EncryptedString> PrivateKeys { get; }
+        public IReadOnlyCollection<EncryptedString> PrivateKeys { get; }
 
         /// <summary>
         /// Implementation specific transaction context.
@@ -28,7 +29,7 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// <summary>
         /// Endpoint: [POST] /api/transactions/signed
         /// </summary>
-        public SignTransactionRequest(ICollection<EncryptedString> privateKeys, Base58String transactionContext)
+        public SignTransactionRequest(IReadOnlyCollection<EncryptedString> privateKeys, Base58String transactionContext)
         {
             if (privateKeys == null || !privateKeys.Any() || privateKeys.Any(x => x == null))
                 throw RequestValidationException.ShouldBeNotEmptyCollection(nameof(privateKeys));

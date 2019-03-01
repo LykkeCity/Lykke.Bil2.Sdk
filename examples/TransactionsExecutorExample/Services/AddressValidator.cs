@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
@@ -21,9 +22,9 @@ namespace TransactionsExecutorExample.Services
             }
 
             var addressParts = address.Split(":");
-            var isAddressForatValid = addressParts.Length == 2 && Guid.TryParse(addressParts[1], out _);
+            var isAddressFormatValid = addressParts.Length == 2 && Guid.TryParse(addressParts[1], out _);
             
-            return Task.FromResult(!isAddressForatValid
+            return Task.FromResult(!isAddressFormatValid
                 ? new AddressValidityResponse(AddressValidationResult.InvalidAddressFormat)
                 : new AddressValidityResponse(AddressValidationResult.Valid));
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using JetBrains.Annotations;
+using Lykke.Bil2.Contract.Common.Exceptions;
 
 namespace Lykke.Bil2.Contract.Common
 {

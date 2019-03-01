@@ -14,12 +14,12 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// Estimated transaction fee for particular asset ID.
         /// </summary>
         [JsonProperty("assetEstimatedFee")]
-        public IDictionary<AssetId, CoinsAmount> AssetEstimatedFee { get; }
+        public IReadOnlyDictionary<AssetId, CoinsAmount> AssetEstimatedFee { get; }
 
         /// <summary>
         /// Endpoint: [POST] /api/transactions/sending/estimated
         /// </summary>
-        public EstimateSendingTransactionResponse(IDictionary<AssetId, CoinsAmount> assetEstimatedFee)
+        public EstimateSendingTransactionResponse(IReadOnlyDictionary<AssetId, CoinsAmount> assetEstimatedFee)
         {
             AssetEstimatedFee = assetEstimatedFee ?? throw new ArgumentNullException(nameof(assetEstimatedFee));
         }

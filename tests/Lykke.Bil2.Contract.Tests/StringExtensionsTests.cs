@@ -1,4 +1,4 @@
-﻿using Lykke.Bil2.Contract.Common;
+﻿using Lykke.Bil2.Contract.Common.Extensions;
 using NUnit.Framework;
 
 namespace Lykke.Bil2.Contract.Tests
