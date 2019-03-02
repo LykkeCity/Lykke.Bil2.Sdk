@@ -5,7 +5,7 @@ using Lykke.Bil2.Contract.Common.Exceptions;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 {
-    internal static class SendingTransactionTransfersValidator
+    internal static class TransactionTransfersValidator
     {
         public static void Validate(IReadOnlyCollection<Transfer> transfers)
         {

@@ -6,10 +6,10 @@ using Newtonsoft.Json;
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 {
     /// <summary>
-    /// Endpoint: [POST] /api/transactions/sending/built
+    /// Endpoint: [POST] /api/transactions/built/transfers/amount
     /// </summary>
     [PublicAPI]
-    public class BuildSendingTransactionRequest
+    public class BuildTransferAmountTransactionRequest
     {
         /// <summary>
         /// Transaction transfers.
@@ -38,14 +38,14 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         public ExpirationOptions Expiration { get; }
 
         /// <summary>
-        /// Endpoint: [POST] /api/transactions/sending/built
+        /// Endpoint: [POST] /api/transactions/built/transfers/amount
         /// </summary>
-        public BuildSendingTransactionRequest(
+        public BuildTransferAmountTransactionRequest(
             IReadOnlyCollection<Transfer> transfers, 
             FeeOptions fee, 
             ExpirationOptions expiration = null)
         {
-            SendingTransactionTransfersValidator.Validate(transfers);
+            TransactionTransfersValidator.Validate(transfers);
 
             Transfers = transfers;
             Fee = fee ?? throw RequestValidationException.ShouldBeNotNull(nameof(fee));

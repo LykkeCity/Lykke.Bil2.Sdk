@@ -59,23 +59,46 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         Task<AddressFormatsResponse> GetAddressFormatsAsync(string address);
 
         /// <summary>
-        /// Should build a not signed transaction. For the blockchains where “sending” and “receiving”
-        /// transactions are distinguished, this endpoint builds the “sending” transactions.
+        /// "Transfer amount" transactions model.
+        /// Should build a not signed transaction which sends funds if integration uses “transfer amount” transactions model.
+        /// Integration should either support “transfer coins”  or “transfer amount” transactions model.
         /// </summary>
         /// <exception cref="BadRequestWebApiException">
         /// Transaction can’t be built with the given parameters and it will be never possible to
         /// build the transaction with exactly the same parameters.
         /// </exception>
-        /// <exception cref="SendingTransactionBuildingWebApiException">
-        /// Transaction can't be built. See <see cref="SendingTransactionBuildingWebApiException.ErrorCode"/>
+        /// <exception cref="TransactionBuildingWebApiException">
+        /// Transaction can't be built. See <see cref="TransactionBuildingWebApiException.ErrorCode"/>
         /// to determine the reason.
         /// </exception>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
+        /// <exception cref="NotImplementedWebApiException">Method is not implemented by the blockchain integration</exception>
         /// <exception cref="ApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
-        [Post("/api/transactions/sending/built")]
-        [ExceptionMapper(typeof(SendingTransactionBuildingExceptionMapper))]
-        Task<BuildSendingTransactionResponse> BuildSendingTransactionAsync([Body] BuildSendingTransactionRequest body);
+        [Post("/api/transactions/built/transfers/amount")]
+        [ExceptionMapper(typeof(TransactionBuildingExceptionMapper))]
+        Task<BuildTransactionResponse> BuildTransferAmountTransactionAsync([Body] BuildTransferAmountTransactionRequest body);
+
+        /// <summary>
+        /// "Transfer amount" transactions model.
+        /// Should build a not signed transaction which sends funds if integration uses “transfer amount” transactions model.
+        /// Integration should either support “transfer coins”  or “transfer amount” transactions model.
+        /// </summary>
+        /// <exception cref="BadRequestWebApiException">
+        /// Transaction can’t be built with the given parameters and it will be never possible to
+        /// build the transaction with exactly the same parameters.
+        /// </exception>
+        /// <exception cref="TransactionBuildingWebApiException">
+        /// Transaction can't be built. See <see cref="TransactionBuildingWebApiException.ErrorCode"/>
+        /// to determine the reason.
+        /// </exception>
+        /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
+        /// <exception cref="NotImplementedWebApiException">Method is not implemented by the blockchain integration</exception>
+        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="Exception">Any other error</exception>
+        [Post("/api/transactions/built/transfers/coins")]
+        [ExceptionMapper(typeof(TransactionBuildingExceptionMapper))]
+        Task<BuildTransactionResponse> BuildTransferCoinsTransactionAsync([Body] BuildTransferCoinsTransactionRequest body);
 
         /// <summary>
         /// Should estimate the transaction fee. For the blockchains where “sending” and “receiving”
@@ -90,22 +113,6 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="Exception">Any other error</exception>
         [Post("/api/transactions/sending/estimated")]
         Task<EstimateSendingTransactionResponse> EstimateSendingTransactionAsync([Body] EstimateSendingTransactionRequest body);
-
-        /// <summary>
-        /// Optional.
-        /// Should build the not signed “receiving” transaction. This endpoint should be implemented by the
-        /// blockchains, which distinguishes “sending” and “receiving” transactions.
-        /// </summary>
-        /// <exception cref="BadRequestWebApiException">
-        /// Transaction can’t be built with the given parameters. The given “sending” transaction can’t
-        /// be received and it will be never possible to receive the given “sending” transaction.
-        /// </exception>
-        /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
-        /// <exception cref="NotImplementedWebApiException">Method is not implemented by the blockchain integration</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
-        /// <exception cref="Exception">Any other error</exception>
-        [Post("/api/transactions/receiving/built")]
-        Task<BuildReceivingTransactionResponse> BuildReceivingTransactionAsync([Body] BuildReceivingTransactionRequest body);
 
         /// <summary>
         /// Should broadcast the signed transaction to the blockchain.

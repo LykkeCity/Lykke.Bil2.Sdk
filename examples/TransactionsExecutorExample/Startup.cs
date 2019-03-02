@@ -27,7 +27,8 @@ namespace TransactionsExecutorExample
                 );
                 options.IntegrationInfoServiceFactory = c => new IntegrationInfoService();
                 options.TransactionEstimatorFactory = c => new TransactionsEstimator();
-                options.TransactionExecutorFactory = c => new TransactionsExecutor();
+                options.TransferAmountTransactionsBuilderFactory = c => new TransferTransactionsBuilder();
+                options.TransactionBroadcasterFactory = c => new TransactionsBroadcaster();
                 options.AddressFormatsProviderFactory = c => new AddressFormatsProvider();
 
                 options.UseSettings = (s, settings) =>

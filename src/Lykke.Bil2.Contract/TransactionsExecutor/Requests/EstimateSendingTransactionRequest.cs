@@ -28,7 +28,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             IReadOnlyCollection<Transfer> transfers,
             FeeOptions fee)
         {
-            SendingTransactionTransfersValidator.Validate(transfers);
+            TransactionTransfersValidator.Validate(transfers);
 
             Transfers = transfers;
             Fee = fee ?? throw RequestValidationException.ShouldBeNotNull(nameof(fee));
