@@ -4,7 +4,7 @@ using Lykke.Bil2.Sdk.SignService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Lykke.Bil2.SignService.Client.Tests.Configuration
+namespace Lykke.Bil2.Client.SignService.Tests.Configuration
 {
     [UsedImplicitly]
     //Startup class is used in configuration of web api 
