@@ -22,7 +22,7 @@ namespace SignServiceExample.Services
 
         public Task<SignTransactionResponse> SignAsync(IReadOnlyCollection<string> privateKeys, Base58String requestTransactionContext)
         {
-            var hash = requestTransactionContext.Value.GetHashCode().ToString("X8");
+            var id = requestTransactionContext.Value.GetHashCode().ToString("X8");
             var signed = new
             {
                 Context = requestTransactionContext.Value,
@@ -34,7 +34,7 @@ namespace SignServiceExample.Services
 
             var serializedSigned = JsonConvert.SerializeObject(signed).ToBase58();
 
-            return Task.FromResult(new SignTransactionResponse(serializedSigned, hash));
+            return Task.FromResult(new SignTransactionResponse(serializedSigned, id));
         }
     }
 }

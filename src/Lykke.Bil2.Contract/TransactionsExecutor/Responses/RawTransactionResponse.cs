@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
 {
     /// <summary>
-    /// Endpoint: [GET] /api/transactions/{transactionHash}/raw
+    /// Endpoint: [GET] /api/transactions/{transactionId}/raw
     /// </summary>
     [PublicAPI]
     public class RawTransactionResponse
@@ -18,7 +18,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         public Base58String Raw { get; }
 
         /// <summary>
-        /// Endpoint: [GET] /api/transactions/{transactionHash}/raw
+        /// Endpoint: [GET] /api/transactions/{transactionId}/raw
         /// </summary>
         public RawTransactionResponse(Base58String raw)
         {

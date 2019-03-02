@@ -28,7 +28,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
 
         public async Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransactionExecutedEvent evt)
         {
-            var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionHash, rawTransaction);
+            var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionId, rawTransaction);
 
             _messagePublisher.Publish(evt);
 
@@ -37,7 +37,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
 
         public async Task HandleFailedTransactionAsync(Base58String rawTransaction, TransactionFailedEvent evt)
         {
-            var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionHash, rawTransaction);
+            var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionId, rawTransaction);
 
             _messagePublisher.Publish(evt);
 

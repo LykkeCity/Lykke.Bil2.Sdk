@@ -123,7 +123,7 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
                 EncryptedString.Encrypt(MyPublicKey, MyPrivateKey2.DecodeToString()),
             };
 
-            var transactionHash = "TransactionHash";
+            var transactionId = "TransactionId";
             var signedTransaction = "From.x01.To.x02.Amount.100.Signature.F1T2A100";
 
             var client = PrepareClient<AppSettings>((options) =>
@@ -132,7 +132,7 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
                 Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
 
                 transactionSigner.Setup(x => x.SignAsync(It.IsAny<IReadOnlyCollection<string>>(), It.IsAny<Base58String>()))
-                    .ReturnsAsync(new SignTransactionResponse(Base58String.Encode(signedTransaction), transactionHash));
+                    .ReturnsAsync(new SignTransactionResponse(Base58String.Encode(signedTransaction), transactionId));
 
                 options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_sign_transaction)}";
                 options.AddressGeneratorFactory = (context) => addressGenerator.Object;
@@ -145,7 +145,7 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
 
             //ASSERT
             Assert.True(result != null);
-            Assert.True(result.TransactionHash == transactionHash);
+            Assert.True(result.TransactionId == transactionId);
             Assert.True(result.SignedTransaction.DecodeToString() == signedTransaction);
         }
 
