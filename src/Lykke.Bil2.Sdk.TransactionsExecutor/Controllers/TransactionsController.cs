@@ -17,26 +17,32 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     internal class TransactionsController : ControllerBase
     {
-        private readonly ITransactionExecutor _transactionExecutor;
+        private readonly ITransferAmountTransactionsBuilder _transferAmountTransactionsBuilder;
+        private readonly ITransferCoinsTransactionsBuilder _transferCoinsTransactionsBuilder;
+        private readonly ITransactionBroadcaster _transactionBroadcaster;
         private readonly ITransactionEstimator _transactionEstimator;
         private readonly IRawTransactionReadOnlyRepository _rawTransactionsRepository;
 
         public TransactionsController(
-            ITransactionExecutor transactionExecutor,
+            ITransferAmountTransactionsBuilder transferAmountTransactionsBuilder,
+            ITransferCoinsTransactionsBuilder transferCoinsTransactionsBuilder,
+            ITransactionBroadcaster transactionBroadcaster,
             ITransactionEstimator transactionEstimator,
             IRawTransactionReadOnlyRepository rawTransactionsRepository)
         {
-            _transactionExecutor = transactionExecutor ?? throw new ArgumentNullException(nameof(transactionExecutor));
+            _transferAmountTransactionsBuilder = transferAmountTransactionsBuilder ?? throw new ArgumentNullException(nameof(transferAmountTransactionsBuilder));
+            _transferCoinsTransactionsBuilder = transferCoinsTransactionsBuilder ?? throw new ArgumentNullException(nameof(transferCoinsTransactionsBuilder));
+            _transactionBroadcaster = transactionBroadcaster ?? throw new ArgumentNullException(nameof(transactionBroadcaster));
             _transactionEstimator = transactionEstimator ?? throw new ArgumentNullException(nameof(transactionEstimator));
             _rawTransactionsRepository = rawTransactionsRepository ?? throw new ArgumentNullException(nameof(rawTransactionsRepository));
         }
 
-        [HttpPost("sending/built")]
-        public async Task<ActionResult<BuildSendingTransactionResponse>> BuildSending([FromBody] BuildSendingTransactionRequest request)
+        [HttpPost("built/transfers/amount")]
+        public async Task<ActionResult<BuildTransactionResponse>> BuildTransferAmount([FromBody] BuildTransferAmountTransactionRequest request)
         {
             try
             {
-                var response = await _transactionExecutor.BuildSendingAsync(request);
+                var response = await _transferAmountTransactionsBuilder.BuildTransferAmountAsync(request);
                 if (response == null)
                 {
                     throw new InvalidOperationException("Not null response object expected");
@@ -44,7 +50,28 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
 
                 return Ok(response);
             }
-            catch (SendingTransactionBuildingException ex)
+            catch (TransactionBuildingException ex)
+            {
+                var errorResponse = BlockchainErrorResponse.CreateFromCode(ex.Error, ex.Message);
+
+                return BadRequest(errorResponse);
+            }
+        }
+
+        [HttpPost("built/transfers/coins")]
+        public async Task<ActionResult<BuildTransactionResponse>> BuildTransferCoins([FromBody] BuildTransferCoinsTransactionRequest request)
+        {
+            try
+            {
+                var response = await _transferCoinsTransactionsBuilder.BuildTransferCoinsAsync(request);
+                if (response == null)
+                {
+                    throw new InvalidOperationException("Not null response object expected");
+                }
+
+                return Ok(response);
+            }
+            catch (TransactionBuildingException ex)
             {
                 var errorResponse = BlockchainErrorResponse.CreateFromCode(ex.Error, ex.Message);
 
@@ -64,24 +91,12 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
             return Ok(response);
         }
 
-        [HttpPost("receiving/built")]
-        public async Task<ActionResult<BuildReceivingTransactionResponse>> BuildReceiving([FromBody] BuildReceivingTransactionRequest request)
-        {
-            var response = await _transactionExecutor.BuildReceivingAsync(request);
-            if (response == null)
-            {
-                throw new InvalidOperationException("Not null response object expected");
-            }
-
-            return Ok(response);
-        }
-
         [HttpPost("broadcasted")]
         public async Task<IActionResult> Broadcast([FromBody] BroadcastTransactionRequest request)
         {
             try
             {
-                await _transactionExecutor.BroadcastAsync(request);
+                await _transactionBroadcaster.BroadcastAsync(request);
             }
             catch (TransactionBroadcastingException ex)
             {
@@ -93,16 +108,16 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
             return Ok();
         }
 
-        [HttpGet("{transactionHash}/raw")]
-        public async Task<ActionResult<RawTransactionResponse>> GetRaw(string transactionHash)
+        [HttpGet("{transactionId}/raw")]
+        public async Task<ActionResult<RawTransactionResponse>> GetRaw(string transactionId)
         {
-            if (string.IsNullOrWhiteSpace(transactionHash))
-                throw RequestValidationException.ShouldBeNotEmptyString(transactionHash);
+            if (string.IsNullOrWhiteSpace(transactionId))
+                throw RequestValidationException.ShouldBeNotEmptyString(transactionId);
 
-            var raw = await _rawTransactionsRepository.GetOrDefaultAsync(transactionHash);
+            var raw = await _rawTransactionsRepository.GetOrDefaultAsync(transactionId);
             if (raw == null)
             {
-                return NotFound(BlockchainErrorResponse.Create($"Raw transaction [{transactionHash}] not found"));
+                return NotFound(BlockchainErrorResponse.Create($"Raw transaction [{transactionId}] not found"));
             }
 
             return Ok(new RawTransactionResponse(raw));

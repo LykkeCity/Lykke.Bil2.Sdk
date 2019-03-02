@@ -101,8 +101,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         Task<BuildTransactionResponse> BuildTransferCoinsTransactionAsync([Body] BuildTransferCoinsTransactionRequest body);
 
         /// <summary>
-        /// Should estimate the transaction fee. For the blockchains where “sending” and “receiving”
-        /// transactions are distinguished, this endpoint estimates fee for the “sending” transactions.
+        /// Should estimate the transaction fee.
         /// </summary>
         /// <exception cref="BadRequestWebApiException">
         /// Transaction can’t be estimated with the given parameters and it will be never possible to
@@ -111,7 +110,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
         /// <exception cref="ApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
-        [Post("/api/transactions/sending/estimated")]
+        [Post("/api/transactions/estimated/transfers")]
         Task<EstimateSendingTransactionResponse> EstimateSendingTransactionAsync([Body] EstimateSendingTransactionRequest body);
 
         /// <summary>
@@ -136,13 +135,13 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         Task BroadcastTransactionAsync([Body] BroadcastTransactionRequest body);
 
         /// <summary>
-        /// Should return raw transaction by its hash.
+        /// Should return raw transaction by its id.
         /// </summary>
         /// <exception cref="BadRequestWebApiException">Invalid request parameters</exception>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
         /// <exception cref="ApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
-        [Get("/api/transactions/{transactionHash}/raw")]
-        Task<RawTransactionResponse> GetRawTransactionAsync(string transactionHash);
+        [Get("/api/transactions/{transactionId}/raw")]
+        Task<RawTransactionResponse> GetRawTransactionAsync(string transactionId);
     }
 }

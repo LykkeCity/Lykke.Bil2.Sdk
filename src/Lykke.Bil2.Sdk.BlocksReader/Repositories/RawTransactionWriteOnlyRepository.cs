@@ -28,10 +28,10 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Repositories
             _blob = blob;
         }
 
-        public async Task SaveAsync(string transactionHash, Base58String rawTransaction)
+        public async Task SaveAsync(string transactionId, Base58String rawTransaction)
         {
             var containerName = GetContainerName();
-            var blobName = RawTransactionRepositoryTools.GetBlobName(transactionHash);
+            var blobName = RawTransactionRepositoryTools.GetBlobName(transactionId);
 
             using (var stream = new MemoryStream())
             using (var textWriter = new StreamWriter(stream))

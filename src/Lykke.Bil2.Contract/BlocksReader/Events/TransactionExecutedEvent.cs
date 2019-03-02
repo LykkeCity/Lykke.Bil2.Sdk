@@ -62,14 +62,6 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public bool? IsIrreversible { get; }
 
         /// <summary>
-        /// Optional.
-        /// Type of the transaction.
-        /// </summary>
-        [CanBeNull]
-        [JsonProperty("transactionType")]
-        public TransactionType? TransactionType { get; }
-
-        /// <summary>
         /// Should be published for each executed transaction in the block being read.
         /// </summary>
         public TransactionExecutedEvent(
@@ -79,8 +71,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             IReadOnlyCollection<BalanceChange> balanceChanges,
             IReadOnlyCollection<BalanceChangeId> cancelledBalanceChanges = null,
             IReadOnlyDictionary<AssetId, CoinsAmount> fee = null,
-            bool? isIrreversible = null,
-            TransactionType? transactionType = null)
+            bool? isIrreversible = null)
         {
             if (string.IsNullOrWhiteSpace(blockHash))
                 throw new ArgumentException("Should be not empty string", nameof(blockHash));
@@ -98,7 +89,6 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             CancelledBalanceChanges = cancelledBalanceChanges;
             Fee = fee;
             IsIrreversible = isIrreversible;
-            TransactionType = transactionType;
         }
     }
 }
