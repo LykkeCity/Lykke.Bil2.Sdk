@@ -45,9 +45,14 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                     RegisterIrreversibleBlocksRetrievingStrategy(services, options, settings);
                     RegisterImplementationServices(services, options, settings);
                     
-                    options.UseSettings?.Invoke(settings);
+                    options.UseSettings?.Invoke(services, settings);
                 };
-                
+
+                if (options.DisableLogging)
+                {
+                    integrationOptions.DisableLogging();
+                }
+
                 integrationOptions.LogsAzureTableName = $"{options.IntegrationName}TransactionsExecutorLogs";
                 integrationOptions.LogsAzureTableConnectionStringResolver = settings => settings.Db.LogsConnString;
 

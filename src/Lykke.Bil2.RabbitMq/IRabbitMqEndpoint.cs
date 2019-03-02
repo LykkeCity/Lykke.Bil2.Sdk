@@ -6,7 +6,7 @@ using Lykke.Bil2.RabbitMq.Subscription;
 namespace Lykke.Bil2.RabbitMq
 {
     /// <summary>
-    /// RabbitMq endpoint - represents RabbitMq connection and provides entrypoints
+    /// RabbitMq endpoint - represents RabbitMq connection and provides entry points
     /// to start listening for the messages and publish messages.
     /// </summary>
     [PublicAPI]

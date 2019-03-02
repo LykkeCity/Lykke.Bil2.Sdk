@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using Lykke.Bil2.Sdk.BlocksReader.Services;
 using Lykke.Bil2.Sdk.BlocksReader.Settings;
 using Lykke.SettingsReader;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Bil2.Sdk.BlocksReader
 {
@@ -25,7 +26,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
         /// Provides options to access application settings.
         /// </summary>
         [CanBeNull]
-        public Action<IReloadingManager<TAppSettings>> UseSettings { get; set; }
+        public Action<IServiceCollection, IReloadingManager<TAppSettings>> UseSettings { get; set; }
 
         /// <summary>
         /// Required.
@@ -66,5 +67,10 @@ namespace Lykke.Bil2.Sdk.BlocksReader
 
             IrreversibleBlockRetrievingStrategy = IrreversibleBlockRetrievingStrategy.Pushing;
         }
+
+        /// <summary>
+        /// Disable logging in test scenarios
+        /// </summary>
+        public bool DisableLogging { get; set; } = false;
     }
 }
