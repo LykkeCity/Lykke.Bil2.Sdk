@@ -22,7 +22,7 @@ namespace Lykke.Bil2.Client.BlocksReader
         /// In order to use <see cref="IBlocksReaderClient"/>, call <see cref="IBlocksReaderClient.Start"/> first
         /// </remarks>
         public static void AddBlocksReaderClient(
-            this ServiceCollection services,
+            this IServiceCollection services,
             Action<BlocksReaderClientOptions> configureOptions)
         {
             if (services == null)
@@ -55,11 +55,18 @@ namespace Lykke.Bil2.Client.BlocksReader
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.BlockEventsHandlerFactory)} is required.");
             }
 
-            services.AddSingleton<IRabbitMqEndpoint>(s => new RabbitMqEndpoint
-            (
-                s.GetRequiredService<ILogFactory>(),
-                new Uri(options.RabbitMqConnString)
-            ));
+            if (options.UseDefaultRabbitMq)
+            {
+                services.AddSingleton<IRabbitMqEndpoint>(s => new RabbitMqEndpoint
+                (
+                    s.GetRequiredService<ILogFactory>(),
+                    new Uri(options.RabbitMqConnString)
+                ));
+            }
+            else
+            {
+                //TODO: Register It before
+            }
 
             services.AddSingleton<IBlocksReaderClient>(s => new BlocksReaderClient
             (
@@ -74,7 +81,6 @@ namespace Lykke.Bil2.Client.BlocksReader
             ));
 
             services.AddTransient<IBlocksReaderApiFactory, BlocksReaderApiFactory>();
-
             services.AddTransient(options.BlockEventsHandlerFactory);
         }
 
