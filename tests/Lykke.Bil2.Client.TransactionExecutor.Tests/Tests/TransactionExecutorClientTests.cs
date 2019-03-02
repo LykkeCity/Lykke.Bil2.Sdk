@@ -543,7 +543,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         {
             //ARRANGE
             string disease = "Disease";
-            string transactionHash = "transactionHash";
+            string transactionId = "transactionId";
             string transactionResult = "result";
 
             var client = PrepareClient<AppSettings>((options) =>
@@ -559,7 +559,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 var rawTransactionReadOnlyRepository = new Mock<IRawTransactionReadOnlyRepository>();
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                rawTransactionReadOnlyRepository.Setup(x => x.GetOrDefaultAsync(transactionHash))
+                rawTransactionReadOnlyRepository.Setup(x => x.GetOrDefaultAsync(transactionId))
                     .ReturnsAsync(Base58String.Encode(transactionResult));
 
                 options.RawTransactionReadOnlyRepositoryFactory = (name, context) => rawTransactionReadOnlyRepository.Object;
@@ -574,7 +574,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             });
 
             //ACT
-            var result = await client.GetRawTransactionAsync(transactionHash);
+            var result = await client.GetRawTransactionAsync(transactionId);
 
             //ASSERT
             Assert.True(result != null);

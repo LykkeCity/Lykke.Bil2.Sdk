@@ -17,10 +17,10 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public long BlockNumber { get; }
 
         /// <summary>
-        /// Hash of the block.
+        /// ID of the block.
         /// </summary>
-        [JsonProperty("blockHash")]
-        public string BlockHash { get; }
+        [JsonProperty("blockId")]
+        public string BlockId { get; }
 
         /// <summary>
         /// Moment when the block is mined.
@@ -42,25 +42,25 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
 
         /// <summary>
         /// Optional.
-        /// Hash of the previous block. Optional only for the first block (blokNumber 0 or 1)
+        /// ID of the previous block. Optional only for the first block (blockNumber 0 or 1)
         /// </summary>
         [CanBeNull]
-        [JsonProperty("previousBlockHash")]
-        public string PreviousBlockHash { get; }
+        [JsonProperty("previousBlockId")]
+        public string PreviousBlockId { get; }
 
         public BlockHeaderReadEvent(
             long blockNumber,
-            string blockHash,
+            string blockId,
             DateTime blockMiningMoment,
             int blockSize,
             int blockTransactionsNumber,
-            string previousBlockHash = null)
+            string previousBlockId = null)
         {
             if (blockNumber < 0)
                 throw new ArgumentOutOfRangeException(nameof(blockNumber), blockNumber, "Should be zero or positive number");
 
-            if (string.IsNullOrWhiteSpace(blockHash))
-                throw new ArgumentException("Should be not empty string", nameof(blockHash));
+            if (string.IsNullOrWhiteSpace(blockId))
+                throw new ArgumentException("Should be not empty string", nameof(blockId));
 
             if (blockSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(blockSize), blockSize, "Should be positive number");
@@ -68,15 +68,15 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (blockTransactionsNumber <= 0)
                 throw new ArgumentOutOfRangeException(nameof(blockTransactionsNumber), blockTransactionsNumber, "Should be positive number");
 
-            if (blockNumber > 1 && string.IsNullOrWhiteSpace(previousBlockHash))
-                throw new ArgumentException("Should be not empty string for the not first block", nameof(previousBlockHash));
+            if (blockNumber > 1 && string.IsNullOrWhiteSpace(previousBlockId))
+                throw new ArgumentException("Should be not empty string for the not first block", nameof(previousBlockId));
 
             BlockNumber = blockNumber;
-            BlockHash = blockHash;
+            BlockId = blockId;
             BlockMiningMoment = blockMiningMoment;
             BlockSize = blockSize;
             BlockTransactionsNumber = blockTransactionsNumber;
-            PreviousBlockHash = previousBlockHash;
+            PreviousBlockId = previousBlockId;
         }
     }
 }

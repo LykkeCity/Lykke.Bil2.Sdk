@@ -14,10 +14,10 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
     public class TransactionFailedEvent
     {
         /// <summary>
-        /// Hash of the block.
+        /// ID of the block.
         /// </summary>
-        [JsonProperty("blockHash")]
-        public string BlockHash { get; }
+        [JsonProperty("blockId")]
+        public string BlockId { get; }
 
         /// <summary>
         /// One-based number of the transaction in the block.
@@ -26,10 +26,10 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public int TransactionNumber { get; }
 
         /// <summary>
-        /// Hash of the transaction.
+        /// ID of the transaction.
         /// </summary>
-        [JsonProperty("transactionHash")]
-        public string TransactionHash { get; }
+        [JsonProperty("transactionId")]
+        public string TransactionId { get; }
 
         /// <summary>
         /// Code of the error.
@@ -56,25 +56,25 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Should be published for each failed transaction in the block being read.
         /// </summary>
         public TransactionFailedEvent(
-            string blockHash,
+            string blockId,
             int transactionNumber,
-            string transactionHash,
+            string transactionId,
             TransactionBroadcastingError errorCode,
             string errorMessage,
             IReadOnlyDictionary<AssetId, CoinsAmount> fee = null)
         {
-            if (string.IsNullOrWhiteSpace(blockHash))
-                throw new ArgumentException("Should be not empty string", nameof(blockHash));
+            if (string.IsNullOrWhiteSpace(blockId))
+                throw new ArgumentException("Should be not empty string", nameof(blockId));
 
             if (transactionNumber < 1)
                 throw new ArgumentOutOfRangeException(nameof(transactionNumber), transactionNumber, "Should be positive number");
 
-            if (string.IsNullOrWhiteSpace(transactionHash))
-                throw new ArgumentException("Should be not empty string", nameof(transactionHash));
+            if (string.IsNullOrWhiteSpace(transactionId))
+                throw new ArgumentException("Should be not empty string", nameof(transactionId));
 
-            BlockHash = blockHash;
+            BlockId = blockId;
             TransactionNumber = transactionNumber;
-            TransactionHash = transactionHash;
+            TransactionId = transactionId;
             ErrorCode = errorCode;
             ErrorMessage = errorMessage;
             Fee = fee;
