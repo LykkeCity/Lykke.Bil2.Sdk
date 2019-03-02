@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Repositories;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Settings;
