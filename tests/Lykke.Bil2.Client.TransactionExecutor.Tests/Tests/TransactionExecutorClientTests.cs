@@ -18,12 +18,9 @@ using Lykke.Bil2.Client.TransactionsExecutor.Exceptions;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
-using Lykke.Bil2.Sdk.Exceptions;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Exceptions;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Repositories;
 using Lykke.Bil2.WebClient.Exceptions;
-using Lykke.SettingsReader;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 {
@@ -62,7 +59,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider, 
                     out var integrationInfoService, 
                     out var transactionEstimator, 
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_is_alive)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -71,7 +69,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 options.HealthProviderFactory = c => healthProvider.Object;
                 options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
                 options.TransactionEstimatorFactory = c => transactionEstimator.Object;
-                options.TransactionExecutorFactory = c => transactionExecutor.Object;
+                options.TransactionBroadcasterFactory = c => transactionBroadcaster.Object;
+                options.TransferAmountTransactionsBuilderFactory = c => transferAmountTransactionBuilder.Object;
                 options.DisableLogging = true;
             });
 
@@ -103,7 +102,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_integration_info)}";
                 integrationInfoService.Setup(x => x.GetInfoAsync())
@@ -115,7 +115,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT
@@ -149,7 +150,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -161,7 +163,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT
@@ -174,7 +177,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         }
 
         [Test]
-        public async Task Build_sending_transaction()
+        public async Task Build_transfer_amount_transaction()
         {
             //ARRANGE
             string disease = "Disease";
@@ -187,23 +190,25 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_sending_transaction)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionExecutor.Setup(x => x.BuildSendingAsync(It.IsAny<BuildSendingTransactionRequest>()))
-                    .ReturnsAsync(new BuildSendingTransactionResponse(Base58String.Encode(transactionResponse)));
+                transferAmountTransactionBuilder.Setup(x => x.BuildTransferAmountAsync(It.IsAny<BuildTransferAmountTransactionRequest>()))
+                    .ReturnsAsync(new BuildTransactionResponse(Base58String.Encode(transactionResponse)));
 
                 ConfigureFactories(options,
                     addressValidator,
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT
-            var transfers = new Transfer[]
+            var transfers = new[]
             {
                 new Transfer(
                     new AssetId("asset"),
@@ -211,8 +216,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Address("x1"),
                     new Address("x2")),
             };
-            var request = new BuildSendingTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
-            var result = await client.BuildSendingTransactionAsync(request);
+            var request = new BuildTransferAmountTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
+            var result = await client.BuildTransferAmountTransactionAsync(request);
 
             //ASSERT
 
@@ -221,7 +226,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         }
 
         [Test]
-        public async Task Bad_request_while_building_sending_transaction()
+        public void Bad_request_while_building_transfer_amount_transaction()
         {
             //ARRANGE
             string disease = "Disease";
@@ -233,11 +238,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_building_sending_transaction)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_building_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionExecutor.Setup(x => x.BuildSendingAsync(It.IsAny<BuildSendingTransactionRequest>()))
+                transferAmountTransactionBuilder.Setup(x => x.BuildTransferAmountAsync(It.IsAny<BuildTransferAmountTransactionRequest>()))
                     .ThrowsAsync(new RequestValidationException("NOT VALID"));
 
                 ConfigureFactories(options,
@@ -245,14 +251,15 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT && ASSERT
 
-            Assert.ThrowsAsync<SendingTransactionBuildingWebApiException>(async () =>
+            Assert.ThrowsAsync<TransactionBuildingWebApiException>(async () =>
             {
-                var transfers = new Transfer[]
+                var transfers = new[]
                 {
                     new Transfer(
                         new AssetId("asset"),
@@ -260,13 +267,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new BuildSendingTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
-                var result = await client.BuildSendingTransactionAsync(request);
+                var request = new BuildTransferAmountTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
+                await client.BuildTransferAmountTransactionAsync(request);
             });
         }
 
         [Test]
-        public async Task Node_issues_while_building_sending_transaction()
+        public void Node_issues_while_building_transfer_amount_transaction()
         {
             //ARRANGE
             string disease = "Disease";
@@ -278,14 +285,15 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Node_issues_while_building_sending_transaction)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Node_issues_while_building_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionExecutor.Setup(x => x.BuildSendingAsync(It.IsAny<BuildSendingTransactionRequest>()))
+                transferAmountTransactionBuilder.Setup(x => x.BuildTransferAmountAsync(It.IsAny<BuildTransferAmountTransactionRequest>()))
                     .ThrowsAsync(
-                        new SendingTransactionBuildingException(
-                            SendingTransactionBuildingError.RetryLater,
+                        new TransactionBuildingException(
+                            TransactionBuildingError.RetryLater,
                             "Node is too busy"));
 
                 ConfigureFactories(options,
@@ -293,14 +301,15 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT && ASSERT
 
-            Assert.ThrowsAsync<SendingTransactionBuildingWebApiException>(async () =>
+            Assert.ThrowsAsync<TransactionBuildingWebApiException>(async () =>
             {
-                var transfers = new Transfer[]
+                var transfers = new[]
                 {
                     new Transfer(
                         new AssetId("asset"),
@@ -308,8 +317,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new BuildSendingTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
-                var result = await client.BuildSendingTransactionAsync(request);
+                var request = new BuildTransferAmountTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
+                await client.BuildTransferAmountTransactionAsync(request);
             });
         }
 
@@ -331,7 +340,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Estimate_sending_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -343,11 +353,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT
-            var transfers = new Transfer[]
+            var transfers = new[]
             {
                 new Transfer(
                     new AssetId("asset"),
@@ -366,7 +377,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         }
 
         [Test]
-        public async Task Bad_request_while_estimating_sending_transaction()
+        public void Bad_request_while_estimating_sending_transaction()
         {
             //ARRANGE
             string disease = "Disease";
@@ -378,7 +389,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_estimating_sending_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -390,13 +402,14 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT && ASSERT
             Assert.ThrowsAsync<BadRequestWebApiException>(async () =>
             {
-                var transfers = new Transfer[]
+                var transfers = new[]
                 {
                     new Transfer(
                         new AssetId("asset"),
@@ -405,143 +418,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                         new Address("x2")),
                 };
                 var request = new EstimateSendingTransactionRequest(transfers, new FeeOptions(FeeType.DeductFromAmount));
-                var result = await client.EstimateSendingTransactionAsync(request);
-            });
-        }
-
-        [Test]
-        public async Task Build_receiving_transaction()
-        {
-            //ARRANGE
-            string disease = "Disease";
-            string transactionContext = "cotext";
-
-            var client = PrepareClient<AppSettings>((options) =>
-            {
-                CreateMocks(
-                    out var addressValidator,
-                    out var healthProvider,
-                    out var integrationInfoService,
-                    out var transactionEstimator,
-                    out var transactionExecutor);
-
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_receiving_transaction)}";
-                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionExecutor.Setup(x => x.BuildReceivingAsync(It.IsAny<BuildReceivingTransactionRequest>()))
-                    .ReturnsAsync(new BuildReceivingTransactionResponse(Base58String.Encode(transactionContext)));
-
-                ConfigureFactories(options,
-                    addressValidator,
-                    healthProvider,
-                    integrationInfoService,
-                    transactionEstimator,
-                    transactionExecutor);
-            });
-
-            //ACT
-            var transfers = new Transfer[]
-            {
-                new Transfer(
-                    new AssetId("asset"),
-                    CoinsAmount.FromDecimal(1000000000, 4),
-                    new Address("x1"),
-                    new Address("x2")),
-            };
-            var request = new BuildReceivingTransactionRequest("transactionHash", new Address("hx...1"));
-            var result = await client.BuildReceivingTransactionAsync(request);
-
-            //ASSERT
-            Assert.True(result != null);
-            Assert.True(result.TransactionContext.DecodeToString() == transactionContext);
-        }
-
-        [Test]
-        public async Task Not_supported_build_receiving_transaction()
-        {
-            //ARRANGE
-            string disease = "Disease";
-
-            var client = PrepareClient<AppSettings>((options) =>
-            {
-                CreateMocks(
-                    out var addressValidator,
-                    out var healthProvider,
-                    out var integrationInfoService,
-                    out var transactionEstimator,
-                    out var transactionExecutor);
-
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_receiving_transaction)}";
-                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionExecutor.Setup(x => x.BuildReceivingAsync(It.IsAny<BuildReceivingTransactionRequest>()))
-                    .ThrowsAsync(new OperationNotSupportedException());
-
-                ConfigureFactories(options,
-                    addressValidator,
-                    healthProvider,
-                    integrationInfoService,
-                    transactionEstimator,
-                    transactionExecutor);
-            });
-
-            //ACT && ASSERT
-
-            Assert.ThrowsAsync<NotImplementedWebApiException>(async () =>
-            {
-                var transfers = new Transfer[]
-                {
-                    new Transfer(
-                        new AssetId("asset"),
-                        CoinsAmount.FromDecimal(1000000000, 4),
-                        new Address("x1"),
-                        new Address("x2")),
-                };
-                var request = new BuildReceivingTransactionRequest("transactionHash", new Address("hx...1"));
-                var result = await client.BuildReceivingTransactionAsync(request);
-            });
-        }
-
-        [Test]
-        public async Task Bad_request_while_building_receiving_transaction()
-        {
-            //ARRANGE
-            string disease = "Disease";
-
-            var client = PrepareClient<AppSettings>((options) =>
-            {
-                CreateMocks(
-                    out var addressValidator,
-                    out var healthProvider,
-                    out var integrationInfoService,
-                    out var transactionEstimator,
-                    out var transactionExecutor);
-
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_receiving_transaction)}";
-                healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionExecutor.Setup(x => x.BuildReceivingAsync(It.IsAny<BuildReceivingTransactionRequest>()))
-                    .ThrowsAsync(new RequestValidationException("Not VALID"));
-
-                ConfigureFactories(options,
-                    addressValidator,
-                    healthProvider,
-                    integrationInfoService,
-                    transactionEstimator,
-                    transactionExecutor);
-            });
-
-            //ACT && ASSERT
-
-            Assert.ThrowsAsync<BadRequestWebApiException>(async () =>
-            {
-                var transfers = new Transfer[]
-                {
-                    new Transfer(
-                        new AssetId("asset"),
-                        CoinsAmount.FromDecimal(1000000000, 4),
-                        new Address("x1"),
-                        new Address("x2")),
-                };
-                var request = new BuildReceivingTransactionRequest("transactionHash", new Address("hx...1"));
-                var result = await client.BuildReceivingTransactionAsync(request);
+                await client.EstimateSendingTransactionAsync(request);
             });
         }
 
@@ -559,11 +436,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionExecutor.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
+                transactionBroadcaster.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
                     .Returns(Task.CompletedTask);
 
                 ConfigureFactories(options,
@@ -571,18 +449,11 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT && ASSERT
-            var transfers = new Transfer[]
-            {
-                new Transfer(
-                    new AssetId("asset"),
-                    CoinsAmount.FromDecimal(1000000000, 4),
-                    new Address("x1"),
-                    new Address("x2")),
-            };
             var request = new BroadcastTransactionRequest(Base58String.Encode(signedTransaction));
             await client.BroadcastTransactionAsync(request);
 
@@ -590,7 +461,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         }
 
         [Test]
-        public async Task Bad_request_broadcast_transaction()
+        public void Bad_request_broadcast_transaction()
         {
             //ARRANGE
             string disease = "Disease";
@@ -603,11 +474,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionExecutor.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
+                transactionBroadcaster.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
                     .ThrowsAsync(new TransactionBroadcastingException(TransactionBroadcastingError.RetryLater, "Error"));
 
                 ConfigureFactories(options,
@@ -615,44 +487,38 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT && ASSERT
             Assert.ThrowsAsync<TransactionBroadcastingWebApiException>(async () =>
             {
-                var transfers = new Transfer[]
-                {
-                    new Transfer(
-                        new AssetId("asset"),
-                        CoinsAmount.FromDecimal(1000000000, 4),
-                        new Address("x1"),
-                        new Address("x2")),
-                };
                 var request = new BroadcastTransactionRequest(Base58String.Encode(signedTransaction));
                 await client.BroadcastTransactionAsync(request);
             });
         }
 
         [Test]
-        public async Task Internal_server_error_broadcast_transaction()
+        public void Internal_server_error_broadcast_transaction()
         {
             //ARRANGE
             string disease = "Disease";
             string signedTransaction = "signedTransaction";
 
-            var client = PrepareClient<AppSettings>((options) =>
+            var client = PrepareClient<AppSettings>(options =>
             {
                 CreateMocks(
                     out var addressValidator,
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionExecutor.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
+                transactionBroadcaster.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
                     .ThrowsAsync(new Exception("Error"));
 
                 ConfigureFactories(options,
@@ -660,20 +526,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT && ASSERT
             Assert.ThrowsAsync<InternalServerErrorWebApiException>(async () =>
             {
-                var transfers = new Transfer[]
-                {
-                    new Transfer(
-                        new AssetId("asset"),
-                        CoinsAmount.FromDecimal(1000000000, 4),
-                        new Address("x1"),
-                        new Address("x2")),
-                };
                 var request = new BroadcastTransactionRequest(Base58String.Encode(signedTransaction));
                 await client.BroadcastTransactionAsync(request);
             });
@@ -694,7 +553,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var healthProvider,
                     out var integrationInfoService,
                     out var transactionEstimator,
-                    out var transactionExecutor);
+                    out var transactionBroadcaster,
+                    out var transferAmountTransactionBuilder);
 
                 var rawTransactionReadOnlyRepository = new Mock<IRawTransactionReadOnlyRepository>();
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
@@ -709,7 +569,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     healthProvider,
                     integrationInfoService,
                     transactionEstimator,
-                    transactionExecutor);
+                    transactionBroadcaster,
+                    transferAmountTransactionBuilder);
             });
 
             //ACT
@@ -724,13 +585,15 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             out Mock<IHealthProvider> healthProvider,
             out Mock<IIntegrationInfoService> integrationInfoService,
             out Mock<ITransactionEstimator> transactionEstimator,
-            out Mock<ITransactionExecutor> transactionExecutor)
+            out Mock<ITransactionBroadcaster> transactionBroadcaster,
+            out Mock<ITransferAmountTransactionsBuilder> transferAmountTransactionBuilder)
         {
             addressValidator = new Mock<IAddressValidator>();
             healthProvider = new Mock<IHealthProvider>();
             integrationInfoService = new Mock<IIntegrationInfoService>();
             transactionEstimator = new Mock<ITransactionEstimator>();
-            transactionExecutor = new Mock<ITransactionExecutor>();
+            transactionBroadcaster = new Mock<ITransactionBroadcaster>();
+            transferAmountTransactionBuilder = new Mock<ITransferAmountTransactionsBuilder>();
         }
 
         private static void ConfigureFactories(TransactionsExecutorServiceOptions<AppSettings> options,
@@ -738,13 +601,15 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             Mock<IHealthProvider> healthProvider,
             Mock<IIntegrationInfoService> integrationInfoService, 
             Mock<ITransactionEstimator> transactionEstimator,
-            Mock<ITransactionExecutor> transactionExecutor)
+            Mock<ITransactionBroadcaster> transactionBroadcaster,
+            Mock<ITransferAmountTransactionsBuilder> transferAmountTransactionBuilder)
         {
             options.AddressValidatorFactory = c => addressValidator.Object;
             options.HealthProviderFactory = c => healthProvider.Object;
             options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
             options.TransactionEstimatorFactory = c => transactionEstimator.Object;
-            options.TransactionExecutorFactory = c => transactionExecutor.Object;
+            options.TransactionBroadcasterFactory = c => transactionBroadcaster.Object;
+            options.TransferAmountTransactionsBuilderFactory = c => transferAmountTransactionBuilder.Object;
             options.DisableLogging = true;
         }
 
@@ -755,7 +620,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var prepareSettings = new AppSettings()
             {
-                Db = new DbSettings()
+                Db = new DbSettings
                 {
                     AzureDataConnString = "empty",
                     LogsConnString = "empty"
@@ -774,6 +639,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 File.Delete(_pathToSettings);
             }
+            // ReSharper disable once EmptyGeneralCatchClause
             catch
             {
             }
@@ -785,7 +651,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             where TAppSettings : BaseTransactionsExecutorSettings<DbSettings>
         {
             StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(config);
-            var client = base.CreateClientApi<StartupTemplate>("http://localhost:5000");
+            var client = CreateClientApi<StartupTemplate>("http://localhost:5000");
 
             return client;
         }

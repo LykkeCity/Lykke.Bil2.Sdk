@@ -133,9 +133,9 @@ namespace SingServiceAndTransactionsExecutorExampleClient
         {
             Console.WriteLine("Building the transaction...");
 
-            return await client.BuildSendingTransactionAsync
+            return await client.BuildTransferAmountTransactionAsync
             (
-                new BuildSendingTransactionRequest
+                new BuildTransferAmountTransactionRequest
                 (
                     new[]
                     {
@@ -156,9 +156,9 @@ namespace SingServiceAndTransactionsExecutorExampleClient
         {
             Console.WriteLine("Building the invalid transaction...");
 
-            return await client.BuildSendingTransactionAsync
+            return await client.BuildTransferAmountTransactionAsync
             (
-                new BuildSendingTransactionRequest
+                new BuildTransferAmountTransactionRequest
                 (
                     new[]
                     {

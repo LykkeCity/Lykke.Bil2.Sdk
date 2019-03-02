@@ -11,7 +11,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor
     /// </summary>
     [PublicAPI]
     [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
-    public enum SendingTransactionBuildingError
+    public enum TransactionBuildingError
     {       
         /// <summary>
         /// There is not enough balance on the some of the input address.
