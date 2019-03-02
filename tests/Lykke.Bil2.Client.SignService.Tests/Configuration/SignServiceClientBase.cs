@@ -1,12 +1,11 @@
 ﻿using Lykke.Bil2.BaseTests;
 using Lykke.Bil2.BaseTests.HttpMessageHandlers;
-using Lykke.Bil2.Client.SignService;
 using Lykke.Common.Log;
 using Lykke.Logs;
 using Lykke.Logs.Loggers.LykkeConsole;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Lykke.Bil2.SignService.Client.Tests.Configuration
+namespace Lykke.Bil2.Client.SignService.Tests.Configuration
 {
     public abstract class SignServiceClientBase : ClientTestBase
     {

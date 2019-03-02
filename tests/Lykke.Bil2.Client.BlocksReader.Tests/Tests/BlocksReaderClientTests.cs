@@ -9,7 +9,6 @@ using NUnit.Framework;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 using Lykke.Bil2.Client.BlocksReader.Tests.RabbitMq;
 using Lykke.Bil2.Contract.BlocksReader.Commands;
 using Lykke.Bil2.Contract.BlocksReader.Events;
