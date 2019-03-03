@@ -17,7 +17,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Debug\netcoreapp2.2\Lykke.Bil2.Client.TransactionsExecutor.xml</DocumentationFile>
-    <NoWarn>1701;1702;1705;1591;NU5105</NoWarn>
+    <NoWarn>1701;1702;1705;1591;5105</NoWarn>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
