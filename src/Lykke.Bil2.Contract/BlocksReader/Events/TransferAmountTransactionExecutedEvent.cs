@@ -7,10 +7,13 @@ using Newtonsoft.Json;
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
     /// <summary>
-    /// Should be published for each executed transaction in the block being read.
+    /// "Transfer amount" transactions model.
+    /// Should be published for each executed transaction in the block being read if
+    /// integration uses “transfer amount” transactions model. Integration should either
+    /// support “transfer coins” or “transfer amount” transactions model.
     /// </summary>
     [PublicAPI]
-    public class TransactionExecutedEvent
+    public class TransferAmountTransactionExecutedEvent
     {
         /// <summary>
         /// ID of the block.
@@ -19,7 +22,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public string BlockId { get; }
 
         /// <summary>
-        /// One-based number of the transaction in the block.
+        /// Number of the transaction in the block.
         /// </summary>
         [JsonProperty("transactionNumber")]
         public int TransactionNumber { get; }
@@ -35,14 +38,6 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </summary>
         [JsonProperty("balanceChanges")]
         public IReadOnlyCollection<BalanceChange> BalanceChanges { get; }
-
-        /// <summary>
-        /// Optional.
-        /// ID of the balance changes which was cancelled.
-        /// </summary>
-        [CanBeNull]
-        [JsonProperty("cancelledBalanceChanges")]
-        public IReadOnlyCollection<BalanceChangeId> CancelledBalanceChanges { get; }
 
         /// <summary>
         /// Optional.
@@ -62,22 +57,24 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public bool? IsIrreversible { get; }
 
         /// <summary>
-        /// Should be published for each executed transaction in the block being read.
+        /// "Transfer amount" transactions model.
+        /// Should be published for each executed transaction in the block being read if
+        /// integration uses “transfer amount” transactions model. Integration should either
+        /// support “transfer coins” or “transfer amount” transactions model.
         /// </summary>
-        public TransactionExecutedEvent(
+        public TransferAmountTransactionExecutedEvent(
             string blockId,
             int transactionNumber,
             string transactionId,
             IReadOnlyCollection<BalanceChange> balanceChanges,
-            IReadOnlyCollection<BalanceChangeId> cancelledBalanceChanges = null,
             IReadOnlyDictionary<AssetId, CoinsAmount> fee = null,
             bool? isIrreversible = null)
         {
             if (string.IsNullOrWhiteSpace(blockId))
                 throw new ArgumentException("Should be not empty string", nameof(blockId));
 
-            if (transactionNumber < 1)
-                throw new ArgumentOutOfRangeException(nameof(transactionNumber), transactionNumber, "Should be positive number");
+            if (transactionNumber < 0)
+                throw new ArgumentOutOfRangeException(nameof(transactionNumber), transactionNumber, "Should be zero or positive number");
 
             if (string.IsNullOrWhiteSpace(transactionId))
                 throw new ArgumentException("Should be not empty string", nameof(transactionId));
@@ -86,7 +83,6 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             TransactionNumber = transactionNumber;
             TransactionId = transactionId;
             BalanceChanges = balanceChanges ?? throw new ArgumentNullException(nameof(balanceChanges));
-            CancelledBalanceChanges = cancelledBalanceChanges;
             Fee = fee;
             IsIrreversible = isIrreversible;
         }

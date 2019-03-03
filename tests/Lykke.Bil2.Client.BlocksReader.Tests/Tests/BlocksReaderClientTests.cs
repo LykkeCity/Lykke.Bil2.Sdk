@@ -70,7 +70,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             Mock<IBlockEventsHandler> blockEventsHandler = new Mock<IBlockEventsHandler>();
             blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<BlockHeaderReadEvent>()))
                 .Returns(Task.CompletedTask).Verifiable();
-            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransactionExecutedEvent>()))
+            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransferAmountTransactionExecutedEvent>()))
+                .Returns(Task.CompletedTask).Verifiable();
+            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransferCoinsTransactionExecutedEvent>()))
                 .Returns(Task.CompletedTask).Verifiable();
             blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransactionFailedEvent>()))
                 .Returns(Task.CompletedTask).Verifiable();

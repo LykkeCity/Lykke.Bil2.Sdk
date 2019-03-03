@@ -79,7 +79,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
             }
         }
 
-        [HttpPost("sending/estimated")]
+        [HttpPost("estimated/transfers")]
         public async Task<ActionResult<EstimateSendingTransactionResponse>> EstimateSending([FromBody] EstimateSendingTransactionRequest request)
         {
             var response = await _transactionEstimator.EstimateSendingAsync(request);

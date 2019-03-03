@@ -31,11 +31,6 @@ namespace Lykke.Bil2.Contract.Tests
         public string TestAddressTagConversion(string value) => (AddressTag) value;
 
         [Test]
-        [TestCase("123", ExpectedResult = "123")]
-        [TestCase(null, ExpectedResult = null)]
-        public string TestBalanceChangeIdConversion(string value) => (BalanceChangeId) value;
-
-        [Test]
         [TestCase("123", "1234", ExpectedResult = -52)]
         [TestCase("1234", "123", ExpectedResult = 52)]
         [TestCase("123", "123", ExpectedResult = 0)]

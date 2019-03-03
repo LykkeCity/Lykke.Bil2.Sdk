@@ -93,6 +93,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             if (string.IsNullOrWhiteSpace(destinationAddress))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(destinationAddress));
 
+            if (destinationAddressTag != null && string.IsNullOrWhiteSpace(destinationAddressTag))
+                throw new RequestValidationException("Should be either null or not empty string", nameof(destinationAddressTag));
+            
             if (destinationAddressTagType.HasValue && destinationAddressTag == null)
                 throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(destinationAddressTagType), nameof(destinationAddressTag)});
 

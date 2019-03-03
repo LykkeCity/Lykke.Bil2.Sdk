@@ -26,7 +26,16 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             return Task.CompletedTask;
         }
 
-        public async Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransactionExecutedEvent evt)
+        public async Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransferAmountTransactionExecutedEvent evt)
+        {
+            var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionId, rawTransaction);
+
+            _messagePublisher.Publish(evt);
+
+            await rawTransactionSavingTask;
+        }
+
+        public async Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransferCoinsTransactionExecutedEvent evt)
         {
             var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionId, rawTransaction);
 

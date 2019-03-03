@@ -17,8 +17,7 @@ namespace Lykke.Bil2.Contract.Tests
 
             var coinToSpend = new CoinToSpend
             (
-                "1",
-                1,
+                new CoinReference("1", 1),
                 "KIN",
                 CoinsAmount.FromDecimal(100, 3),
                 "A"
@@ -74,8 +73,7 @@ namespace Lykke.Bil2.Contract.Tests
                 .Split(',')
                 .Select(asset => new CoinToSpend
                 (
-                    "1",
-                    1,
+                    new CoinReference("1", 1),
                     asset,
                     CoinsAmount.FromDecimal(100, 3),
                     "A"
@@ -123,8 +121,7 @@ namespace Lykke.Bil2.Contract.Tests
                 .Select(x => x.Split(':'))
                 .Select(x => new CoinToSpend
                 (
-                    "1",
-                    1,
+                    new CoinReference("1", 1),
                     x[0],
                     CoinsAmount.FromDecimal(int.Parse(x[1]), 3),
                     "A"
