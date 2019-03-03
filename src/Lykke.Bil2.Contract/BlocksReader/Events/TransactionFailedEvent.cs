@@ -66,8 +66,8 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (string.IsNullOrWhiteSpace(blockId))
                 throw new ArgumentException("Should be not empty string", nameof(blockId));
 
-            if (transactionNumber < 1)
-                throw new ArgumentOutOfRangeException(nameof(transactionNumber), transactionNumber, "Should be positive number");
+            if (transactionNumber < 0)
+                throw new ArgumentOutOfRangeException(nameof(transactionNumber), transactionNumber, "Should be zero or positive number");
 
             if (string.IsNullOrWhiteSpace(transactionId))
                 throw new ArgumentException("Should be not empty string", nameof(transactionId));

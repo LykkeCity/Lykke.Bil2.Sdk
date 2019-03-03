@@ -169,7 +169,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
         }
 
         [Test]
-        public async Task Not_supported_private_key_creation()
+        public void Not_supported_private_key_creation()
         {
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
@@ -197,7 +197,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
         }
 
         [Test]
-        public async Task Not_Supported_address_tag_creation()
+        public void Not_Supported_address_tag_creation()
         {
             //ARRANGE
             var address = Guid.NewGuid().ToString();

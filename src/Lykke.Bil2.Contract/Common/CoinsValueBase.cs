@@ -9,14 +9,14 @@ namespace Lykke.Bil2.Contract.Common
     /// Base coins class.
     /// </summary>
     [PublicAPI]
-    public abstract class CoinsBase
+    public abstract class CoinsValueBase
     {
         [CanBeNull]
         public string StringValue { get; }
 
         private NumberStyles _numberStyle;
 
-        protected CoinsBase(string stringValue, bool allowNegative)
+        protected CoinsValueBase(string stringValue, bool allowNegative)
         {
             if (stringValue == null)
                 throw new ArgumentNullException(nameof(stringValue));
@@ -44,7 +44,7 @@ namespace Lykke.Bil2.Contract.Common
             return roundedValue.ToString($"0.{new string('0', accuracy)}", CultureInfo.InvariantCulture);
         }
 
-        public static implicit operator decimal(CoinsBase value)
+        public static implicit operator decimal(CoinsValueBase value)
         {
             return value.ToDecimal();
         }

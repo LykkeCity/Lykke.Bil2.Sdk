@@ -19,14 +19,14 @@ namespace BlocksReaderExample.Services
             await listener.HandleExecutedTransactionAsync
             (
                 "raw-transaction".ToBase58(),
-                new TransactionExecutedEvent
+                new TransferAmountTransactionExecutedEvent
                 (
                     blockId,
                     1,
                     Guid.NewGuid().ToString("N"),
                     new List<BalanceChange>
                     {
-                        new BalanceChange("1", "1", "STEEM", CoinsChange.FromDecimal(123, 4), "abc")
+                        new BalanceChange("1", "STEEM", CoinsChange.FromDecimal(123, 4), "abc")
                     },
                     isIrreversible: true
                 )

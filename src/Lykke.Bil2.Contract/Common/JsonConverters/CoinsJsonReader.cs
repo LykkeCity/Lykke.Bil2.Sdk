@@ -7,7 +7,7 @@ namespace Lykke.Bil2.Contract.Common.JsonConverters
     internal sealed class CoinsJsonReader
     {
         public TTarget ReadJson<TTarget>(JsonReader reader, Func<string, TTarget> factory)
-            where TTarget : CoinsBase
+            where TTarget : CoinsValueBase
         {
             if (reader.TokenType == JsonToken.Null)
             {
