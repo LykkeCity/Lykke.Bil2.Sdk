@@ -22,7 +22,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// Should return some general service info. Used to check if the service is running.
         /// </summary>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/isalive")]
         Task<TransactionsExecutorIsAliveResponse> GetIsAliveAsync();
@@ -31,7 +31,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// Should return information about running integration. All required information could be gathered synchronously in the call.
         /// </summary>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/integration-info")]
         Task<IntegrationInfoResponse> GetIntegrationInfoAsync();
@@ -41,7 +41,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// </summary>
         /// <exception cref="BadRequestWebApiException">Invalid request parameters</exception>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/addresses/{address}/validity")]
         Task<AddressValidityResponse> GetAddressValidityAsync(string address, [Query] AddressTagType? tagType = null, [Query] string tag = null);
@@ -53,7 +53,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="BadRequestWebApiException">Invalid request parameters</exception>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
         /// <exception cref="NotImplementedWebApiException">Method is not implemented by the blockchain integration</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/addresses/{address}/formats")]
         Task<AddressFormatsResponse> GetAddressFormatsAsync(string address);
@@ -73,7 +73,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// </exception>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
         /// <exception cref="NotImplementedWebApiException">Method is not implemented by the blockchain integration</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Post("/api/transactions/built/transfers/amount")]
         [ExceptionMapper(typeof(TransactionBuildingExceptionMapper))]
@@ -94,7 +94,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// </exception>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
         /// <exception cref="NotImplementedWebApiException">Method is not implemented by the blockchain integration</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Post("/api/transactions/built/transfers/coins")]
         [ExceptionMapper(typeof(TransactionBuildingExceptionMapper))]
@@ -108,7 +108,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// estimate the transaction with exactly the same parameters.
         /// </exception>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Post("/api/transactions/estimated/transfers")]
         Task<EstimateSendingTransactionResponse> EstimateSendingTransactionAsync([Body] EstimateSendingTransactionRequest body);
@@ -128,7 +128,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="InternalServerErrorWebApiException">
         /// Transient server error. It’s not guaranteed if transaction was broadcasted to the blockchain or not.
         /// </exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Post("/api/transactions/broadcasted")]
         [ExceptionMapper(typeof(TransactionBroadcastingExceptionMapper))]
@@ -139,7 +139,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// </summary>
         /// <exception cref="BadRequestWebApiException">Invalid request parameters</exception>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/transactions/{transactionId}/raw")]
         Task<RawTransactionResponse> GetRawTransactionAsync(string transactionId);
