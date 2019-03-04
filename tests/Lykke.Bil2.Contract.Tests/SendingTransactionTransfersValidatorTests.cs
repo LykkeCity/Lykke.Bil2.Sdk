@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
+using Lykke.Numerics.Money;
 using NUnit.Framework;
 
 namespace Lykke.Bil2.Contract.Tests
@@ -18,7 +20,7 @@ namespace Lykke.Bil2.Contract.Tests
                 new Transfer
                 ( 
                     "STEEM",
-                    CoinsAmount.FromDecimal(100, 3),
+                    Money.Create(100, 3).ToCoinsAmount(),
                     "A",
                     "B"
                 )
@@ -46,21 +48,21 @@ namespace Lykke.Bil2.Contract.Tests
                 new Transfer
                 ( 
                     asset1,
-                    CoinsAmount.FromDecimal(100, 3),
+                    Money.Create(100, 3).ToCoinsAmount(),
                     source1,
                     destination1
                 ),
                 new Transfer
                 ( 
                     asset2,
-                    CoinsAmount.FromDecimal(80, 5),
+                    Money.Create(80, 5).ToCoinsAmount(),
                     source2,
                     destination2
                 ),
                 new Transfer
                 ( 
                     asset3,
-                    CoinsAmount.FromDecimal(80, 5),
+                    Money.Create(80, 5).ToCoinsAmount(),
                     source3,
                     destination3
                 )
@@ -87,14 +89,14 @@ namespace Lykke.Bil2.Contract.Tests
                 new Transfer
                 (
                     "XRP",
-                    CoinsAmount.FromDecimal(100, 3),
+                    Money.Create(100, 3).ToCoinsAmount(),
                     "A",
                     "B"
                 ),
                 new Transfer
                 (
                     "XRP",
-                    CoinsAmount.FromDecimal(80, 5),
+                    Money.Create(80, 5).ToCoinsAmount(),
                     "A",
                     "B"
                 )

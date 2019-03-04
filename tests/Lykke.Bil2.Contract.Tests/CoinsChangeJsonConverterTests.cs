@@ -14,11 +14,11 @@ namespace Lykke.Bil2.Contract.Tests
 
         [Test]
         [TestCase("-10.1230", ExpectedResult = "{\"Amount\":\"-10.1230\"}")]
-        public string Can_be_serailized(string stringValue)
+        public string Can_be_serialized(string stringValue)
         {
             var obj = new TypeWithCoinsChangeProperty
             {
-                Amount = CoinsChange.Create(stringValue)
+                Amount = CoinsChange.Parse(stringValue)
             };
 
             return JsonConvert.SerializeObject(obj);
@@ -26,15 +26,15 @@ namespace Lykke.Bil2.Contract.Tests
 
         [Test]
         [TestCase("{\"Amount\":\"-0.553000\"}", ExpectedResult = "-0.553000")]
-        public string Can_be_deserailized(string json)
+        public string Can_be_deserialized(string json)
         {
             var obj = JsonConvert.DeserializeObject<TypeWithCoinsChangeProperty>(json);
 
-            return obj.Amount.StringValue;
+            return obj.Amount.ToString();
         }
 
         [Test]
-        public void Null_can_be_deserailized()
+        public void Null_can_be_deserialized()
         {
             var obj = JsonConvert.DeserializeObject<TypeWithCoinsChangeProperty>("{\"Amount\":null}");
 

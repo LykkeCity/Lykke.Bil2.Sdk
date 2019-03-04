@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Numerics.Money;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
@@ -48,10 +49,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             if (multiplier.HasValue && exact != null)
                 throw new RequestValidationException($"Only one of multiplier or exact values can be specified. Multiplier: {multiplier}, exact: {exact}", new [] {nameof(multiplier), nameof(exact)});
 
-            if (limit <= 0)
+            if (limit <= Money.Zero)
                 throw RequestValidationException.ShouldBePositiveNumber(limit, nameof(limit));
 
-            if (exact <= 0)
+            if (exact <= Money.Zero)
                 throw RequestValidationException.ShouldBePositiveNumber(exact, nameof(exact));
 
             if (multiplier <= 0)

@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.Common.JsonConverters;
+using Lykke.Numerics.Money;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.Common
@@ -12,24 +13,12 @@ namespace Lykke.Bil2.Contract.Common
     [JsonConverter(typeof(CoinsAmountJsonConverter))]
     public sealed class CoinsAmount : CoinsBase
     {
-        private CoinsAmount(string stringValue) : 
-            base(stringValue, allowNegative: false)
+        public CoinsAmount(Money value) : 
+            base(value, allowNegative: false)
         {
         }
 
-        public static CoinsAmount Create(string stringValue)
-        {
-            return new CoinsAmount(stringValue);
-        }
-
-        public static CoinsAmount FromDecimal(decimal value, int accuracy)
-        {
-            if (value < 0)
-                throw new CoinsConversionException("Only zero and positive values are allowed", value);
-
-            var stringValue = DecimalToString(value, accuracy);
-
-            return new CoinsAmount(stringValue);
-        }
+        public static CoinsAmount Parse(string value)
+            => Parse(value, v => new CoinsAmount(v));
     }
 }

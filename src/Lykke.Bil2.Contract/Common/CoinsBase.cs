@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Globalization;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Numerics.Money;
 
 namespace Lykke.Bil2.Contract.Common
 {
@@ -11,52 +11,36 @@ namespace Lykke.Bil2.Contract.Common
     [PublicAPI]
     public abstract class CoinsBase
     {
-        [CanBeNull]
-        public string StringValue { get; }
+        private readonly Money _value;
 
-        private NumberStyles _numberStyle;
-
-        protected CoinsBase(string stringValue, bool allowNegative)
+        protected CoinsBase(Money value, bool allowNegative)
         {
-            if (stringValue == null)
-                throw new ArgumentNullException(nameof(stringValue));
-
-            _numberStyle = allowNegative
-                ? NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign
-                : NumberStyles.AllowDecimalPoint;
-
-            if (!decimal.TryParse(stringValue, _numberStyle, CultureInfo.InvariantCulture, out var decimalValue))
-                throw new CoinsConversionException("Value can't be parsed as decimal", stringValue);
-
-            if (!allowNegative && decimalValue < 0)
-                throw new CoinsConversionException("Negative values are not allowed", stringValue);
-
-            StringValue = stringValue;
-        }
-
-        protected static string DecimalToString(decimal value, int accuracy)
-        {
-            if (accuracy < 0 || accuracy > 28)
-                throw new CoinsConversionException($"Asset accuracy should be number in the range [0..28], but is [{accuracy}]", value);
+            if (!allowNegative && value < Money.Zero)
+                throw new CoinsConversionException("Negative values are not allowed", value);
             
-            var roundedValue = Math.Round(value, accuracy);
-
-            return roundedValue.ToString($"0.{new string('0', accuracy)}", CultureInfo.InvariantCulture);
-        }
-
-        public static implicit operator decimal(CoinsBase value)
-        {
-            return value.ToDecimal();
-        }
-
-        public decimal ToDecimal()
-        {
-            return decimal.Parse(StringValue, _numberStyle, CultureInfo.InvariantCulture);
+            _value = value;
         }
 
         public override string ToString()
         {
-            return StringValue;
+            return _value.ToString();
+        }
+
+        protected static T Parse<T>(string value, Func<Money, T> factory)
+            where T : CoinsBase
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+            
+            if (!Money.TryParse(value, out var moneyValue))
+                throw new CoinsConversionException("Value can't be parsed as Money", value);
+
+            return factory.Invoke(moneyValue);
+        }
+        
+        public static implicit operator Money(CoinsBase value)
+        {
+            return value._value;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Lykke.Bil2.Contract.Common.JsonConverters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
             JsonSerializer serializer)
         {
-            return _reader.ReadJson(reader, CoinsAmount.Create);
+            return _reader.ReadJson(reader, CoinsAmount.Parse);
         }
 
         public override bool CanConvert(Type objectType)

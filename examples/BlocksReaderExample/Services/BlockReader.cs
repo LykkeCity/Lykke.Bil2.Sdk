@@ -5,6 +5,7 @@ using Lykke.Bil2.Contract.BlocksReader.Events;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Sdk.BlocksReader.Services;
+using Lykke.Numerics.Money;
 
 namespace BlocksReaderExample.Services
 {
@@ -26,7 +27,7 @@ namespace BlocksReaderExample.Services
                     Guid.NewGuid().ToString("N"),
                     new List<BalanceChange>
                     {
-                        new BalanceChange("1", "1", "STEEM", CoinsChange.FromDecimal(123, 4), "abc")
+                        new BalanceChange("1", "1", "STEEM", Money.Create(123, 4).ToCoinsChange(), "abc")
                     },
                     isIrreversible: true
                 )

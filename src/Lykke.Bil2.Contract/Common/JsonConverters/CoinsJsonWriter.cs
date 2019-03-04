@@ -12,7 +12,7 @@ namespace Lykke.Bil2.Contract.Common.JsonConverters
             }
             else if (value is CoinsBase coins)
             {
-                writer.WriteValue(coins.StringValue);
+                writer.WriteValue(coins.ToString());
             }
             else
             {

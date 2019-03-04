@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Numerics.Money;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
@@ -84,7 +85,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             if (string.IsNullOrWhiteSpace(assetId))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
 
-            if(amount <= 0)
+            if(amount <= Money.Zero)
                 throw RequestValidationException.ShouldBePositiveNumber(amount, nameof(amount));
 
             if (string.IsNullOrWhiteSpace(sourceAddress))
