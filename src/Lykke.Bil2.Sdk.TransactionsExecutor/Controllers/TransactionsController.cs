@@ -20,20 +20,20 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
         private readonly ITransferAmountTransactionsBuilder _transferAmountTransactionsBuilder;
         private readonly ITransferCoinsTransactionsBuilder _transferCoinsTransactionsBuilder;
         private readonly ITransactionBroadcaster _transactionBroadcaster;
-        private readonly ITransactionEstimator _transactionEstimator;
+        private readonly ITransferAmountTransactionEstimator _transferAmountTransactionEstimator;
         private readonly IRawTransactionReadOnlyRepository _rawTransactionsRepository;
 
         public TransactionsController(
             ITransferAmountTransactionsBuilder transferAmountTransactionsBuilder,
             ITransferCoinsTransactionsBuilder transferCoinsTransactionsBuilder,
             ITransactionBroadcaster transactionBroadcaster,
-            ITransactionEstimator transactionEstimator,
+            ITransferAmountTransactionEstimator transferAmountTransactionEstimator,
             IRawTransactionReadOnlyRepository rawTransactionsRepository)
         {
             _transferAmountTransactionsBuilder = transferAmountTransactionsBuilder ?? throw new ArgumentNullException(nameof(transferAmountTransactionsBuilder));
             _transferCoinsTransactionsBuilder = transferCoinsTransactionsBuilder ?? throw new ArgumentNullException(nameof(transferCoinsTransactionsBuilder));
             _transactionBroadcaster = transactionBroadcaster ?? throw new ArgumentNullException(nameof(transactionBroadcaster));
-            _transactionEstimator = transactionEstimator ?? throw new ArgumentNullException(nameof(transactionEstimator));
+            _transferAmountTransactionEstimator = transferAmountTransactionEstimator ?? throw new ArgumentNullException(nameof(transferAmountTransactionEstimator));
             _rawTransactionsRepository = rawTransactionsRepository ?? throw new ArgumentNullException(nameof(rawTransactionsRepository));
         }
 
@@ -79,10 +79,10 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
             }
         }
 
-        [HttpPost("estimated/transfers")]
-        public async Task<ActionResult<EstimateSendingTransactionResponse>> EstimateSending([FromBody] EstimateSendingTransactionRequest request)
+        [HttpPost("estimated/transfers/amount")]
+        public async Task<ActionResult<EstimateTransactionResponse>> EstimateTransferAmount([FromBody] EstimateTransferAmountTransactionRequest request)
         {
-            var response = await _transactionEstimator.EstimateSendingAsync(request);
+            var response = await _transferAmountTransactionEstimator.EstimateTransferAmountAsync(request);
             if (response == null)
             {
                 throw new InvalidOperationException("Not null response object expected");

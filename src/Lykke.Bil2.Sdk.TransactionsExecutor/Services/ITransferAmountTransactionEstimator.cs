@@ -9,10 +9,12 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Services
     /// <summary>
     /// Transaction fee estimator
     /// </summary>
-    public interface ITransactionEstimator
+    public interface ITransferAmountTransactionEstimator
     {
         /// <summary>
-        /// Should estimate the transaction fee.
+        /// "Transfer amount" transactions model.
+        /// Should estimate the transaction fee if integration uses “transfer amount” transactions model.
+        /// Integration should either support “transfer coins”  or “transfer amount” transactions model.
         /// </summary>
         /// <exception cref="RequestValidationException">
         /// Should be thrown if a transaction can’t be estimated with the given parameters and it will be never possible to
@@ -23,6 +25,6 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Services
         /// Should be thrown if there are any other errors.
         /// Likely a temporary issue with infrastructure or configuration, request should be repeated later.
         /// </exception>
-        Task<EstimateSendingTransactionResponse> EstimateSendingAsync(EstimateSendingTransactionRequest request);
+        Task<EstimateTransactionResponse> EstimateTransferAmountAsync(EstimateTransferAmountTransactionRequest request);
     }
 }

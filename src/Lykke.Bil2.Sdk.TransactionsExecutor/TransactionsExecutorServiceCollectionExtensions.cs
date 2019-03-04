@@ -91,7 +91,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
             services.AddTransient(s => options.AddressValidatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.HealthProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.IntegrationInfoServiceFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
-            services.AddTransient(s => options.TransactionEstimatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+            services.AddTransient(s => options.TransferAmountTransactionEstimatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransferAmountTransactionsBuilderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransferCoinsTransactionsBuilderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransactionBroadcasterFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
@@ -129,10 +129,10 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
                     $"{nameof(options)}.{nameof(options.IntegrationInfoServiceFactory)} is required.");
             }
 
-            if (options.TransactionEstimatorFactory == null)
+            if (options.TransferAmountTransactionEstimatorFactory == null)
             {
                 throw new InvalidOperationException(
-                    $"{nameof(options)}.{nameof(options.TransactionEstimatorFactory)} is required.");
+                    $"{nameof(options)}.{nameof(options.TransferAmountTransactionEstimatorFactory)} is required.");
             }
 
             if (options.TransactionBroadcasterFactory == null)
