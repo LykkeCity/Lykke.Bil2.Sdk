@@ -223,7 +223,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Address("x1"),
                     new Address("x2")),
             };
-            var request = new BuildTransferAmountTransactionRequest(transfers, new FeeOptions());
+            var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, CoinsAmount>());
             var result = await client.BuildTransferAmountTransactionAsync(request);
 
             //ASSERT
@@ -276,7 +276,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new BuildTransferAmountTransactionRequest(transfers, new FeeOptions());
+                var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, CoinsAmount>());
                 await client.BuildTransferAmountTransactionAsync(request);
             });
         }
@@ -328,7 +328,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new BuildTransferAmountTransactionRequest(transfers, new FeeOptions());
+                var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, CoinsAmount>());
                 await client.BuildTransferAmountTransactionAsync(request);
             });
         }
@@ -379,7 +379,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Address("x1"),
                     new Address("x2")),
             };
-            var request = new EstimateSendingTransactionRequest(transfers, new FeeOptions());
+            var request = new EstimateSendingTransactionRequest(transfers);
             var result = await client.EstimateSendingTransactionAsync(request);
 
             //ASSERT
@@ -432,7 +432,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new EstimateSendingTransactionRequest(transfers, new FeeOptions());
+                var request = new EstimateSendingTransactionRequest(transfers);
                 await client.EstimateSendingTransactionAsync(request);
             });
         }
