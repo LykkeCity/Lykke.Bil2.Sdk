@@ -24,6 +24,7 @@ namespace Lykke.Bil2.Contract.Tests
             );
             var coinToReceive = new CoinToReceive
             (
+                0,
                 "KIN",
                 CoinsAmount.FromDecimal(100, 3),
                 "A"
@@ -81,8 +82,9 @@ namespace Lykke.Bil2.Contract.Tests
                 .ToArray();
             var coinsToReceive = assetsToReceive
                 .Split(',')
-                .Select(asset => new CoinToReceive
+                .Select((asset, i) => new CoinToReceive
                 (
+                    i,
                     asset,
                     CoinsAmount.FromDecimal(100, 3),
                     "A"
@@ -103,16 +105,23 @@ namespace Lykke.Bil2.Contract.Tests
 
         [Test]
         [TestCase("KIN:100","KIN:100", false)]
+        [TestCase("KIN:100","KIN:90", false)]
+        [TestCase("KIN:100","KIN:110", true)]
         [TestCase("KIN:100,KIN:200","KIN:300", false)]
+        [TestCase("KIN:100,KIN:200","KIN:290", false)]
+        [TestCase("KIN:100,KIN:200","KIN:310", true)]
         [TestCase("KIN:100,KIN:200","KIN:150,KIN:150", false)]
+        [TestCase("KIN:100,KIN:200","KIN:150,KIN:140", false)]
+        [TestCase("KIN:100,KIN:200","KIN:150,KIN:160", true)]
         [TestCase("KIN:100,KIN:200,STEEM:100","KIN:150,KIN:150,STEEM:70,STEEM:30", false)]
+        [TestCase("KIN:100,KIN:200,STEEM:100","KIN:150,KIN:150,STEEM:70,STEEM:20", false)]
+        [TestCase("KIN:100,KIN:200,STEEM:100","KIN:150,KIN:150,STEEM:70,STEEM:40", true)]
         [TestCase("KIN:100,KIN:200,STEEM:100,RSK:50","KIN:150,KIN:150,STEEM:70,STEEM:30,RSK:50", false)]
-        [TestCase("KIN:100,KIN:200,STEEM:100,RSK:50","KIN:150,KIN:160,STEEM:70,STEEM:30,RSK:40", true)]
+        [TestCase("KIN:100,KIN:200,STEEM:100,RSK:50","KIN:150,KIN:150,STEEM:70,STEEM:30,RSK:40", false)]
+        [TestCase("KIN:100,KIN:200,STEEM:100,RSK:50","KIN:150,KIN:150,STEEM:70,STEEM:30,RSK:60", true)]
         [TestCase("KIN:100,KIN:200,STEEM:100,RSK:50","KIN:300", true)]
         [TestCase("KIN:100,KIN:200,STEEM:100,RSK:50","KIN:450", true)]
-        [TestCase("KIN:100,KIN:200","KIN:400", true)]
-        [TestCase("KIN:100,KIN:200","KIN:200", true)]
-        public void Test_that_sum_of_coins_to_send_and_to_receive_matches_for_each_assets(string assetsToSpend, string assetsToReceive, bool shouldThrow)
+        public void Test_that_sum_of_coins_to_send_equal_or_greater_than_sum_to_receive_for_each_assets(string assetsToSpend, string assetsToReceive, bool shouldThrow)
         {
             // Arrange
 
@@ -130,8 +139,9 @@ namespace Lykke.Bil2.Contract.Tests
             var coinsToReceive = assetsToReceive
                 .Split(',')
                 .Select(x => x.Split(':'))
-                .Select(x => new CoinToReceive
+                .Select((x, i) => new CoinToReceive
                 (
+                    i,
                     x[0],
                     CoinsAmount.FromDecimal(int.Parse(x[1]), 3),
                     "A"
@@ -147,6 +157,45 @@ namespace Lykke.Bil2.Contract.Tests
             else
             {
                 Assert.DoesNotThrow(() => TransactionCoinsValidator.Validate(coinsToSpend, coinsToReceive));
+            }
+        }
+
+        [Test]
+        [TestCase("0", false)]
+        [TestCase("0,1,2,3", false)]
+        [TestCase("0,3,1,2", false)]
+        [TestCase("1", true)]
+        [TestCase("3", true)]
+        [TestCase("1,2", true)]
+        [TestCase("0,1,2,4", true)]
+        [TestCase("0,2,4,1", true)]
+        public void Test_that_coins_to_receive_should_be_numbers_in_a_row_starting_from_zero(string coinsToReceiveNumbers, bool shouldThrow)
+        {
+            var coinToSpend = new CoinToSpend
+            (
+                new CoinReference("1", 1),
+                "KIN",
+                CoinsAmount.FromDecimal(100, 3),
+                "A"
+            );
+            var coinsToReceive = coinsToReceiveNumbers
+                .Split(',')
+                .Select(x => new CoinToReceive
+                (
+                    int.Parse(x),
+                    "KIN",
+                    CoinsAmount.FromDecimal(1, 3),
+                    "B"
+                ))
+                .ToArray();
+
+            if (shouldThrow)
+            {
+                Assert.Throws<RequestValidationException>(() => TransactionCoinsValidator.Validate(new[] {coinToSpend}, coinsToReceive));
+            }
+            else
+            {
+                Assert.DoesNotThrow(() => TransactionCoinsValidator.Validate(new[] {coinToSpend}, coinsToReceive));
             }
         }
     }

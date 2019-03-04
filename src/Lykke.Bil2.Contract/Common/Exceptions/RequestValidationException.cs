@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.Common.Exceptions
 {
@@ -82,7 +83,7 @@ namespace Lykke.Bil2.Contract.Common.Exceptions
 
             sb.AppendLine(message);
             sb.AppendLine($"Parameter: {parameterName}");
-            sb.AppendLine($"Actual value: {actualValue}");
+            sb.AppendLine($"Actual value: {RenderValue(actualValue)}");
 
             return sb.ToString();
         }
@@ -114,6 +115,33 @@ namespace Lykke.Bil2.Contract.Common.Exceptions
             }
 
             return sb.ToString();
+        }
+
+        private static string RenderValue(object value)
+        {
+            if (value == null)
+            {
+                return "[null]";
+            }
+
+            var type = value.GetType();
+
+            if(type == typeof(string))
+            {
+                return value.ToString();
+            }
+
+            if (type.IsPrimitive)
+            {
+                return value.ToString();
+            }
+
+            if (type.IsValueType)
+            {
+                return value.ToString();
+            }
+
+            return JsonConvert.SerializeObject(value, Formatting.Indented);
         }
     }
 }

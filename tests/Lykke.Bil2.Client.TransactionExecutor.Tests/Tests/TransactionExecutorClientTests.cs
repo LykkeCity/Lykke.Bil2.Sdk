@@ -383,7 +383,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var result = await client.EstimateSendingTransactionAsync(request);
 
             //ASSERT
-            var estimation = result.AssetEstimatedFee.First();
+            var estimation = result.EstimatedFee.First();
             Assert.True(result != null);
             Assert.True(estimation.Key == "asset");
             Assert.True(estimation.Value.ToDecimal() == CoinsAmount.FromDecimal(1000, 4).ToDecimal());
