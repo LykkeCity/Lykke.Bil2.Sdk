@@ -12,12 +12,6 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
     public class FeeOptions
     {
         /// <summary>
-        /// Type of the fee.
-        /// </summary>
-        [JsonProperty("type")]
-        public FeeType Type { get; }
-
-        /// <summary>
         /// Optional.
         /// Fee options for particular asset ID.
         /// </summary>
@@ -28,9 +22,8 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Transaction fee options
         /// </summary>
-        public FeeOptions(FeeType type, IReadOnlyDictionary<AssetId, AssetFeeOptions> assetOptions = null)
+        public FeeOptions(IReadOnlyDictionary<AssetId, AssetFeeOptions> assetOptions = null)
         {
-            Type = type;
             AssetOptions = assetOptions;
         }
     }

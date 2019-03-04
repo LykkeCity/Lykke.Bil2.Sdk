@@ -147,7 +147,7 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new FeeOptions(FeeType.AddToAmount)
+                    new FeeOptions()
                 )
             );
         }
@@ -177,7 +177,7 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new FeeOptions(FeeType.AddToAmount)
+                    new FeeOptions()
                 )
             );
         }
