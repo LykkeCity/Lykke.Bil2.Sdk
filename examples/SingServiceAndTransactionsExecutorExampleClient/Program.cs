@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Bil2.Client.SignService;
 using Lykke.Bil2.Client.TransactionsExecutor;
@@ -147,7 +148,7 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new FeeOptions()
+                    new Dictionary<AssetId, CoinsAmount>()
                 )
             );
         }
@@ -177,7 +178,7 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new FeeOptions()
+                    new Dictionary<AssetId, CoinsAmount>()
                 )
             );
         }

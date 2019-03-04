@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common.Exceptions;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
@@ -24,12 +23,6 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         public IReadOnlyCollection<CoinToReceive> CoinsToReceive { get; }
 
         /// <summary>
-        /// Fee options.
-        /// </summary>
-        [JsonProperty("fee")]
-        public FeeOptions Fee { get; }
-
-        /// <summary>
         /// Optional.
         /// Transaction expiration options. If omitted and
         /// blockchain requires transaction expiration to be
@@ -49,14 +42,12 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         public BuildTransferCoinsTransactionRequest(
             IReadOnlyCollection<CoinToSpend> coinsToSpend, 
             IReadOnlyCollection<CoinToReceive> coinsToReceive,
-            FeeOptions fee, 
             ExpirationOptions expiration = null)
         {
             TransactionCoinsValidator.Validate(coinsToSpend, coinsToReceive);
 
             CoinsToSpend = coinsToSpend;
             CoinsToReceive = coinsToReceive;
-            Fee = fee ?? throw RequestValidationException.ShouldBeNotNull(nameof(fee));
             Expiration = expiration;
         }
     }
