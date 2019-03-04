@@ -18,6 +18,8 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
     [PublicAPI]
     public interface ITransactionsExecutorApi
     {
+        #region General
+
         /// <summary>
         /// Should return some general service info. Used to check if the service is running.
         /// </summary>
@@ -35,6 +37,11 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/integration-info")]
         Task<IntegrationInfoResponse> GetIntegrationInfoAsync();
+
+        #endregion
+
+
+        #region Addresses
 
         /// <summary>
         /// Should check and return address validity.
@@ -58,6 +65,11 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         [Get("/api/addresses/{address}/formats")]
         Task<AddressFormatsResponse> GetAddressFormatsAsync(string address);
 
+        #endregion
+
+
+        #region Transactions building
+
         /// <summary>
         /// "Transfer amount" transactions model.
         /// Should build a not signed transaction which sends funds if integration uses “transfer amount” transactions model.
@@ -80,8 +92,8 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         Task<BuildTransactionResponse> BuildTransferAmountTransactionAsync([Body] BuildTransferAmountTransactionRequest body);
 
         /// <summary>
-        /// "Transfer amount" transactions model.
-        /// Should build a not signed transaction which sends funds if integration uses “transfer amount” transactions model.
+        /// "Transfer coins" transactions model.
+        /// Should build a not signed transaction which sends funds if integration uses “transfer coins” transactions model.
         /// Integration should either support “transfer coins”  or “transfer amount” transactions model.
         /// </summary>
         /// <exception cref="BadRequestWebApiException">
@@ -100,8 +112,15 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         [ExceptionMapper(typeof(TransactionBuildingExceptionMapper))]
         Task<BuildTransactionResponse> BuildTransferCoinsTransactionAsync([Body] BuildTransferCoinsTransactionRequest body);
 
+        #endregion
+
+
+        #region Transactions fee estimation
+
         /// <summary>
-        /// Should estimate the transaction fee.
+        /// "Transfer amount" transactions model.
+        /// Should estimate the transaction fee if integration uses “transfer amount” transactions model.
+        /// Integration should either support “transfer coins”  or “transfer amount” transactions model.
         /// </summary>
         /// <exception cref="BadRequestWebApiException">
         /// Transaction can’t be estimated with the given parameters and it will be never possible to
@@ -110,8 +129,13 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
         /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
-        [Post("/api/transactions/estimated/transfers")]
-        Task<EstimateSendingTransactionResponse> EstimateSendingTransactionAsync([Body] EstimateSendingTransactionRequest body);
+        [Post("/api/transactions/estimated/transfers/amount")]
+        Task<EstimateTransactionResponse> EstimateTransferAmountTransactionAsync([Body] EstimateTransferAmountTransactionRequest body);
+
+        #endregion
+
+
+        #region Transactions broadcasting
 
         /// <summary>
         /// Should broadcast the signed transaction to the blockchain.
@@ -134,6 +158,11 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         [ExceptionMapper(typeof(TransactionBroadcastingExceptionMapper))]
         Task BroadcastTransactionAsync([Body] BroadcastTransactionRequest body);
 
+        #endregion
+
+
+        #region Raw Transactions
+
         /// <summary>
         /// Should return raw transaction by its id.
         /// </summary>
@@ -143,5 +172,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/transactions/{transactionId}/raw")]
         Task<RawTransactionResponse> GetRawTransactionAsync(string transactionId);
+
+        #endregion
     }
 }

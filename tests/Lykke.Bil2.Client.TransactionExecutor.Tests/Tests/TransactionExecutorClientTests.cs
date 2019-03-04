@@ -69,7 +69,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 options.AddressValidatorFactory = c => addressValidator.Object;
                 options.HealthProviderFactory = c => healthProvider.Object;
                 options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-                options.TransactionEstimatorFactory = c => transactionEstimator.Object;
+                options.TransferAmountTransactionEstimatorFactory = c => transactionEstimator.Object;
                 options.TransactionBroadcasterFactory = c => transactionBroadcaster.Object;
                 options.TransferAmountTransactionsBuilderFactory = c => transferAmountTransactionBuilder.Object;
                 options.DisableLogging = true;
@@ -334,7 +334,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         }
 
         [Test]
-        public async Task Estimate_sending_transaction()
+        public async Task Estimate_transfer_amount_transaction()
         {
             //ARRANGE
             string disease = "Disease";
@@ -355,10 +355,10 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transferAmountTransactionBuilder,
                     out var addressFormatsProvider);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Estimate_sending_transaction)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Estimate_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionEstimator.Setup(x => x.EstimateSendingAsync(It.IsAny<EstimateSendingTransactionRequest>()))
-                    .ReturnsAsync(new EstimateSendingTransactionResponse(dict));
+                transactionEstimator.Setup(x => x.EstimateTransferAmountAsync(It.IsAny<EstimateTransferAmountTransactionRequest>()))
+                    .ReturnsAsync(new EstimateTransactionResponse(dict));
 
                 ConfigureFactories(options,
                     addressValidator,
@@ -379,8 +379,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Address("x1"),
                     new Address("x2")),
             };
-            var request = new EstimateSendingTransactionRequest(transfers);
-            var result = await client.EstimateSendingTransactionAsync(request);
+            var request = new EstimateTransferAmountTransactionRequest(transfers);
+            var result = await client.EstimateTransferAmountTransactionAsync(request);
 
             //ASSERT
             var estimation = result.EstimatedFee.First();
@@ -390,7 +390,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         }
 
         [Test]
-        public void Bad_request_while_estimating_sending_transaction()
+        public void Bad_request_while_estimating_transfer_amount_transaction()
         {
             //ARRANGE
             string disease = "Disease";
@@ -406,9 +406,9 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transferAmountTransactionBuilder,
                     out var addressFormatsProvider);
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_estimating_sending_transaction)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_estimating_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
-                transactionEstimator.Setup(x => x.EstimateSendingAsync(It.IsAny<EstimateSendingTransactionRequest>()))
+                transactionEstimator.Setup(x => x.EstimateTransferAmountAsync(It.IsAny<EstimateTransferAmountTransactionRequest>()))
                     .ThrowsAsync(new RequestValidationException("Not VALID"));
 
                 ConfigureFactories(options,
@@ -432,8 +432,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new EstimateSendingTransactionRequest(transfers);
-                await client.EstimateSendingTransactionAsync(request);
+                var request = new EstimateTransferAmountTransactionRequest(transfers);
+                await client.EstimateTransferAmountTransactionAsync(request);
             });
         }
 
@@ -663,7 +663,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         private static void CreateMocks(out Mock<IAddressValidator> addressValidator,
             out Mock<IHealthProvider> healthProvider,
             out Mock<IIntegrationInfoService> integrationInfoService,
-            out Mock<ITransactionEstimator> transactionEstimator,
+            out Mock<ITransferAmountTransactionEstimator> transactionEstimator,
             out Mock<ITransactionBroadcaster> transactionBroadcaster,
             out Mock<ITransferAmountTransactionsBuilder> transferAmountTransactionBuilder,
             out Mock<IAddressFormatsProvider> addressFormatsProvider)
@@ -671,7 +671,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             addressValidator = new Mock<IAddressValidator>();
             healthProvider = new Mock<IHealthProvider>();
             integrationInfoService = new Mock<IIntegrationInfoService>();
-            transactionEstimator = new Mock<ITransactionEstimator>();
+            transactionEstimator = new Mock<ITransferAmountTransactionEstimator>();
             transactionBroadcaster = new Mock<ITransactionBroadcaster>();
             transferAmountTransactionBuilder = new Mock<ITransferAmountTransactionsBuilder>();
             addressFormatsProvider = new Mock<IAddressFormatsProvider>();
@@ -681,7 +681,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             Mock<IAddressValidator> addressValidator,
             Mock<IHealthProvider> healthProvider,
             Mock<IIntegrationInfoService> integrationInfoService, 
-            Mock<ITransactionEstimator> transactionEstimator,
+            Mock<ITransferAmountTransactionEstimator> transactionEstimator,
             Mock<ITransactionBroadcaster> transactionBroadcaster,
             Mock<ITransferAmountTransactionsBuilder> transferAmountTransactionBuilder,
             Mock<IAddressFormatsProvider> addressFormatsProvider)
@@ -690,7 +690,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             options.AddressValidatorFactory = c => addressValidator.Object;
             options.HealthProviderFactory = c => healthProvider.Object;
             options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-            options.TransactionEstimatorFactory = c => transactionEstimator.Object;
+            options.TransferAmountTransactionEstimatorFactory = c => transactionEstimator.Object;
             options.TransactionBroadcasterFactory = c => transactionBroadcaster.Object;
             options.TransferAmountTransactionsBuilderFactory = c => transferAmountTransactionBuilder.Object;
             options.DisableLogging = true;

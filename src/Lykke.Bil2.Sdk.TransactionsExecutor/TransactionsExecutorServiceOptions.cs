@@ -49,10 +49,12 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
         public Func<ServiceFactoryContext<TAppSettings>, IIntegrationInfoService> IntegrationInfoServiceFactory { get; set; }
 
         /// <summary>
-        /// Required.
-        /// <see cref="ITransactionEstimator"/> implementation factory.
+        ///  Required only for "Transfer amount" transactions model. Integration should either support “transfer coins”
+        /// or “transfer amount” transactions model. Use <see cref="TransferCoinsTransactionsEstimatorFactory"/> to support
+        /// "transfer coins" transactions model.
+        /// <see cref="ITransferAmountTransactionEstimator"/> implementation factory.
         /// </summary>
-        public Func<ServiceFactoryContext<TAppSettings>, ITransactionEstimator> TransactionEstimatorFactory { get; set; }
+        public Func<ServiceFactoryContext<TAppSettings>, ITransferAmountTransactionEstimator> TransferAmountTransactionEstimatorFactory { get; set; }
 
         /// <summary>
         /// Required.
@@ -67,7 +69,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
         public Func<ServiceFactoryContext<TAppSettings>, IAddressFormatsProvider> AddressFormatsProviderFactory { get; set; }
 
         /// <summary>
-        /// Required only for "Transfer amounts" transactions model. Integration should either support “transfer coins”
+        /// Required only for "Transfer amount" transactions model. Integration should either support “transfer coins”
         /// or “transfer amount” transactions model. Use <see cref="TransferCoinsTransactionsBuilderFactory"/> to support
         /// "transfer coins" transactions model.
         /// <see cref="ITransferAmountTransactionsBuilder"/> implementation factory.

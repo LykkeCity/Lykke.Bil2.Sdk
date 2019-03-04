@@ -6,9 +6,11 @@ using Newtonsoft.Json;
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
 {
     /// <summary>
-    /// Endpoint: [POST] /api/transactions/sending/estimated
+    /// Endpoints:
+    /// - [POST] /api/transactions/estimated/transfers/amount
+    /// - [POST] /api/transactions/estimated/transfers/coins
     /// </summary>
-    public class EstimateSendingTransactionResponse
+    public class EstimateTransactionResponse
     {
         /// <summary>
         /// Estimated transaction fee for the particular asset ID.
@@ -17,9 +19,11 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         public IReadOnlyDictionary<AssetId, CoinsAmount> EstimatedFee { get; }
 
         /// <summary>
-        /// Endpoint: [POST] /api/transactions/sending/estimated
+        /// Endpoints:
+        /// - [POST] /api/transactions/estimated/transfers/amount
+        /// - [POST] /api/transactions/estimated/transfers/coins
         /// </summary>
-        public EstimateSendingTransactionResponse(IReadOnlyDictionary<AssetId, CoinsAmount> estimatedFee)
+        public EstimateTransactionResponse(IReadOnlyDictionary<AssetId, CoinsAmount> estimatedFee)
         {
             EstimatedFee = estimatedFee ?? throw new ArgumentNullException(nameof(estimatedFee));
         }

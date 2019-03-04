@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 {
     /// <summary>
-    /// Endpoint: [POST] /api/transactions/estimated/transfers
+    /// Endpoint: [POST] /api/transactions/estimated/transfers/amount
     /// </summary>
-    public class EstimateSendingTransactionRequest
+    public class EstimateTransferAmountTransactionRequest
     {
         /// <summary>
         /// Transaction transfers.
@@ -15,9 +15,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         public IReadOnlyCollection<Transfer> Transfers { get; }
 
         /// <summary>
-        /// Endpoint: [POST] /api/transactions/estimated/transfers
+        /// Endpoint: [POST] /api/transactions/estimated/transfers/amount
         /// </summary>
-        public EstimateSendingTransactionRequest(IReadOnlyCollection<Transfer> transfers)
+        public EstimateTransferAmountTransactionRequest(IReadOnlyCollection<Transfer> transfers)
         {
             TransactionTransfersValidator.Validate(transfers);
 
