@@ -61,7 +61,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator, 
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_is_alive)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -72,6 +73,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 options.TransferAmountTransactionsEstimatorFactory = c => transactionEstimator.Object;
                 options.TransactionBroadcasterFactory = c => transactionBroadcaster.Object;
                 options.TransferAmountTransactionsBuilderFactory = c => transferAmountTransactionBuilder.Object;
+                options.TransactionsStateProviderFactory = c => transactionStateProvider.Object;
                 options.DisableLogging = true;
             });
 
@@ -105,7 +107,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_integration_info)}";
                 integrationInfoService.Setup(x => x.GetInfoAsync())
@@ -119,7 +122,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT
@@ -155,7 +159,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -169,7 +174,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT
@@ -197,7 +203,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -211,7 +218,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT
@@ -247,7 +255,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_building_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -261,7 +270,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -296,7 +306,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Node_issues_while_building_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -313,7 +324,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -353,7 +365,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Estimate_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -367,7 +380,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT
@@ -404,7 +418,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_estimating_transfer_amount_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -418,7 +433,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -453,7 +469,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -467,7 +484,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -493,7 +511,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -507,7 +526,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -534,7 +554,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -548,7 +569,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -576,7 +598,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 var rawTransactionReadOnlyRepository = new Mock<IRawTransactionReadOnlyRepository>();
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
@@ -593,7 +616,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT
@@ -666,7 +690,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             out Mock<ITransferAmountTransactionsEstimator> transactionEstimator,
             out Mock<ITransactionBroadcaster> transactionBroadcaster,
             out Mock<ITransferAmountTransactionsBuilder> transferAmountTransactionBuilder,
-            out Mock<IAddressFormatsProvider> addressFormatsProvider)
+            out Mock<IAddressFormatsProvider> addressFormatsProvider,
+            out Mock<ITransactionsStateProvider> transactionStateProvider)
         {
             addressValidator = new Mock<IAddressValidator>();
             healthProvider = new Mock<IHealthProvider>();
@@ -675,6 +700,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             transactionBroadcaster = new Mock<ITransactionBroadcaster>();
             transferAmountTransactionBuilder = new Mock<ITransferAmountTransactionsBuilder>();
             addressFormatsProvider = new Mock<IAddressFormatsProvider>();
+            transactionStateProvider = new Mock<ITransactionsStateProvider>();
         }
 
         private static void ConfigureFactories(TransactionsExecutorServiceOptions<AppSettings> options,
@@ -684,7 +710,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             Mock<ITransferAmountTransactionsEstimator> transactionEstimator,
             Mock<ITransactionBroadcaster> transactionBroadcaster,
             Mock<ITransferAmountTransactionsBuilder> transferAmountTransactionBuilder,
-            Mock<IAddressFormatsProvider> addressFormatsProvider)
+            Mock<IAddressFormatsProvider> addressFormatsProvider,
+            Mock<ITransactionsStateProvider> transactionStateProvider)
         {
             options.AddressFormatsProviderFactory = c => addressFormatsProvider.Object;
             options.AddressValidatorFactory = c => addressValidator.Object;
@@ -693,6 +720,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             options.TransferAmountTransactionsEstimatorFactory = c => transactionEstimator.Object;
             options.TransactionBroadcasterFactory = c => transactionBroadcaster.Object;
             options.TransferAmountTransactionsBuilderFactory = c => transferAmountTransactionBuilder.Object;
+            options.TransactionsStateProviderFactory = c => transactionStateProvider.Object;
             options.DisableLogging = true;
         }
 
