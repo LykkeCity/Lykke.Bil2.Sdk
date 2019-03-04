@@ -132,6 +132,21 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         [Post("/api/transactions/estimated/transfers/amount")]
         Task<EstimateTransactionResponse> EstimateTransferAmountTransactionAsync([Body] EstimateTransferAmountTransactionRequest body);
 
+        /// <summary>
+        /// "Transfer coins" transactions model.
+        /// Should estimate the transaction fee if integration uses “transfer coins” transactions model.
+        /// Integration should either support “transfer coins”  or “transfer amount” transactions model.
+        /// </summary>
+        /// <exception cref="BadRequestWebApiException">
+        /// Transaction can’t be estimated with the given parameters and it will be never possible to
+        /// estimate the transaction with exactly the same parameters.
+        /// </exception>
+        /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
+        /// <exception cref="Exception">Any other error</exception>
+        [Post("/api/transactions/estimated/transfers/coins")]
+        Task<EstimateTransactionResponse> EstimateTransferCoinsTransactionAsync([Body] EstimateTransferCoinsTransactionRequest body);
+
         #endregion
 
 

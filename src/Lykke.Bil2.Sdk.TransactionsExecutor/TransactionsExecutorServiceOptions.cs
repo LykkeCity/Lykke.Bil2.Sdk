@@ -52,9 +52,17 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
         ///  Required only for "Transfer amount" transactions model. Integration should either support “transfer coins”
         /// or “transfer amount” transactions model. Use <see cref="TransferCoinsTransactionsEstimatorFactory"/> to support
         /// "transfer coins" transactions model.
-        /// <see cref="ITransferAmountTransactionEstimator"/> implementation factory.
+        /// <see cref="ITransferAmountTransactionsEstimator"/> implementation factory.
         /// </summary>
-        public Func<ServiceFactoryContext<TAppSettings>, ITransferAmountTransactionEstimator> TransferAmountTransactionEstimatorFactory { get; set; }
+        public Func<ServiceFactoryContext<TAppSettings>, ITransferAmountTransactionsEstimator> TransferAmountTransactionsEstimatorFactory { get; set; }
+
+        /// <summary>
+        ///  Required only for "Transfer coins" transactions model. Integration should either support “transfer coins”
+        /// or “transfer amount” transactions model. Use <see cref="TransferAmountTransactionsEstimatorFactory"/> to support
+        /// "transfer amount" transactions model.
+        /// <see cref="ITransferAmountTransactionsEstimator"/> implementation factory.
+        /// </summary>
+        public Func<ServiceFactoryContext<TAppSettings>, ITransferCoinsTransactionsEstimator> TransferCoinsTransactionsEstimatorFactory { get; set; }
 
         /// <summary>
         /// Required.
@@ -98,6 +106,8 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
 
         internal TransactionsExecutorServiceOptions()
         {
+            TransferAmountTransactionsEstimatorFactory = c => new NotSupportedTransferAmountTransactionsEstimator();
+            TransferCoinsTransactionsEstimatorFactory = c => new NotSupportedTransferCoinsTransactionsEstimator();
             TransferAmountTransactionsBuilderFactory = c => new NotSupportedTransferAmountTransactionsBuilder();
             TransferCoinsTransactionsBuilderFactory = c => new NotSupportedTransferCoinsTransactionsBuilder();
             AddressFormatsProviderFactory = c => new NotSupportedAddressFormatsProvider();

@@ -9,7 +9,7 @@ using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 
 namespace TransactionsExecutorExample.Services
 {
-    public class TransactionsEstimator : ITransferAmountTransactionEstimator
+    public class TransactionsEstimator : ITransferAmountTransactionsEstimator
     {
         public Task<EstimateTransactionResponse> EstimateTransferAmountAsync(EstimateTransferAmountTransactionRequest request)
         {
