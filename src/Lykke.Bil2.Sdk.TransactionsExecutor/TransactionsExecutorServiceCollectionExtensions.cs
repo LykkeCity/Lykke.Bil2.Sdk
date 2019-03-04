@@ -96,6 +96,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
             services.AddTransient(s => options.TransferCoinsTransactionsBuilderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransactionBroadcasterFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.AddressFormatsProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+            services.AddTransient(s => options.TransactionsStateProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
         }
 
         private static TransactionsExecutorServiceOptions<TAppSettings> GetOptions<TAppSettings>(
@@ -163,6 +164,12 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
             {
                 throw new InvalidOperationException(
                     $"{nameof(options)}.{nameof(options.AddressFormatsProviderFactory)} is required.");
+            }
+
+            if (options.TransactionsStateProviderFactory == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(options)}.{nameof(options.TransactionsStateProviderFactory)} is required.");
             }
 
             return options;

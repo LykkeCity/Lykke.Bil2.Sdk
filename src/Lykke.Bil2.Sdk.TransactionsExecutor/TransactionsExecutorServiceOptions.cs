@@ -71,12 +71,6 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
         public Func<ServiceFactoryContext<TAppSettings>, ITransactionBroadcaster> TransactionBroadcasterFactory { get; set; }
 
         /// <summary>
-        /// Optional, default implementation assumes that multiple address formats are not supported.
-        /// <see cref="IAddressFormatsProvider"/> implementation factory.
-        /// </summary>
-        public Func<ServiceFactoryContext<TAppSettings>, IAddressFormatsProvider> AddressFormatsProviderFactory { get; set; }
-
-        /// <summary>
         /// Required only for "Transfer amount" transactions model. Integration should either support “transfer coins”
         /// or “transfer amount” transactions model. Use <see cref="TransferCoinsTransactionsBuilderFactory"/> to support
         /// "transfer coins" transactions model.
@@ -91,6 +85,18 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
         /// <see cref="ITransferAmountTransactionsBuilder"/> implementation factory.
         /// </summary>
         public Func<ServiceFactoryContext<TAppSettings>, ITransferCoinsTransactionsBuilder> TransferCoinsTransactionsBuilderFactory { get; set; }
+
+        /// <summary>
+        /// Required.
+        /// <see cref="ITransactionsStateProvider"/> implementation factory.
+        /// </summary>
+        public Func<ServiceFactoryContext<TAppSettings>, ITransactionsStateProvider> TransactionsStateProviderFactory { get; set; }
+
+        /// <summary>
+        /// Optional, default implementation assumes that multiple address formats are not supported.
+        /// <see cref="IAddressFormatsProvider"/> implementation factory.
+        /// </summary>
+        public Func<ServiceFactoryContext<TAppSettings>, IAddressFormatsProvider> AddressFormatsProviderFactory { get; set; }
 
         /// <summary>
         /// Not Required.
