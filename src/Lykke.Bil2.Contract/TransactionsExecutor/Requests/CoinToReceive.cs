@@ -12,6 +12,12 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
     public class CoinToReceive
     {
         /// <summary>
+        /// Number of the coin inside the transaction.
+        /// </summary>
+        [JsonProperty("coinNumber")]
+        public int CoinNumber { get; }
+
+        /// <summary>
         /// Asset ID of the coin.
         /// </summary>
         [JsonProperty("assetId")]
@@ -46,12 +52,16 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         public AddressTagType? AddressTagType { get; }
 
         public CoinToReceive(
+            int coinNumber,
             AssetId assetId,
             CoinsAmount value,
             Address address,
             AddressTag addressTag = null,
             AddressTagType? addressTagType = null)
         {
+            if (coinNumber < 0)
+                throw RequestValidationException.ShouldBeZeroOrPositiveNumber(coinNumber, nameof(coinNumber));
+
             if (string.IsNullOrWhiteSpace(assetId))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
 
@@ -67,6 +77,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             if (addressTagType.HasValue && addressTag == null)
                 throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(addressTagType), nameof(addressTag)});
 
+            CoinNumber = coinNumber;
             AssetId = assetId;
             Value = value;
             Address = address;
