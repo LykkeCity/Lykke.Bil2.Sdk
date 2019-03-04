@@ -67,7 +67,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             
             where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
         {
-            services.AddTransient<IIrreversibleBlockListener, IIrreversibleBlockListener>();
+            services.AddTransient<IIrreversibleBlockListener, IrreversibleBlockListener>();
             services.AddTransient<ReadBlockCommandsHandler>();
             services.AddTransient<IStartupManager, StartupManager>();
 

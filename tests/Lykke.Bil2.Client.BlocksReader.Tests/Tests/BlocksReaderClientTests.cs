@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Lykke.Bil2.Client.BlocksReader.Tests.RabbitMq;
 using Lykke.Bil2.Contract.BlocksReader.Commands;
 using Lykke.Bil2.Contract.BlocksReader.Events;
+using Lykke.Bil2.RabbitMq;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
@@ -32,7 +33,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         {
         }
 
-        //[Test]
+        [Test]
         public async Task Get_is_alive()
         {
             //ARRANGE
@@ -44,13 +45,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
                 options.IntegrationName = $"{nameof(BlocksReaderClientTests)}+{nameof(Get_is_alive)}";
                 blockReader.Setup(x => x.ReadBlockAsync(1, It.IsAny<IBlockListener>())).Returns(Task.CompletedTask);
-                options.BlockReaderFactory = c => blockReader.Object;
-                options.AddIrreversibleBlockPulling(c => blockProvider.Object);
-                options.DisableLogging = true;
-                options.UseSettings = (s, context) =>
-                {
-                    s.AddSingleton(new FakeRabbitMqEndpoint());
-                };
+
+                ConfigureFactories(options, blockReader, blockProvider);
             }, (clientOptions) =>
             {
                 var blockEventsHandler = BlockEventsHandlerCreateMock();
@@ -88,9 +84,18 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             irreversibleBlockProvider = new Mock<IIrreversibleBlockProvider>();
         }
 
-        private static void ConfigureFactories(BlocksReaderServiceOptions<AppSettings> options)
+        private static void ConfigureFactories(BlocksReaderServiceOptions<AppSettings> options,
+            Mock<IBlockReader> blockReader,
+            Mock<IIrreversibleBlockProvider> irreversibleBlockProvider)
         {
             options.DisableLogging = true;
+            options.BlockReaderFactory = c => blockReader.Object;
+            options.AddIrreversibleBlockPulling(c => irreversibleBlockProvider.Object);
+            options.DisableLogging = true;
+            options.UseSettings = (s, context) =>
+            {
+                s.AddSingleton<IRabbitMqEndpoint>(new FakeRabbitMqEndpoint());
+            };
         }
 
         private void PrepareSettings()
