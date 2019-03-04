@@ -69,7 +69,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 options.AddressValidatorFactory = c => addressValidator.Object;
                 options.HealthProviderFactory = c => healthProvider.Object;
                 options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-                options.TransferAmountTransactionEstimatorFactory = c => transactionEstimator.Object;
+                options.TransferAmountTransactionsEstimatorFactory = c => transactionEstimator.Object;
                 options.TransactionBroadcasterFactory = c => transactionBroadcaster.Object;
                 options.TransferAmountTransactionsBuilderFactory = c => transferAmountTransactionBuilder.Object;
                 options.DisableLogging = true;
@@ -663,7 +663,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         private static void CreateMocks(out Mock<IAddressValidator> addressValidator,
             out Mock<IHealthProvider> healthProvider,
             out Mock<IIntegrationInfoService> integrationInfoService,
-            out Mock<ITransferAmountTransactionEstimator> transactionEstimator,
+            out Mock<ITransferAmountTransactionsEstimator> transactionEstimator,
             out Mock<ITransactionBroadcaster> transactionBroadcaster,
             out Mock<ITransferAmountTransactionsBuilder> transferAmountTransactionBuilder,
             out Mock<IAddressFormatsProvider> addressFormatsProvider)
@@ -671,7 +671,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             addressValidator = new Mock<IAddressValidator>();
             healthProvider = new Mock<IHealthProvider>();
             integrationInfoService = new Mock<IIntegrationInfoService>();
-            transactionEstimator = new Mock<ITransferAmountTransactionEstimator>();
+            transactionEstimator = new Mock<ITransferAmountTransactionsEstimator>();
             transactionBroadcaster = new Mock<ITransactionBroadcaster>();
             transferAmountTransactionBuilder = new Mock<ITransferAmountTransactionsBuilder>();
             addressFormatsProvider = new Mock<IAddressFormatsProvider>();
@@ -681,7 +681,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             Mock<IAddressValidator> addressValidator,
             Mock<IHealthProvider> healthProvider,
             Mock<IIntegrationInfoService> integrationInfoService, 
-            Mock<ITransferAmountTransactionEstimator> transactionEstimator,
+            Mock<ITransferAmountTransactionsEstimator> transactionEstimator,
             Mock<ITransactionBroadcaster> transactionBroadcaster,
             Mock<ITransferAmountTransactionsBuilder> transferAmountTransactionBuilder,
             Mock<IAddressFormatsProvider> addressFormatsProvider)
@@ -690,7 +690,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             options.AddressValidatorFactory = c => addressValidator.Object;
             options.HealthProviderFactory = c => healthProvider.Object;
             options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-            options.TransferAmountTransactionEstimatorFactory = c => transactionEstimator.Object;
+            options.TransferAmountTransactionsEstimatorFactory = c => transactionEstimator.Object;
             options.TransactionBroadcasterFactory = c => transactionBroadcaster.Object;
             options.TransferAmountTransactionsBuilderFactory = c => transferAmountTransactionBuilder.Object;
             options.DisableLogging = true;

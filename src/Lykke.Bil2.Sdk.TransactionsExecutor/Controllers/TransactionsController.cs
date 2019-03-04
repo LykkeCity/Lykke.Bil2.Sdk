@@ -20,20 +20,23 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
         private readonly ITransferAmountTransactionsBuilder _transferAmountTransactionsBuilder;
         private readonly ITransferCoinsTransactionsBuilder _transferCoinsTransactionsBuilder;
         private readonly ITransactionBroadcaster _transactionBroadcaster;
-        private readonly ITransferAmountTransactionEstimator _transferAmountTransactionEstimator;
+        private readonly ITransferAmountTransactionsEstimator _transferAmountTransactionsEstimator;
+        private readonly ITransferCoinsTransactionsEstimator _transferCoinsTransactionsEstimator;
         private readonly IRawTransactionReadOnlyRepository _rawTransactionsRepository;
 
         public TransactionsController(
             ITransferAmountTransactionsBuilder transferAmountTransactionsBuilder,
             ITransferCoinsTransactionsBuilder transferCoinsTransactionsBuilder,
             ITransactionBroadcaster transactionBroadcaster,
-            ITransferAmountTransactionEstimator transferAmountTransactionEstimator,
+            ITransferAmountTransactionsEstimator transferAmountTransactionsEstimator,
+            ITransferCoinsTransactionsEstimator transferCoinsTransactionsEstimator,
             IRawTransactionReadOnlyRepository rawTransactionsRepository)
         {
             _transferAmountTransactionsBuilder = transferAmountTransactionsBuilder ?? throw new ArgumentNullException(nameof(transferAmountTransactionsBuilder));
             _transferCoinsTransactionsBuilder = transferCoinsTransactionsBuilder ?? throw new ArgumentNullException(nameof(transferCoinsTransactionsBuilder));
             _transactionBroadcaster = transactionBroadcaster ?? throw new ArgumentNullException(nameof(transactionBroadcaster));
-            _transferAmountTransactionEstimator = transferAmountTransactionEstimator ?? throw new ArgumentNullException(nameof(transferAmountTransactionEstimator));
+            _transferAmountTransactionsEstimator = transferAmountTransactionsEstimator ?? throw new ArgumentNullException(nameof(transferAmountTransactionsEstimator));
+            _transferCoinsTransactionsEstimator = transferCoinsTransactionsEstimator ?? throw new ArgumentNullException(nameof(transferCoinsTransactionsEstimator));
             _rawTransactionsRepository = rawTransactionsRepository ?? throw new ArgumentNullException(nameof(rawTransactionsRepository));
         }
 
@@ -82,7 +85,19 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
         [HttpPost("estimated/transfers/amount")]
         public async Task<ActionResult<EstimateTransactionResponse>> EstimateTransferAmount([FromBody] EstimateTransferAmountTransactionRequest request)
         {
-            var response = await _transferAmountTransactionEstimator.EstimateTransferAmountAsync(request);
+            var response = await _transferAmountTransactionsEstimator.EstimateTransferAmountAsync(request);
+            if (response == null)
+            {
+                throw new InvalidOperationException("Not null response object expected");
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost("estimated/transfers/coins")]
+        public async Task<ActionResult<EstimateTransactionResponse>> EstimateTransferCoins([FromBody] EstimateTransferCoinsTransactionRequest request)
+        {
+            var response = await _transferCoinsTransactionsEstimator.EstimateTransferCoinsAsync(request);
             if (response == null)
             {
                 throw new InvalidOperationException("Not null response object expected");

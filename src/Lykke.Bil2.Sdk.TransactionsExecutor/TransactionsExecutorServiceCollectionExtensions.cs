@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Controllers;
-using Lykke.Bil2.Sdk.TransactionsExecutor.Repositories;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Settings;
 using Lykke.Common.Log;
@@ -76,7 +75,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
                 settings.CurrentValue.HealthMonitoringPeriod
             ));
 
-            services.AddSingleton<IRawTransactionReadOnlyRepository>(s =>
+            services.AddSingleton(s =>
                 options.RawTransactionReadOnlyRepositoryFactory(options.IntegrationName.CamelToKebab(), 
                     new ServiceFactoryContext<TAppSettings>(s, settings)));
         }
@@ -91,7 +90,8 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
             services.AddTransient(s => options.AddressValidatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.HealthProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.IntegrationInfoServiceFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
-            services.AddTransient(s => options.TransferAmountTransactionEstimatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+            services.AddTransient(s => options.TransferAmountTransactionsEstimatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+            services.AddTransient(s => options.TransferCoinsTransactionsEstimatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransferAmountTransactionsBuilderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransferCoinsTransactionsBuilderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransactionBroadcasterFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
@@ -129,10 +129,16 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
                     $"{nameof(options)}.{nameof(options.IntegrationInfoServiceFactory)} is required.");
             }
 
-            if (options.TransferAmountTransactionEstimatorFactory == null)
+            if (options.TransferAmountTransactionsEstimatorFactory == null)
             {
                 throw new InvalidOperationException(
-                    $"{nameof(options)}.{nameof(options.TransferAmountTransactionEstimatorFactory)} is required.");
+                    $"{nameof(options)}.{nameof(options.TransferAmountTransactionsEstimatorFactory)} is required.");
+            }
+
+            if (options.TransferCoinsTransactionsEstimatorFactory == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(options)}.{nameof(options.TransferCoinsTransactionsEstimatorFactory)} is required.");
             }
 
             if (options.TransactionBroadcasterFactory == null)
