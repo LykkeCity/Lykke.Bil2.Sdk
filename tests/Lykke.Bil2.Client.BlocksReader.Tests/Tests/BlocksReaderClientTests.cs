@@ -9,7 +9,6 @@ using NUnit.Framework;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 using Lykke.Bil2.Client.BlocksReader.Tests.RabbitMq;
 using Lykke.Bil2.Contract.BlocksReader.Commands;
 using Lykke.Bil2.Contract.BlocksReader.Events;
@@ -71,7 +70,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             Mock<IBlockEventsHandler> blockEventsHandler = new Mock<IBlockEventsHandler>();
             blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<BlockHeaderReadEvent>()))
                 .Returns(Task.CompletedTask).Verifiable();
-            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransactionExecutedEvent>()))
+            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransferAmountTransactionExecutedEvent>()))
+                .Returns(Task.CompletedTask).Verifiable();
+            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransferCoinsTransactionExecutedEvent>()))
                 .Returns(Task.CompletedTask).Verifiable();
             blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransactionFailedEvent>()))
                 .Returns(Task.CompletedTask).Verifiable();

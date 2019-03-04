@@ -1,25 +1,23 @@
-﻿using Lykke.Bil2.Client.SignService;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Lykke.Bil2.Client.SignService.Tests.Configuration;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.Responses;
 using Lykke.Bil2.Contract.SignService.Requests;
 using Lykke.Bil2.Contract.SignService.Responses;
+using Lykke.Bil2.Sdk.Exceptions;
 using Lykke.Bil2.Sdk.SignService;
 using Lykke.Bil2.Sdk.SignService.Models;
 using Lykke.Bil2.Sdk.SignService.Services;
 using Lykke.Bil2.Sdk.SignService.Settings;
-using Lykke.Bil2.SignService.Client.Tests.Configuration;
+using Lykke.Bil2.WebClient.Exceptions;
 using Lykke.Sdk.Settings;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using Lykke.Bil2.Contract.Common.Responses;
-using Lykke.Bil2.Sdk.Exceptions;
-using Lykke.Bil2.WebClient.Exceptions;
 
-namespace Lykke.Bil2.SignService.Client.Tests.Tests
+namespace Lykke.Bil2.Client.SignService.Tests.Tests
 {
     [TestFixture]
     public class SignServiceClientTests : SignServiceClientBase
@@ -123,7 +121,7 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
                 EncryptedString.Encrypt(MyPublicKey, MyPrivateKey2.DecodeToString()),
             };
 
-            var transactionHash = "TransactionHash";
+            var transactionId = "TransactionId";
             var signedTransaction = "From.x01.To.x02.Amount.100.Signature.F1T2A100";
 
             var client = PrepareClient<AppSettings>((options) =>
@@ -132,7 +130,7 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
                 Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
 
                 transactionSigner.Setup(x => x.SignAsync(It.IsAny<IReadOnlyCollection<string>>(), It.IsAny<Base58String>()))
-                    .ReturnsAsync(new SignTransactionResponse(Base58String.Encode(signedTransaction), transactionHash));
+                    .ReturnsAsync(new SignTransactionResponse(Base58String.Encode(signedTransaction), transactionId));
 
                 options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_sign_transaction)}";
                 options.AddressGeneratorFactory = (context) => addressGenerator.Object;
@@ -145,7 +143,7 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
 
             //ASSERT
             Assert.True(result != null);
-            Assert.True(result.TransactionHash == transactionHash);
+            Assert.True(result.TransactionId == transactionId);
             Assert.True(result.SignedTransaction.DecodeToString() == signedTransaction);
         }
 
@@ -171,7 +169,7 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
         }
 
         [Test]
-        public async Task Not_supported_private_key_creation()
+        public void Not_supported_private_key_creation()
         {
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
@@ -199,7 +197,7 @@ namespace Lykke.Bil2.SignService.Client.Tests.Tests
         }
 
         [Test]
-        public async Task Not_Supported_address_tag_creation()
+        public void Not_Supported_address_tag_creation()
         {
             //ARRANGE
             var address = Guid.NewGuid().ToString();

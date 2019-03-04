@@ -6,10 +6,12 @@ using Newtonsoft.Json;
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
 {
     /// <summary>
-    /// Endpoint: [POST] /api/transactions/sending/built
+    /// Endpoints:
+    /// - [POST] /api/transactions/built/transfers/amount
+    /// - [POST] /api/transactions/built/transfers/coins
     /// </summary>
     [PublicAPI]
-    public class BuildSendingTransactionResponse
+    public class BuildTransactionResponse
     {
         /// <summary>
         /// Implementation specific transaction context. 
@@ -18,9 +20,11 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         public Base58String TransactionContext { get; }
 
         /// <summary>
-        /// Endpoint: [POST] /api/transactions/sending/built
+        /// Endpoints:
+        /// - [POST] /api/transactions/built/transfers/amount
+        /// - [POST] /api/transactions/built/transfers/coins
         /// </summary>
-        public BuildSendingTransactionResponse(Base58String transactionContext)
+        public BuildTransactionResponse(Base58String transactionContext)
         {
             if (string.IsNullOrWhiteSpace(transactionContext?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(transactionContext));

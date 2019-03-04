@@ -5,6 +5,6 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Repositories
 {
     internal interface IRawTransactionWriteOnlyRepository
     {
-        Task SaveAsync(string transactionHash, Base58String rawTransaction);
+        Task SaveAsync(string transactionId, Base58String rawTransaction);
     }
 }

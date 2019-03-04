@@ -12,7 +12,12 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.RabbitMq
             throw new NotImplementedException();
         }
 
-        public Task Handle(string integrationName, TransactionExecutedEvent evt)
+        public Task Handle(string integrationName, TransferAmountTransactionExecutedEvent evt)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Handle(string integrationName, TransferCoinsTransactionExecutedEvent evt)
         {
             throw new NotImplementedException();
         }

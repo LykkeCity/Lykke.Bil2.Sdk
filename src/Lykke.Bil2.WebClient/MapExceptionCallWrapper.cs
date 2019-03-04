@@ -51,7 +51,7 @@ namespace Lykke.Bil2.WebClient
                     case HttpStatusCode.NotImplemented:
                         throw new NotImplementedWebApiException(ex);
                     default:
-                        throw;
+                        throw new WebApiException(ex);
                 }
             }
         }

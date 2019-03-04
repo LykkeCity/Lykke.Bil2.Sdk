@@ -15,21 +15,21 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public long BlockNumber { get; }
 
         /// <summary>
-        /// Hash of the last irreversible block.
+        /// ID of the last irreversible block.
         /// </summary>
-        [JsonProperty("blockHash")]
-        public string BlockHash { get; }
+        [JsonProperty("blockId")]
+        public string BlockId { get; }
 
-        public LastIrreversibleBlockUpdatedEvent(long blockNumber, string blockHash)
+        public LastIrreversibleBlockUpdatedEvent(long blockNumber, string blockId)
         {
             if (blockNumber < 0)
                 throw new ArgumentOutOfRangeException(nameof(blockNumber), blockNumber, "Should be zero or positive number");
 
-            if (string.IsNullOrWhiteSpace(blockHash))
-                throw new ArgumentException("Should be not empty string", nameof(blockHash));
+            if (string.IsNullOrWhiteSpace(blockId))
+                throw new ArgumentException("Should be not empty string", nameof(blockId));
 
             BlockNumber = blockNumber;
-            BlockHash = blockHash;
+            BlockId = blockId;
         }
     }
 }

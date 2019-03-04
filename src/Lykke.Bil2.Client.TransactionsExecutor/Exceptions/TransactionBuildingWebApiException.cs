@@ -7,16 +7,16 @@ using Refit;
 namespace Lykke.Bil2.Client.TransactionsExecutor.Exceptions
 {
     [PublicAPI]
-    public class SendingTransactionBuildingWebApiException : BadRequestWebApiException
+    public class TransactionBuildingWebApiException : BadRequestWebApiException
     {
-        public SendingTransactionBuildingError ErrorCode { get; }
+        public TransactionBuildingError ErrorCode { get; }
         public string ErrorMessage { get; }
 
-        public SendingTransactionBuildingWebApiException(ApiException inner) : 
+        public TransactionBuildingWebApiException(ApiException inner) : 
             base(inner)
         {
             var response = inner
-                .GetContentAsAsync<BlockchainErrorResponse<SendingTransactionBuildingError>>()
+                .GetContentAsAsync<BlockchainErrorResponse<TransactionBuildingError>>()
                 .ConfigureAwait(false)
                 .GetAwaiter()
                 .GetResult();

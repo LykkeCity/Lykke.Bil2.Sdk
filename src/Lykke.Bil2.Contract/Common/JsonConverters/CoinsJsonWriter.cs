@@ -10,13 +10,13 @@ namespace Lykke.Bil2.Contract.Common.JsonConverters
             {
                 writer.WriteNull();
             }
-            else if (value is CoinsBase coins)
+            else if (value is CoinsValueBase coins)
             {
                 writer.WriteValue(coins.StringValue);
             }
             else
             {
-                throw new JsonSerializationException($"Expected {typeof(CoinsBase)} object value");
+                throw new JsonSerializationException($"Expected {typeof(CoinsValueBase)} object value");
             }
         }
     }

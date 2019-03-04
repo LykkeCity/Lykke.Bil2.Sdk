@@ -8,12 +8,12 @@ using NUnit.Framework;
 namespace Lykke.Bil2.Contract.Tests
 {
     [TestFixture]
-    public class SendingTransactionTransfersValidatorTests
+    public class TransactionTransfersValidatorTests
     {
         [Test]
         public void Test_that_single_transfer_is_allowed()
         {
-            SendingTransactionTransfersValidator.Validate(new List<Transfer>
+            TransactionTransfersValidator.Validate(new List<Transfer>
             {
                 new Transfer
                 ( 
@@ -41,7 +41,7 @@ namespace Lykke.Bil2.Contract.Tests
             string destination2,
             string destination3)
         {
-            SendingTransactionTransfersValidator.Validate(new List<Transfer>
+            TransactionTransfersValidator.Validate(new List<Transfer>
             {
                 new Transfer
                 ( 
@@ -70,13 +70,13 @@ namespace Lykke.Bil2.Contract.Tests
         [Test]
         public void Test_that_null_is_not_allowed()
         {
-            Assert.Throws<RequestValidationException>(() => SendingTransactionTransfersValidator.Validate(null));
+            Assert.Throws<RequestValidationException>(() => TransactionTransfersValidator.Validate(null));
         }
 
         [Test]
         public void Test_that_empty_collection_is_not_allowed()
         {
-            Assert.Throws<RequestValidationException>(() => SendingTransactionTransfersValidator.Validate(Array.Empty<Transfer>()));
+            Assert.Throws<RequestValidationException>(() => TransactionTransfersValidator.Validate(Array.Empty<Transfer>()));
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace Lykke.Bil2.Contract.Tests
                 )
             };
 
-            Assert.Throws<RequestValidationException>(() => SendingTransactionTransfersValidator.Validate(transfers));
+            Assert.Throws<RequestValidationException>(() => TransactionTransfersValidator.Validate(transfers));
         }
     }
 }

@@ -18,24 +18,24 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         public Base58String SignedTransaction { get; }
 
         /// <summary>
-        /// Hash of the signed transaction in the blockchain.
+        /// ID of the signed transaction in the blockchain.
         /// </summary>
-        [JsonProperty("transactionHash")]
-        public string TransactionHash { get; }
+        [JsonProperty("transactionId")]
+        public string TransactionId { get; }
 
         /// <summary>
         /// Endpoint: [POST] /api/transactions/signed
         /// </summary>
-        public SignTransactionResponse(Base58String signedTransaction, string transactionHash)
+        public SignTransactionResponse(Base58String signedTransaction, string transactionId)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(signedTransaction));
 
-            if (string.IsNullOrWhiteSpace(transactionHash))
-                throw new ArgumentException("Should be not empty string", nameof(transactionHash));
+            if (string.IsNullOrWhiteSpace(transactionId))
+                throw new ArgumentException("Should be not empty string", nameof(transactionId));
 
             SignedTransaction = signedTransaction;
-            TransactionHash = transactionHash;
+            TransactionId = transactionId;
         }
     }
 }

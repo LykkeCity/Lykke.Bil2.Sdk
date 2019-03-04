@@ -10,7 +10,7 @@ namespace Lykke.Bil2.Contract.Common
     /// </summary>
     [PublicAPI]
     [JsonConverter(typeof(CoinsAmountJsonConverter))]
-    public sealed class CoinsAmount : CoinsBase
+    public sealed class CoinsAmount : CoinsValueBase
     {
         private CoinsAmount(string stringValue) : 
             base(stringValue, allowNegative: false)

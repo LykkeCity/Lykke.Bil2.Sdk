@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using Lykke.Common.Log;
 
 namespace Lykke.Bil2.WebClient

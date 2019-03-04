@@ -28,10 +28,10 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Repositories
             _blob = blob;
         }
 
-        public async Task<Base58String> GetOrDefaultAsync(string transactionHash)
+        public async Task<Base58String> GetOrDefaultAsync(string transactionId)
         {
             var containerName = GetContainerName();
-            var blobName = RawTransactionRepositoryTools.GetBlobName(transactionHash);
+            var blobName = RawTransactionRepositoryTools.GetBlobName(transactionId);
 
             if (!await _blob.HasBlobAsync(containerName, blobName))
             {
