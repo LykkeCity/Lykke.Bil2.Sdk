@@ -1,5 +1,7 @@
 ﻿using Lykke.Bil2.Client.BlocksReader.Services;
 using Lykke.Bil2.Client.BlocksReader.Tests.Configuration;
+using Lykke.Bil2.Contract.BlocksReader.Commands;
+using Lykke.Bil2.Contract.BlocksReader.Events;
 using Lykke.Bil2.Sdk.BlocksReader;
 using Lykke.Bil2.Sdk.BlocksReader.Services;
 using Lykke.Bil2.Sdk.BlocksReader.Settings;
@@ -8,23 +10,29 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Lykke.Bil2.Client.BlocksReader.Tests.RabbitMq;
-using Lykke.Bil2.Contract.BlocksReader.Commands;
-using Lykke.Bil2.Contract.BlocksReader.Events;
-using Lykke.Bil2.RabbitMq;
-using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson.IO;
+using Newtonsoft.Json;
+using JsonConvert = MongoDB.Bson.IO.JsonConvert;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 {
+    /*
+     */
     [TestFixture]
     public class BlocksReaderClientTests : BlocksReaderClientBase
     {
         private static readonly string _pathToSettings = "appsettings.tests.json";
+        private string _rabbitMqconnString;
 
         [OneTimeSetUp]
-        public void GlobalSetup()
+        public async Task GlobalSetup()
         {
+            LaunchSettingsFixture fixture = new LaunchSettingsFixture();
+            await PrepareRabbitMq();
             PrepareSettings();
         }
 
@@ -37,27 +45,32 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         public async Task Get_is_alive()
         {
             //ARRANGE
-            var (api, client) = PrepareClient<AppSettings>((options) =>
+            var blockEventsHandler = BlockEventsHandlerCreateMock();
+            var (api, client, apiFactory) = PrepareClient<AppSettings>((options) =>
             {
                  CreateMocks(
                     out var blockReader,
                     out var blockProvider);
 
                 options.IntegrationName = $"{nameof(BlocksReaderClientTests)}+{nameof(Get_is_alive)}";
-                blockReader.Setup(x => x.ReadBlockAsync(1, It.IsAny<IBlockListener>())).Returns(Task.CompletedTask);
-
+                blockReader.Setup(x => x.ReadBlockAsync(2, It.IsAny<IBlockListener>())).Returns(Task.CompletedTask);
+                blockProvider.Setup(x => x.GetLastAsync()).ReturnsAsync(new LastIrreversibleBlockUpdatedEvent(1, "1"));
                 ConfigureFactories(options, blockReader, blockProvider);
             }, (clientOptions) =>
             {
-                var blockEventsHandler = BlockEventsHandlerCreateMock();
                 clientOptions.BlockEventsHandlerFactory = (context) => blockEventsHandler.Object;
+                clientOptions.RabbitVhost = GetVhost();
+                clientOptions.RabbitMqConnString = _rabbitMqconnString;
+                clientOptions.AddIntegration("TestCoin");
             });
 
             //ACT
             client.Start();
-            await api.SendAsync(new ReadBlockCommand(1));
-            
+            var apiBlocksReader = apiFactory.Create("TestCoin");
+            await apiBlocksReader.SendAsync(new ReadBlockCommand(1));
 
+            await Task.Delay(TimeSpan.FromMinutes(1));
+            //blockEventsHandler.Verify();
             //ASSERT
         }
 
@@ -84,7 +97,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             irreversibleBlockProvider = new Mock<IIrreversibleBlockProvider>();
         }
 
-        private static void ConfigureFactories(BlocksReaderServiceOptions<AppSettings> options,
+        private void ConfigureFactories(BlocksReaderServiceOptions<AppSettings> options,
             Mock<IBlockReader> blockReader,
             Mock<IIrreversibleBlockProvider> irreversibleBlockProvider)
         {
@@ -92,19 +105,88 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             options.BlockReaderFactory = c => blockReader.Object;
             options.AddIrreversibleBlockPulling(c => irreversibleBlockProvider.Object);
             options.DisableLogging = true;
-            options.UseSettings = (s, context) =>
+            options.RabbitVhost = GetVhost();
+        }
+
+        private string GetVhost()
+        {
+            var envInfo = Environment.GetEnvironmentVariable("ENV_INFO");
+
+            return envInfo;
+        }
+
+        private async Task PrepareRabbitMq()
+        {
+            var vhost = GetVhost();
+            var host = Environment.GetEnvironmentVariable("RabbitHost");
+            var port = Environment.GetEnvironmentVariable("RabbitPort");
+            var username = Environment.GetEnvironmentVariable("RabbitUsername");
+            var password = Environment.GetEnvironmentVariable("RabbitPassword");
+            _rabbitMqconnString = $"amqp://{username}:{password}@{host}:{port}";
+
+            using (HttpClient httpClient = new HttpClient())
             {
-                s.AddSingleton<IRabbitMqEndpoint>(new FakeRabbitMqEndpoint());
-            };
+                string [] queueNames;
+                string url = $"http://{host}:15672/api";
+
+                {
+                    //get previous queues
+                    var httpRequest = new HttpRequestMessage(HttpMethod.Get, url + $@"/queues/{vhost}");
+                    httpRequest.SetBasicAuthentication(username, password);
+
+                    var httpResponse = await httpClient.SendAsync(httpRequest);
+                    string data = await httpResponse.Content.ReadAsStringAsync();
+                    var queues = Newtonsoft.Json.JsonConvert.DeserializeObject<RabbitQueue[]>(data);
+                    queueNames = queues?.Select(x => x.Name).ToArray();
+                }
+
+                {
+                    //Delete old queues
+                    if (queueNames != null)
+                    {
+                        foreach (var queueName in queueNames)
+                        {
+                            var httpRequest = new HttpRequestMessage(HttpMethod.Delete, url + $@"/queues/{vhost}/{queueName}");
+                            httpRequest.SetBasicAuthentication(username, password);
+
+                            await httpClient.SendAsync(httpRequest);
+                        }
+                    }
+                }
+
+                {
+                    //Delete Vhost
+                    var httpRequest = new HttpRequestMessage(HttpMethod.Delete, url + $@"/vhosts/{vhost}");
+                    httpRequest.SetBasicAuthentication(username, password);
+
+                    await httpClient.SendAsync(httpRequest);
+                }
+
+                {
+                    //Create vhost
+                    var httpRequest = new HttpRequestMessage(HttpMethod.Put, url + $@"/vhosts/{vhost}");
+                    httpRequest.SetBasicAuthentication(username, password);
+
+                    await httpClient.SendAsync(httpRequest);
+                }
+            }
         }
 
         private void PrepareSettings()
         {
+            var host = Environment.GetEnvironmentVariable("RabbitHost");
+            var port = Environment.GetEnvironmentVariable("RabbitPort");
+            var username = Environment.GetEnvironmentVariable("RabbitUsername");
+            var password = Environment.GetEnvironmentVariable("RabbitPassword");
+
             Environment.SetEnvironmentVariable("DisableAutoRegistrationInMonitoring", "true");
             Environment.SetEnvironmentVariable("SettingsUrl", _pathToSettings);
 
             var prepareSettings = new AppSettings()
             {
+                RabbitConnStrng = $"amqp://{username}:{password}@{host}:{port}",
+                MessageListeningParallelism = 1,
+                LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromMinutes(1),
                 Db = new DbSettings()
                 {
                     AzureDataConnString = "empty",
@@ -130,14 +212,28 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             File.AppendAllText(_pathToSettings, serializedSettings);
         }
 
-        private (IBlocksReaderApi, IBlocksReaderClient) PrepareClient<TAppSettings>(Action<BlocksReaderServiceOptions<TAppSettings>> config,
+        private (IBlocksReaderHttpApi, IBlocksReaderClient, IBlocksReaderApiFactory) PrepareClient<TAppSettings>(Action<BlocksReaderServiceOptions<TAppSettings>> config,
             Action<BlocksReaderClientOptions> clientOptions)
             where TAppSettings : BaseBlocksReaderSettings<DbSettings>
         {
             StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(config);
-            var (api, blocksReaderClient) = base.CreateClientApi<StartupTemplate>("http://localhost:5000", clientOptions);
+            var (api, blocksReaderClient, apiFactory) = base.CreateClientApi<StartupTemplate>("http://localhost:5000", clientOptions);
 
-            return (api, blocksReaderClient);
+            return (api, blocksReaderClient, apiFactory);
         }
+    }
+
+    [DataContract]
+    public class RabbitQueuesMetadata
+    {
+        [DataMember(Name = "items")]
+        public RabbitQueue[] Items { get; set; }
+    }
+
+    [DataContract]
+    public class RabbitQueue
+    {
+        [DataMember( Name = "name")]
+        public string Name  { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lykke.Bil2.RabbitMq;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.RabbitMq.Subscription;
@@ -7,9 +8,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.RabbitMq
 {
     public class FakeRabbitMqEndpoint : IRabbitMqEndpoint
     {
+        public List<FakeMessagePublisher> _publishers = new List<FakeMessagePublisher>();
+        public List<FakeMessageSubscriber> _subscribers = new List<FakeMessageSubscriber>();
+
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
 
         public void DeclareExchange(string exchangeName)
@@ -19,13 +22,21 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.RabbitMq
 
         public IMessagePublisher CreatePublisher(string exchangeName, string correlationId = null)
         {
-            throw new NotImplementedException();
+            var publisher = new FakeMessagePublisher(exchangeName, correlationId);
+            _publishers.Add(publisher);
+
+            return publisher;
         }
 
-        public void StartListening(string listeningExchangeName, string listeningRoute,
-            IMessageSubscriptionsRegistry subscriptionsRegistry, string replyExchangeName = null, int parallelism = 1)
+        public void StartListening(string listeningExchangeName, 
+            string listeningRoute,
+            IMessageSubscriptionsRegistry subscriptionsRegistry, 
+            string replyExchangeName = null, 
+            int parallelism = 1)
         {
-            throw new NotImplementedException();
+            //var subscriber = new FakeMessageSubscriber(, (x) => x);
+            //_subscribers.Add();
+            //FakeMessageSubscriber();
         }
 
         public void Start()

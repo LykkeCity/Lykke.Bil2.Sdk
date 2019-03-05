@@ -11,7 +11,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
 {
     public abstract class BlocksReaderClientBase : ClientTestBase
     {
-        protected (IBlocksReaderApi, IBlocksReaderClient) CreateClientApi<TStartup>(string localhost, 
+        protected (IBlocksReaderHttpApi, IBlocksReaderClient, IBlocksReaderApiFactory) CreateClientApi<TStartup>(string localhost, 
             Action<BlocksReaderClientOptions> clientOptions) where TStartup : class 
         {
             IServiceCollection collection = new ServiceCollection();
@@ -23,10 +23,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
                 "http://localHost",
                 new RedirectToTestHostMessageHandler(client));
             var provider = collection.BuildServiceProvider();
-            var api =provider.GetRequiredService<IBlocksReaderApi>();
+            var api =provider.GetRequiredService<IBlocksReaderHttpApi>();
             var client1 = provider.GetRequiredService<IBlocksReaderClient>();
+            var apiFactory = provider.GetRequiredService<IBlocksReaderApiFactory>();
 
-            return (api, client1);
+            return (api, client1, apiFactory);
         }
     }
 }

@@ -79,7 +79,8 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                 new RabbitMqEndpoint
                 (
                     s.GetRequiredService<ILogFactory>(),
-                    new Uri(settings.CurrentValue.RabbitConnStrng)
+                    new Uri(settings.CurrentValue.RabbitConnStrng),
+                    options.RabbitVhost
                 ));
 
             services.AddTransient<IRabbitMqConfigurator>(s =>
