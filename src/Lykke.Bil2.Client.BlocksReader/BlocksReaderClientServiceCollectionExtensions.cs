@@ -55,18 +55,12 @@ namespace Lykke.Bil2.Client.BlocksReader
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.BlockEventsHandlerFactory)} is required.");
             }
 
-            if (options.UseDefaultRabbitMq)
-            {
-                services.AddSingleton<IRabbitMqEndpoint>(s => new RabbitMqEndpoint
-                (
-                    s.GetRequiredService<ILogFactory>(),
-                    new Uri(options.RabbitMqConnString)
-                ));
-            }
-            else
-            {
-                //TODO: Register It before
-            }
+            services.AddSingleton<IRabbitMqEndpoint>(s => new RabbitMqEndpoint
+            (
+                s.GetRequiredService<ILogFactory>(),
+                new Uri(options.RabbitMqConnString),
+                options.RabbitVhost
+            ));
 
             services.AddSingleton<IBlocksReaderClient>(s => new BlocksReaderClient
             (
