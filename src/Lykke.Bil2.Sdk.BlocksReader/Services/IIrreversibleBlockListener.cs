@@ -17,6 +17,6 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
         /// <summary>
         /// Should be called when the irreversible block number is updated to the next value.
         /// </summary>
-        Task HandleNewLastIrreversableBlockAsync(LastIrreversibleBlockUpdatedEvent evt);
+        Task HandleNewLastIrreversibleBlockAsync(LastIrreversibleBlockUpdatedEvent evt);
     }
 }

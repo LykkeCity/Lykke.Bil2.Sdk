@@ -24,7 +24,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
     public class BlocksReaderClientTests : BlocksReaderClientBase
     {
         private static readonly string _pathToSettings = "appsettings.tests.json";
-        private string _rabbitMqconnString;
+        private string _rabbitMqConnString;
 
         [OneTimeSetUp]
         public async Task GlobalSetup()
@@ -40,40 +40,50 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         }
 
         [Test]
-        public async Task Get_is_alive()
+        public async Task Test_that_read_block_command_is_processed()
         {
             //ARRANGE
-            var blockEventsHandler = BlockEventsHandlerCreateMock();
+            var integrationName = "TestIntegration";
+            
             Mock<IBlockReader> blockReader = null;
 
-            var (api, client, apiFactory) = PrepareClient<AppSettings>((options) =>
-            {
-                 CreateMocks(
-                    out blockReader,
-                    out var blockProvider);
+            var (httpApi, client, apiFactory) = PrepareClient<AppSettings>(
+                serverOptions =>
+                {
+                    CreateMocks(
+                        out blockReader,
+                        out var blockProvider);
 
-                options.IntegrationName = $"{nameof(BlocksReaderClientTests)}+{nameof(Get_is_alive)}";
-                blockReader.Setup(x => x.ReadBlockAsync(2, It.IsAny<IBlockListener>())).Returns(Task.CompletedTask);
-                blockReader.Setup(x => x.ReadBlockAsync(1, It.IsAny<IBlockListener>())).Returns(Task.CompletedTask);
-                blockProvider.Setup(x => x.GetLastAsync()).ReturnsAsync(new LastIrreversibleBlockUpdatedEvent(1, "1"));
-                ConfigureFactories(options, blockReader, blockProvider);
-            }, (clientOptions) =>
-            {
-                clientOptions.BlockEventsHandlerFactory = (context) => new FakeBlocksEventHandler();//blockEventsHandler.Object;
-                clientOptions.RabbitVhost = GetVhost();
-                clientOptions.RabbitMqConnString = _rabbitMqconnString;
-                clientOptions.AddIntegration("TestCoin");
-            });
+                    serverOptions.IntegrationName = integrationName;
+                    blockReader.Setup(x => x.ReadBlockAsync(2, It.IsAny<IBlockListener>())).Returns(Task.CompletedTask);
+                    blockReader.Setup(x => x.ReadBlockAsync(1, It.IsAny<IBlockListener>())).Returns(Task.CompletedTask);
+                    blockProvider.Setup(x => x.GetLastAsync()).ReturnsAsync(new LastIrreversibleBlockUpdatedEvent(1, "1"));
+                    ConfigureFactories(serverOptions, blockReader, blockProvider);
+                },
+                clientOptions =>
+                {
+                    clientOptions.BlockEventsHandlerFactory =
+                        (context) => new FakeBlocksEventHandler(); //blockEventsHandler.Object;
+                    clientOptions.RabbitVhost = GetVhost();
+                    clientOptions.RabbitMqConnString = _rabbitMqConnString;
+                    clientOptions.AddIntegration(integrationName);
+                });
+
+            client.Start();
+            var apiBlocksReader = apiFactory.Create(integrationName);
 
             //ACT
-            client.Start();
-            var apiBlocksReader = apiFactory.Create("TestCoin");
+
             await apiBlocksReader.SendAsync(new ReadBlockCommand(1));
+            await apiBlocksReader.SendAsync(new ReadBlockCommand(2));
 
             await Task.Delay(TimeSpan.FromSeconds(10));
-            //blockReader.Verify(x => x.ReadBlockAsync(1, 
-            //    It.IsNotNull<IBlockListener>()), Times.AtLeastOnce);
+            
             //ASSERT
+
+            blockReader.Verify(x => x.ReadBlockAsync(1, It.IsNotNull<IBlockListener>()), Times.AtLeastOnce);
+            blockReader.Verify(x => x.ReadBlockAsync(2, It.IsNotNull<IBlockListener>()), Times.AtLeastOnce);
+            blockReader.Verify(x => x.ReadBlockAsync(It.IsNotIn(1, 2), It.IsNotNull<IBlockListener>()), Times.Never);
         }
 
         private static Mock<IBlockEventsHandler> BlockEventsHandlerCreateMock()
@@ -124,7 +134,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             var port = Environment.GetEnvironmentVariable("RabbitPort");
             var username = Environment.GetEnvironmentVariable("RabbitUsername");
             var password = Environment.GetEnvironmentVariable("RabbitPassword");
-            _rabbitMqconnString = $"amqp://{username}:{password}@{host}:{port}";
+            _rabbitMqConnString = $"amqp://{username}:{password}@{host}:{port}";
 
             using (HttpClient httpClient = new HttpClient())
             {
@@ -137,9 +147,16 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     httpRequest.SetBasicAuthentication(username, password);
 
                     var httpResponse = await httpClient.SendAsync(httpRequest);
-                    string data = await httpResponse.Content.ReadAsStringAsync();
-                    var queues = Newtonsoft.Json.JsonConvert.DeserializeObject<RabbitQueue[]>(data);
-                    queueNames = queues?.Select(x => x.Name).ToArray();
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        string data = await httpResponse.Content.ReadAsStringAsync();
+                        var queues = Newtonsoft.Json.JsonConvert.DeserializeObject<RabbitQueue[]>(data);
+                        queueNames = queues?.Select(x => x.Name).ToArray();
+                    }
+                    else
+                    {
+                        queueNames = null;
+                    }
                 }
 
                 {
@@ -214,14 +231,15 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             File.AppendAllText(_pathToSettings, serializedSettings);
         }
 
-        private (IBlocksReaderHttpApi, IBlocksReaderClient, IBlocksReaderApiFactory) PrepareClient<TAppSettings>(Action<BlocksReaderServiceOptions<TAppSettings>> config,
-            Action<BlocksReaderClientOptions> clientOptions)
+        private (IBlocksReaderHttpApi, IBlocksReaderClient, IBlocksReaderApiFactory) PrepareClient<TAppSettings>(
+            Action<BlocksReaderServiceOptions<TAppSettings>> configureServer,
+            Action<BlocksReaderClientOptions> configureClient)
             where TAppSettings : BaseBlocksReaderSettings<DbSettings>
         {
-            StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(config);
-            var (api, blocksReaderClient, apiFactory) = base.CreateClientApi<StartupTemplate>("http://localhost:5000", clientOptions);
+            StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(configureServer);
+            var (httpApi, blocksReaderClient, apiFactory) = CreateClientApi<StartupTemplate>("http://localhost:5000", configureClient);
 
-            return (api, blocksReaderClient, apiFactory);
+            return (httpApi, blocksReaderClient, apiFactory);
         }
     }
 
