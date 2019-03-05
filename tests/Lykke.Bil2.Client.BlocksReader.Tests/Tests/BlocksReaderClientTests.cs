@@ -14,9 +14,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using MongoDB.Bson.IO;
-using Newtonsoft.Json;
-using JsonConvert = MongoDB.Bson.IO.JsonConvert;
+using Lykke.Bil2.Client.BlocksReader.Tests.RabbitMq;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 {
@@ -46,19 +44,22 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         {
             //ARRANGE
             var blockEventsHandler = BlockEventsHandlerCreateMock();
+            Mock<IBlockReader> blockReader = null;
+
             var (api, client, apiFactory) = PrepareClient<AppSettings>((options) =>
             {
                  CreateMocks(
-                    out var blockReader,
+                    out blockReader,
                     out var blockProvider);
 
                 options.IntegrationName = $"{nameof(BlocksReaderClientTests)}+{nameof(Get_is_alive)}";
                 blockReader.Setup(x => x.ReadBlockAsync(2, It.IsAny<IBlockListener>())).Returns(Task.CompletedTask);
+                blockReader.Setup(x => x.ReadBlockAsync(1, It.IsAny<IBlockListener>())).Returns(Task.CompletedTask);
                 blockProvider.Setup(x => x.GetLastAsync()).ReturnsAsync(new LastIrreversibleBlockUpdatedEvent(1, "1"));
                 ConfigureFactories(options, blockReader, blockProvider);
             }, (clientOptions) =>
             {
-                clientOptions.BlockEventsHandlerFactory = (context) => blockEventsHandler.Object;
+                clientOptions.BlockEventsHandlerFactory = (context) => new FakeBlocksEventHandler();//blockEventsHandler.Object;
                 clientOptions.RabbitVhost = GetVhost();
                 clientOptions.RabbitMqConnString = _rabbitMqconnString;
                 clientOptions.AddIntegration("TestCoin");
@@ -69,8 +70,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             var apiBlocksReader = apiFactory.Create("TestCoin");
             await apiBlocksReader.SendAsync(new ReadBlockCommand(1));
 
-            await Task.Delay(TimeSpan.FromMinutes(1));
-            //blockEventsHandler.Verify();
+            await Task.Delay(TimeSpan.FromSeconds(10));
+            //blockReader.Verify(x => x.ReadBlockAsync(1, 
+            //    It.IsNotNull<IBlockListener>()), Times.AtLeastOnce);
             //ASSERT
         }
 

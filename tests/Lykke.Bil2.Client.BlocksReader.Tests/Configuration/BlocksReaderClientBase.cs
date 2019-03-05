@@ -20,7 +20,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
             collection.AddSingleton<ILogFactory>(LogFactory.Create().AddConsole());
             BlocksReaderClientServiceCollectionExtensions.AddBlocksReaderClient(collection, clientOptions);
             BlocksReaderClientServiceCollectionExtensions.AddBlocksReaderHttpClient(collection,
-                "http://localHost",
+                "http://localhost",
                 new RedirectToTestHostMessageHandler(client));
             var provider = collection.BuildServiceProvider();
             var api =provider.GetRequiredService<IBlocksReaderHttpApi>();
