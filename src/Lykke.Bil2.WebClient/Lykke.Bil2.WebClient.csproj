@@ -24,7 +24,7 @@
   
   <ItemGroup>
     <PackageReference Include="Lykke.Common" Version="7.3.1" />
-    <PackageReference Include="Lykke.HttpClientGenerator" Version="2.3.0" />
+    <PackageReference Include="Lykke.HttpClientGenerator" Version="2.4.1" />
     <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All" />
   </ItemGroup>
   

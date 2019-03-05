@@ -51,7 +51,7 @@
 
   <ItemGroup Label="WebClient dependencies">
     <PackageReference Include="Lykke.Common" Version="7.3.1" />
-    <PackageReference Include="Lykke.HttpClientGenerator" Version="2.3.0" />
+    <PackageReference Include="Lykke.HttpClientGenerator" Version="2.4.1" />
   </ItemGroup>
  
   <ItemGroup>

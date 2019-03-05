@@ -20,7 +20,7 @@ namespace Lykke.Bil2.WebClient
                 .WithoutRetries()
                 .WithoutCaching()
                 .WithAdditionalCallsWrapper(new MapExceptionCallWrapper())
-                .WithAdditionalDelegatingHandler(new LogHttpRequestErrorHandler(logFactory))
+                .WithRequestErrorLogging(logFactory)
                 .Create();
         }
     }
