@@ -649,7 +649,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     out var transactionEstimator,
                     out var transactionBroadcaster,
                     out var transferAmountTransactionBuilder,
-                    out var addressFormatsProvider);
+                    out var addressFormatsProvider,
+                    out var transactionStateProvider);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 healthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(disease);
@@ -663,7 +664,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     transactionEstimator,
                     transactionBroadcaster,
                     transferAmountTransactionBuilder,
-                    addressFormatsProvider);
+                    addressFormatsProvider,
+                    transactionStateProvider);
             });
 
             //ACT
