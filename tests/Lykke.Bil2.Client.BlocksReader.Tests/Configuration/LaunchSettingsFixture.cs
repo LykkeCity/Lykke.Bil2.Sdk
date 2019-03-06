@@ -36,11 +36,46 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
             {
                 Console.WriteLine(e);
             }
+
+            var vhost = Environment.GetEnvironmentVariable("ENV_INFO");
+            var host = Environment.GetEnvironmentVariable("RabbitHost");
+            var port = Environment.GetEnvironmentVariable("RabbitPort");
+            var username = Environment.GetEnvironmentVariable("RabbitUsername");
+            var password = Environment.GetEnvironmentVariable("RabbitPassword");
+
+            RabbitMqTestSettings = new RabbitMqTestSettings()
+            {
+                Host = host,
+                Password = password,
+                Port = port,
+                Username = username,
+                Vhost = vhost
+            };
         }
+
+        public RabbitMqTestSettings RabbitMqTestSettings { get; private set; }
 
         public void Dispose()
         {
             // ... clean up
+        }
+    }
+
+    public class RabbitMqTestSettings
+    {
+        public string Username { get; set; }
+
+        public string Password { get; set; }
+
+        public string Host { get; set; }
+
+        public string Port { get; set; }
+
+        public string Vhost { get; set; }
+
+        public string GetConnectionString()
+        {
+            return $"amqp://{Username}:{Password}@{Host}:{Port}";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lykke.Bil2.BaseTests;
 using Lykke.Bil2.BaseTests.HttpMessageHandlers;
 using Lykke.Bil2.Client.BlocksReader.Services;
@@ -11,7 +12,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
 {
     public abstract class BlocksReaderClientBase : ClientTestBase
     {
-        protected (IBlocksReaderHttpApi, IBlocksReaderClient, IBlocksReaderApiFactory) CreateClientApi<TStartup>(string localhost, 
+        protected (IBlocksReaderHttpApi, 
+            IBlocksReaderClient,
+            IBlocksReaderApiFactory, 
+            IDisposable) CreateClientApi<TStartup>(string localhost, 
+
             Action<BlocksReaderClientOptions> clientOptions) where TStartup : class 
         {
             IServiceCollection collection = new ServiceCollection();
@@ -26,8 +31,26 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
             var api =provider.GetRequiredService<IBlocksReaderHttpApi>();
             var client1 = provider.GetRequiredService<IBlocksReaderClient>();
             var apiFactory = provider.GetRequiredService<IBlocksReaderApiFactory>();
+            var testServerDependencyWrapper = new TestServerDependencyWrapper(testServer);
 
-            return (api, client1, apiFactory);
+            return (api, client1, apiFactory, testServerDependencyWrapper);
+        }
+    }
+
+    public class TestServerDependencyWrapper : IDisposable
+    {
+        private readonly IDisposable _testServer;
+
+        public TestServerDependencyWrapper(IDisposable testServer)
+        {
+            _testServer = testServer;
+        }
+
+        public void Dispose()
+        {
+            _testServer.Dispose();
+            StartupDependencyFactorySingleton.Instance.ServerServiceProvider = null;
+            GC.Collect(2, GCCollectionMode.Forced, true);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace Lykke.Bil2.Client.BlocksReader.Services
 {
@@ -10,7 +11,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
     /// implementation in the service provider.
     /// </remarks>
     [PublicAPI]
-    public interface IBlocksReaderClient
+    public interface IBlocksReaderClient : IDisposable
     {
         /// <summary>
         /// Starts the client should be called in order to use <see cref="IBlocksReaderApi"/> and handles events using <see cref="IBlockEventsHandler"/>

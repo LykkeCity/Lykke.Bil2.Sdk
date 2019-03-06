@@ -79,5 +79,10 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
                     parallelism: _listeningParallelism);
             }
         }
+
+        public void Dispose()
+        {
+            _endpoint?.Dispose();
+        }
     }
 }

@@ -7,6 +7,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
     public interface IStartupDependencyFactory
     {
         Action<BlocksReaderServiceOptions<TAppSettings>> GetOptionsConfiguration<TAppSettings>() where TAppSettings : BaseBlocksReaderSettings<DbSettings>;
+
+        IServiceProvider ServerServiceProvider { get; set; }
     }
 
     //This class provides dependency configuration for application hosted in test server
@@ -32,5 +34,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
         {
             return (Action<BlocksReaderServiceOptions<TSettings>>)_registerAction;
         }
+
+        public IServiceProvider ServerServiceProvider { get; set; }
     }
 }

@@ -14,6 +14,7 @@ using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Settings;
 using Lykke.Bil2.WebClient.Exceptions;
 using Lykke.Sdk.Settings;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -21,7 +22,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 
 namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 {
