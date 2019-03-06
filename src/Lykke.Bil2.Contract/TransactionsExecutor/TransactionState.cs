@@ -1,10 +1,16 @@
 ﻿using System.Runtime.Serialization;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor
 {
     /// <summary>
     /// Enum describing state of the transaction in the blockchain.
     /// </summary>
+    [PublicAPI]
+    [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy), new object[0], false)]
     public enum TransactionState
     {
         /// <summary>
