@@ -11,7 +11,7 @@ namespace Lykke.Bil2.BaseTests.Extensions
         {
             var clone = new HttpRequestMessage(request.Method, request.RequestUri)
             {
-                Content = await request.Content.CloneAsync().ConfigureAwait(false),
+                Content = await request.Content.CloneAsync(),
                 Version = request.Version
             };
             foreach (KeyValuePair<string, object> prop in request.Properties)
@@ -31,7 +31,7 @@ namespace Lykke.Bil2.BaseTests.Extensions
             if (content == null) return null;
 
             var ms = new MemoryStream();
-            await content.CopyToAsync(ms).ConfigureAwait(false);
+            await content.CopyToAsync(ms);
             ms.Position = 0;
 
             var clone = new StreamContent(ms);
