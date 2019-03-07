@@ -12,22 +12,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Configuration
     //This class provides dependency configuration for application hosted in test server
     public class StartupDependencyFactorySingleton
     {
-        private static object _lock = new object();
-        private static IStartupDependencyFactory _instance;
-        public static IStartupDependencyFactory Instance
-        {
-            get
-            {
-                return _instance;
-            }
-            set
-            {
-                lock (_lock)
-                {
-                    _instance = value;
-                }
-            }
-        }
+        public static IStartupDependencyFactory Instance { get; set; }
 
         private StartupDependencyFactorySingleton()
         {

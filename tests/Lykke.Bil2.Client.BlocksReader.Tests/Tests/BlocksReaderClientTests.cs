@@ -10,10 +10,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Lykke.Bil2.Contract.Common;
@@ -29,15 +25,36 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
     {
         private static readonly string _integrationName = "TestIntegration";
         private static readonly string _pathToSettings = "appsettings.tests.json";
-        private string _rabbitMqConnString;
         private LaunchSettingsFixture _fixture;
+        private RabbitMqConfigurator _rabbitMqConfiguration;
+        private SettingsMock _settingsMock;
 
         [OneTimeSetUp]
         public async Task GlobalSetup()
         {
             _fixture = new LaunchSettingsFixture();
-            await PrepareRabbitMq();
-            PrepareSettings();
+            _rabbitMqConfiguration = new RabbitMqConfigurator(_fixture);
+            _settingsMock = new SettingsMock(_pathToSettings);
+
+            var connStringRabbit = _rabbitMqConfiguration.RabbitMqConnString;
+            var prepareSettings = new AppSettings()
+            {
+                RabbitConnStrng = connStringRabbit,
+                MessageListeningParallelism = 1,
+                LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(60),
+                Db = new DbSettings()
+                {
+                    AzureDataConnString = "empty",
+                    LogsConnString = "empty"
+                },
+                NodeUrl = "http://localhost:7777/api",
+                NodeUser = "user",
+                NodePassword = "password",
+                MonitoringServiceClient = new MonitoringServiceClientSettings()
+                    { MonitoringServiceUrl = "http://localhost:5431" },
+            };
+
+            _settingsMock.PrepareSettings(prepareSettings);
         }
 
         [OneTimeTearDown]
@@ -80,7 +97,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     clientOptions.BlockEventsHandlerFactory =
                         (context) => blockEventsHandlerMock.Object;
                     clientOptions.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
-                    clientOptions.RabbitMqConnString = _rabbitMqConnString;
+                    clientOptions.RabbitMqConnString = _rabbitMqConfiguration.RabbitMqConnString;
                     clientOptions.AddIntegration(_integrationName);
                 });
 
@@ -134,7 +151,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     clientOptions.BlockEventsHandlerFactory =
                         (context) => blockEventsHandlerMock.Object;
                     clientOptions.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
-                    clientOptions.RabbitMqConnString = _rabbitMqConnString;
+                    clientOptions.RabbitMqConnString = _rabbitMqConfiguration.RabbitMqConnString;
                     clientOptions.AddIntegration(_integrationName);
                 });
 
@@ -185,7 +202,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     clientOptions.BlockEventsHandlerFactory =
                         (context) => blockEventsHandlerMock.Object;
                     clientOptions.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
-                    clientOptions.RabbitMqConnString = _rabbitMqConnString;
+                    clientOptions.RabbitMqConnString = _rabbitMqConfiguration.RabbitMqConnString;
                     clientOptions.AddIntegration(_integrationName);
                 });
 
@@ -325,7 +342,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     clientOptions.BlockEventsHandlerFactory =
                         (context) => blockEventsHandlerMock.Object;
                     clientOptions.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
-                    clientOptions.RabbitMqConnString = _rabbitMqConnString;
+                    clientOptions.RabbitMqConnString = _rabbitMqConfiguration.RabbitMqConnString;
                     clientOptions.AddIntegration(_integrationName);
                 });
 
@@ -410,107 +427,6 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             options.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
         }
 
-        private async Task PrepareRabbitMq()
-        {
-            _rabbitMqConnString = _fixture.RabbitMqTestSettings.GetConnectionString();
-
-            string username = _fixture.RabbitMqTestSettings.Username;
-            string password = _fixture.RabbitMqTestSettings.Password;
-            string host = _fixture.RabbitMqTestSettings.Host;
-            string vhost = _fixture.RabbitMqTestSettings.Vhost;
-
-            using (HttpClient httpClient = new HttpClient())
-            {
-                string[] queueNames;
-                string url = $"http://{host}:15672/api";
-
-                {
-                    //get previous queues
-                    var httpRequest = new HttpRequestMessage(HttpMethod.Get, url + $@"/queues/{vhost}");
-                    httpRequest.SetBasicAuthentication(username, password);
-
-                    var httpResponse = await httpClient.SendAsync(httpRequest);
-                    if (httpResponse.IsSuccessStatusCode)
-                    {
-                        string data = await httpResponse.Content.ReadAsStringAsync();
-                        var queues = Newtonsoft.Json.JsonConvert.DeserializeObject<RabbitQueue[]>(data);
-                        queueNames = queues?.Select(x => x.Name).ToArray();
-                    }
-                    else
-                    {
-                        queueNames = null;
-                    }
-                }
-
-                {
-                    //Delete old queues
-                    if (queueNames != null)
-                    {
-                        foreach (var queueName in queueNames)
-                        {
-                            var httpRequest = new HttpRequestMessage(HttpMethod.Delete, url + $@"/queues/{vhost}/{queueName}");
-                            httpRequest.SetBasicAuthentication(username, password);
-
-                            await httpClient.SendAsync(httpRequest);
-                        }
-                    }
-                }
-
-                {
-                    //Delete Vhost
-                    var httpRequest = new HttpRequestMessage(HttpMethod.Delete, url + $@"/vhosts/{vhost}");
-                    httpRequest.SetBasicAuthentication(username, password);
-
-                    await httpClient.SendAsync(httpRequest);
-                }
-
-                {
-                    //Create vhost
-                    var httpRequest = new HttpRequestMessage(HttpMethod.Put, url + $@"/vhosts/{vhost}");
-                    httpRequest.SetBasicAuthentication(username, password);
-
-                    await httpClient.SendAsync(httpRequest);
-                }
-            }
-        }
-
-        private void PrepareSettings()
-        {
-            var connStringRabbit = _fixture.RabbitMqTestSettings.GetConnectionString();
-
-            Environment.SetEnvironmentVariable("DisableAutoRegistrationInMonitoring", "true");
-            Environment.SetEnvironmentVariable("SettingsUrl", _pathToSettings);
-
-            var prepareSettings = new AppSettings()
-            {
-                RabbitConnStrng = connStringRabbit,
-                MessageListeningParallelism = 1,
-                LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(60),
-                Db = new DbSettings()
-                {
-                    AzureDataConnString = "empty",
-                    LogsConnString = "empty"
-                },
-                NodeUrl = "http://localhost:7777/api",
-                NodeUser = "user",
-                NodePassword = "password",
-                MonitoringServiceClient = new MonitoringServiceClientSettings()
-                { MonitoringServiceUrl = "http://localhost:5431" },
-            };
-
-            string serializedSettings = Newtonsoft.Json.JsonConvert.SerializeObject(prepareSettings);
-
-            try
-            {
-                File.Delete(_pathToSettings);
-            }
-            catch
-            {
-            }
-
-            File.AppendAllText(_pathToSettings, serializedSettings);
-        }
-
         private (IBlocksReaderHttpApi,
             IBlocksReaderClient,
             IBlocksReaderApiFactory,
@@ -524,19 +440,5 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
             return (httpApi, blocksReaderClient, apiFactory, testServer);
         }
-    }
-
-    [DataContract]
-    public class RabbitQueuesMetadata
-    {
-        [DataMember(Name = "items")]
-        public RabbitQueue[] Items { get; set; }
-    }
-
-    [DataContract]
-    public class RabbitQueue
-    {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
     }
 }

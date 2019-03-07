@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Lykke.Bil2.BaseTests;
+﻿using Lykke.Bil2.BaseTests;
 using Lykke.Bil2.BaseTests.HttpMessageHandlers;
 using Lykke.Bil2.Client.BlocksReader.Services;
 using Lykke.Common.Log;
 using Lykke.Logs;
 using Lykke.Logs.Loggers.LykkeConsole;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
 {
@@ -34,23 +33,6 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
             var testServerDependencyWrapper = new TestServerDependencyWrapper(testServer);
 
             return (api, client1, apiFactory, testServerDependencyWrapper);
-        }
-    }
-
-    public class TestServerDependencyWrapper : IDisposable
-    {
-        private readonly IDisposable _testServer;
-
-        public TestServerDependencyWrapper(IDisposable testServer)
-        {
-            _testServer = testServer;
-        }
-
-        public void Dispose()
-        {
-            _testServer.Dispose();
-            StartupDependencyFactorySingleton.Instance.ServerServiceProvider = null;
-            GC.Collect(2, GCCollectionMode.Forced, true);
         }
     }
 }

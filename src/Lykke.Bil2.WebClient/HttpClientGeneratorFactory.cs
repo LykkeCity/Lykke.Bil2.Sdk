@@ -27,7 +27,7 @@ namespace Lykke.Bil2.WebClient
                 .WithAdditionalCallsWrapper(new MapExceptionCallWrapper())
                 .WithRequestErrorLogging(options.LogFactory);
 
-            foreach (var handler in options?.Handlers)
+            foreach (var handler in options.Handlers)
             {
                 clientBuilder.WithAdditionalDelegatingHandler(handler);
             }
