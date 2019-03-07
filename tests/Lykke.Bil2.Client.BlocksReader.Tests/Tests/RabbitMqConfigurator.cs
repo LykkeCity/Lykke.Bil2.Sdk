@@ -23,6 +23,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
         public async Task ConfigureRabbitMqAsync()
         {
+            await CleanRabbitAsync(true);
+        }
+
+        public async Task CleanRabbitAsync(bool createVhost = false)
+        {
             string username = _fixture.RabbitMqTestSettings.Username;
             string password = _fixture.RabbitMqTestSettings.Password;
             string host = _fixture.RabbitMqTestSettings.Host;
@@ -73,14 +78,18 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     await httpClient.SendAsync(httpRequest);
                 }
 
-                {
-                    //Create vhost
-                    var httpRequest = new HttpRequestMessage(HttpMethod.Put, url + $@"/vhosts/{vhost}");
-                    httpRequest.SetBasicAuthentication(username, password);
-
-                    await httpClient.SendAsync(httpRequest);
-                }
+                if (createVhost)
+                    await CreateVhostAsync(httpClient, url, username, password, vhost);
             }
+        }
+
+        private async Task CreateVhostAsync(HttpClient httpClient, string url, string username, string password, string vhost)
+        {
+            //Create vhost
+            var httpRequest = new HttpRequestMessage(HttpMethod.Put, url + $@"/vhosts/{vhost}");
+            httpRequest.SetBasicAuthentication(username, password);
+
+            await httpClient.SendAsync(httpRequest);
         }
     }
 }

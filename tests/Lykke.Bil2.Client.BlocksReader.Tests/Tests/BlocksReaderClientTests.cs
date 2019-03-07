@@ -1,23 +1,22 @@
-﻿using Lykke.Bil2.Client.BlocksReader.Services;
+﻿using Lykke.Bil2.BaseTests;
+using Lykke.Bil2.Client.BlocksReader.Services;
 using Lykke.Bil2.Client.BlocksReader.Tests.Configuration;
 using Lykke.Bil2.Contract.BlocksReader.Commands;
 using Lykke.Bil2.Contract.BlocksReader.Events;
+using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Sdk.BlocksReader;
+using Lykke.Bil2.Sdk.BlocksReader.Repositories;
 using Lykke.Bil2.Sdk.BlocksReader.Services;
 using Lykke.Bil2.Sdk.BlocksReader.Settings;
 using Lykke.Sdk.Settings;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Lykke.Bil2.BaseTests;
-using Lykke.Bil2.Contract.Common;
-using Lykke.Bil2.Contract.TransactionsExecutor;
-using Lykke.Bil2.Sdk.BlocksReader.Repositories;
-using Lykke.SettingsReader;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 {
@@ -35,7 +34,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         {
             _fixture = new LaunchSettingsFixture();
             _rabbitMqConfiguration = new RabbitMqConfigurator(_fixture);
-            _settingsMock = new SettingsMock(_pathToSettings);
+            await _rabbitMqConfiguration.ConfigureRabbitMqAsync();
+             _settingsMock = new SettingsMock(_pathToSettings);
 
             var connStringRabbit = _rabbitMqConfiguration.RabbitMqConnString;
             var prepareSettings = new AppSettings()
@@ -59,8 +59,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         }
 
         [OneTimeTearDown]
-        public void GlobalTeardown()
+        public async Task GlobalTeardown()
         {
+            await _rabbitMqConfiguration.CleanRabbitAsync();
         }
 
         [Test]
