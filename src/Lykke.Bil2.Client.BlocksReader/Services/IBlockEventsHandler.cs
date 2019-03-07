@@ -14,6 +14,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
         /// Handles <see cref="BlockHeaderReadEvent"/>.
         /// </summary>
         Task Handle(string integrationName, BlockHeaderReadEvent evt);
+
+        /// <summary>
+        /// Handles <see cref="BlockNotFoundEvent"/>
+        /// </summary>
+        Task Handle(string integrationName, BlockNotFoundEvent evt);
         
         /// <summary>
         /// Handles <see cref="TransferAmountTransactionExecutedEvent"/>.

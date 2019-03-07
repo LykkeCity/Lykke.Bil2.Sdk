@@ -48,6 +48,9 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         [JsonProperty("previousBlockId")]
         public string PreviousBlockId { get; }
 
+        /// <summary>
+        /// Should be published when a block header has been read.
+        /// </summary>
         public BlockHeaderReadEvent(
             long blockNumber,
             string blockId,
