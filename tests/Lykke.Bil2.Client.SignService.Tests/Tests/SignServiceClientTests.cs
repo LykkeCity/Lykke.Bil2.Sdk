@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Lykke.Bil2.BaseTests;
 using Lykke.Bil2.Client.SignService.Tests.Configuration;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Responses;
@@ -33,7 +34,15 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
         [OneTimeSetUp]
         public void GlobalSetup()
         {
-            PrepareSettings();
+            var prepareSettings = new AppSettings()
+            {
+                EncryptionPrivateKey = MyPrivateKey.ToString(),
+                MonitoringServiceClient = new MonitoringServiceClientSettings()
+                    { MonitoringServiceUrl = "http://localhost:5431" }
+            };
+
+            var settingsMock = new SettingsMock(_pathToSettings);
+            settingsMock.PrepareSettings(prepareSettings);
         }
 
         [OneTimeTearDown]
@@ -224,31 +233,6 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
                 CreateAddressTagResponse result = await client.CreateAddressTagAsync(address, request);
             });
             
-        }
-
-        private void PrepareSettings()
-        {
-            Environment.SetEnvironmentVariable("DisableAutoRegistrationInMonitoring", "true");
-            Environment.SetEnvironmentVariable("SettingsUrl", _pathToSettings);
-
-            var prepareSettings = new AppSettings()
-            {
-                EncryptionPrivateKey = MyPrivateKey.ToString(),
-                MonitoringServiceClient = new MonitoringServiceClientSettings()
-                { MonitoringServiceUrl = "http://localhost:5431" }
-            };
-
-            string serializedSettings = Newtonsoft.Json.JsonConvert.SerializeObject(prepareSettings);
-
-            try
-            {
-                File.Delete(_pathToSettings);
-            }
-            catch
-            {
-            }
-
-            File.AppendAllText(_pathToSettings, serializedSettings);
         }
 
         private ISignServiceApi PrepareClient<TAppSettings>(Action<SignServiceOptions<TAppSettings>> config)

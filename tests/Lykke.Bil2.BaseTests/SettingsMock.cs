@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using Lykke.Bil2.Client.BlocksReader.Tests.Configuration;
 
-namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
+namespace Lykke.Bil2.BaseTests
 {
     public class SettingsMock
     {
@@ -15,7 +14,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             Environment.SetEnvironmentVariable("SettingsUrl", _pathToSettings);
         }
 
-        public void PrepareSettings(AppSettings settings)
+        public void PrepareSettings<TAppSettings>(TAppSettings settings)
         {
             string serializedSettings = Newtonsoft.Json.JsonConvert.SerializeObject(settings);
 

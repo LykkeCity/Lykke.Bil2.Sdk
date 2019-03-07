@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Lykke.Bil2.BaseTests;
 
 namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 {
@@ -34,7 +35,22 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         [OneTimeSetUp]
         public void GlobalSetup()
         {
-            PrepareSettings();
+            var prepareSettings = new AppSettings()
+            {
+                Db = new DbSettings
+                {
+                    AzureDataConnString = "empty",
+                    LogsConnString = "empty"
+                },
+                HealthMonitoringPeriod = TimeSpan.FromSeconds(10),
+                NodeUrl = "http://localhost:7777/api",
+                NodeUser = "user",
+                NodePassword = "password",
+                MonitoringServiceClient = new MonitoringServiceClientSettings()
+                    { MonitoringServiceUrl = "http://localhost:5431" },
+            };
+
+            var settingsMock = new SettingsMock(_pathToSettings);
         }
 
         [OneTimeTearDown]
@@ -1054,40 +1070,6 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             if (transferCoinsTransactionsEstimator != null)
                 options.TransferCoinsTransactionsEstimatorFactory = c => transferCoinsTransactionsEstimator.Object;
-        }
-
-        private void PrepareSettings()
-        {
-            Environment.SetEnvironmentVariable("DisableAutoRegistrationInMonitoring", "true");
-            Environment.SetEnvironmentVariable("SettingsUrl", _pathToSettings);
-
-            var prepareSettings = new AppSettings()
-            {
-                Db = new DbSettings
-                {
-                    AzureDataConnString = "empty",
-                    LogsConnString = "empty"
-                },
-                HealthMonitoringPeriod = TimeSpan.FromSeconds(10),
-                NodeUrl = "http://localhost:7777/api",
-                NodeUser = "user",
-                NodePassword = "password",
-                MonitoringServiceClient = new MonitoringServiceClientSettings()
-                { MonitoringServiceUrl = "http://localhost:5431" },
-            };
-
-            string serializedSettings = Newtonsoft.Json.JsonConvert.SerializeObject(prepareSettings);
-
-            try
-            {
-                File.Delete(_pathToSettings);
-            }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch
-            {
-            }
-
-            File.AppendAllText(_pathToSettings, serializedSettings);
         }
 
         private ITransactionsExecutorApi PrepareClient<TAppSettings>(Action<TransactionsExecutorServiceOptions<TAppSettings>> config)

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Lykke.Bil2.BaseTests;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Sdk.BlocksReader.Repositories;
