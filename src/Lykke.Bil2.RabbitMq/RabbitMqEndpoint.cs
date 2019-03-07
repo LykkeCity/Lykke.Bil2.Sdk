@@ -54,7 +54,7 @@ namespace Lykke.Bil2.RabbitMq
                 AutomaticRecoveryEnabled = true,
                 TopologyRecoveryEnabled = true,
                 UseBackgroundThreadsForIO = true,
-                VirtualHost = _vhost
+                VirtualHost = string.IsNullOrWhiteSpace(_vhost) ? "/" : _vhost
             };
 
             var connectionName = $"{AppEnvironment.Name} {AppEnvironment.Version}";
