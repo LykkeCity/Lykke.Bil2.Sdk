@@ -13,9 +13,9 @@ namespace Lykke.Bil2.Sdk.Repositories
             return $"raw-transactions-{integrationName}";
         }
 
-        public static string GetBlobName(string transactionHash)
+        public static string GetBlobName(string transactionId)
         {
-            return transactionHash;
+            return transactionId;
         }
     }
 }

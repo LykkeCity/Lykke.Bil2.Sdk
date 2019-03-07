@@ -21,7 +21,7 @@ namespace BlocksReaderExample
                 options.BlockReaderFactory = c => new BlockReader();
                 options.AddIrreversibleBlockPulling(c => new IrreversibleBlockProvider());
 
-                options.UseSettings = settings =>
+                options.UseSettings = (s, settings) =>
                 {
                     services.AddSingleton<INodeClient>(new NodeClient(settings.CurrentValue.NodeUrl));
                 };

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using JetBrains.Annotations;
 using Lykke.Bil2.WebClient;
 using Lykke.Common.Log;
@@ -13,7 +14,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <summary>
         /// Adds the client of the blockchain integration transactions executor to the app services as <see cref="ITransactionsExecutorApi"/>
         /// </summary>
-        public static IServiceCollection AddTransactionsExecutorClient(this IServiceCollection services, string url)
+        public static IServiceCollection AddTransactionsExecutorClient(this IServiceCollection services, string url, params DelegatingHandler[] handlers)
         {
             if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _))
             {
@@ -27,7 +28,12 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
 
             services.AddSingleton(s =>
             {
-                var generator = HttpClientGeneratorFactory.Create(url, s.GetRequiredService<ILogFactory>());
+                var generator = HttpClientGeneratorFactory.Create(options =>
+                {
+                    options.Url = url;
+                    options.Handlers = handlers;
+                    options.LogFactory = s.GetRequiredService<ILogFactory>();
+                });
 
                 return generator.Generate<ITransactionsExecutorApi>();
             });

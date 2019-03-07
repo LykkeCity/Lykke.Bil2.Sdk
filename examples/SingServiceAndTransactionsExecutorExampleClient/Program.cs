@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Bil2.Client.SignService;
 using Lykke.Bil2.Client.TransactionsExecutor;
@@ -133,9 +134,9 @@ namespace SingServiceAndTransactionsExecutorExampleClient
         {
             Console.WriteLine("Building the transaction...");
 
-            return await client.BuildSendingTransactionAsync
+            return await client.BuildTransferAmountTransactionAsync
             (
-                new BuildSendingTransactionRequest
+                new BuildTransferAmountTransactionRequest
                 (
                     new[]
                     {
@@ -147,7 +148,7 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new FeeOptions(FeeType.AddToAmount)
+                    new Dictionary<AssetId, CoinsAmount>()
                 )
             );
         }
@@ -156,9 +157,9 @@ namespace SingServiceAndTransactionsExecutorExampleClient
         {
             Console.WriteLine("Building the invalid transaction...");
 
-            return await client.BuildSendingTransactionAsync
+            return await client.BuildTransferAmountTransactionAsync
             (
-                new BuildSendingTransactionRequest
+                new BuildTransferAmountTransactionRequest
                 (
                     new[]
                     {
@@ -177,7 +178,7 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new FeeOptions(FeeType.AddToAmount)
+                    new Dictionary<AssetId, CoinsAmount>()
                 )
             );
         }

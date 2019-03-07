@@ -35,7 +35,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
         {
             var evt = await _irreversibleBlockProvider.GetLastAsync();
 
-            await _irreversibleBlockListener.HandleNewLastIrreversableBlockAsync(evt);
+            await _irreversibleBlockListener.HandleNewLastIrreversibleBlockAsync(evt);
         }
 
         public void Start()

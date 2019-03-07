@@ -45,9 +45,14 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                     RegisterIrreversibleBlocksRetrievingStrategy(services, options, settings);
                     RegisterImplementationServices(services, options, settings);
                     
-                    options.UseSettings?.Invoke(settings);
+                    options.UseSettings?.Invoke(services, settings);
                 };
-                
+
+                if (options.DisableLogging)
+                {
+                    integrationOptions.DisableLogging();
+                }
+
                 integrationOptions.LogsAzureTableName = $"{options.IntegrationName}TransactionsExecutorLogs";
                 integrationOptions.LogsAzureTableConnectionStringResolver = settings => settings.Db.LogsConnString;
 
@@ -62,7 +67,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             
             where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
         {
-            services.AddTransient<IIrreversibleBlockListener, IIrreversibleBlockListener>();
+            services.AddTransient<IIrreversibleBlockListener, IrreversibleBlockListener>();
             services.AddTransient<ReadBlockCommandsHandler>();
             services.AddTransient<IStartupManager, StartupManager>();
 
@@ -74,7 +79,8 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                 new RabbitMqEndpoint
                 (
                     s.GetRequiredService<ILogFactory>(),
-                    new Uri(settings.CurrentValue.RabbitConnStrng)
+                    new Uri(settings.CurrentValue.RabbitConnStrng),
+                    options.RabbitVhost
                 ));
 
             services.AddTransient<IRabbitMqConfigurator>(s =>

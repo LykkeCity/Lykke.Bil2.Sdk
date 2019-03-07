@@ -52,5 +52,10 @@ namespace Lykke.Bil2.Client.BlocksReader
 
             _integrationNames.Add(integrationName);
         }
+
+        /// <summary>
+        /// Use it only in tests
+        /// </summary>
+        internal string RabbitVhost { get; set; } = null;
     }
 }

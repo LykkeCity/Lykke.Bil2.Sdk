@@ -14,7 +14,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             _messagePublisher = messagePublisher;
         }
 
-        public Task HandleNewLastIrreversableBlockAsync(LastIrreversibleBlockUpdatedEvent evt)
+        public Task HandleNewLastIrreversibleBlockAsync(LastIrreversibleBlockUpdatedEvent evt)
         {
             _messagePublisher.Invoke().Publish(evt);
 

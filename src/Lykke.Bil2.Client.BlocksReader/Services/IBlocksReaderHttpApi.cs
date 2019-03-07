@@ -17,7 +17,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
         /// Should return some general service info. Used to check if the service is running.
         /// </summary>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/isalive")]
         Task<BlockchainIsAliveResponse> GetIsAliveAsync();

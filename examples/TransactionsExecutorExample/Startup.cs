@@ -26,13 +26,14 @@ namespace TransactionsExecutorExample
                     c.Services.GetRequiredService<INodeClient>()
                 );
                 options.IntegrationInfoServiceFactory = c => new IntegrationInfoService();
-                options.TransactionEstimatorFactory = c => new TransactionsEstimator();
-                options.TransactionExecutorFactory = c => new TransactionsExecutor();
+                options.TransferAmountTransactionsEstimatorFactory = c => new TransactionsEstimator();
+                options.TransferAmountTransactionsBuilderFactory = c => new TransferTransactionsBuilder();
+                options.TransactionBroadcasterFactory = c => new TransactionsBroadcaster();
                 options.AddressFormatsProviderFactory = c => new AddressFormatsProvider();
 
-                options.UseSettings = settings =>
+                options.UseSettings = (s, settings) =>
                 {
-                    services.AddSingleton<INodeClient>(new NodeClient(settings.CurrentValue.NodeUrl));
+                    s.AddSingleton<INodeClient>(new NodeClient(settings.CurrentValue.NodeUrl));
                 };
             });
         }

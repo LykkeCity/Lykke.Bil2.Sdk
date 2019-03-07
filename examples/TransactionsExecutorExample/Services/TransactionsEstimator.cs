@@ -9,9 +9,9 @@ using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 
 namespace TransactionsExecutorExample.Services
 {
-    public class TransactionsEstimator : ITransactionEstimator
+    public class TransactionsEstimator : ITransferAmountTransactionsEstimator
     {
-        public Task<EstimateSendingTransactionResponse> EstimateSendingAsync(EstimateSendingTransactionRequest request)
+        public Task<EstimateTransactionResponse> EstimateTransferAmountAsync(EstimateTransferAmountTransactionRequest request)
         {
             if (request.Transfers.Count > 1)
             {
@@ -20,7 +20,7 @@ namespace TransactionsExecutorExample.Services
 
             var fee = request.Transfers.Single().Amount.ToDecimal() * 0.00001M;
 
-            return Task.FromResult(new EstimateSendingTransactionResponse
+            return Task.FromResult(new EstimateTransactionResponse
             (
                 new Dictionary<AssetId, CoinsAmount>
                 {

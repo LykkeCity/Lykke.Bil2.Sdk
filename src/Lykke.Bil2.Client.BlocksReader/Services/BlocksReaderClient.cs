@@ -67,7 +67,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
 
                 var subscriptions = new MessageSubscriptionsRegistry()
                     .On<BlockHeaderReadEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
-                    .On<TransactionExecutedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
+                    .On<TransferAmountTransactionExecutedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
+                    .On<TransferCoinsTransactionExecutedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
                     .On<TransactionFailedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
                     .On<LastIrreversibleBlockUpdatedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt));
 
@@ -77,6 +78,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
                     subscriptions,
                     parallelism: _listeningParallelism);
             }
+        }
+
+        public void Dispose()
+        {
+            _endpoint?.Dispose();
         }
     }
 }

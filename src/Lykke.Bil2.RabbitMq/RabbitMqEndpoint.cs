@@ -21,6 +21,7 @@ namespace Lykke.Bil2.RabbitMq
         private IModel _publishingChannel;
 
         private readonly List<IDisposable> _subscribers;
+        private readonly string _vhost;
 
         /// <summary>
         /// RabbitMq endpoint - represents RabbitMq connection and provides entry points
@@ -28,11 +29,12 @@ namespace Lykke.Bil2.RabbitMq
         /// </summary>
         public RabbitMqEndpoint(
             ILogFactory logFactory, 
-            Uri connectionString)
+            Uri connectionString, 
+            string vhost = null)
         {
             _logFactory = logFactory ?? throw new ArgumentNullException(nameof(logFactory));
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-
+            _vhost = vhost;
             _log = logFactory.CreateLog(this);
 
             _subscribers = new List<IDisposable>();
@@ -51,7 +53,8 @@ namespace Lykke.Bil2.RabbitMq
                 Uri = _connectionString,
                 AutomaticRecoveryEnabled = true,
                 TopologyRecoveryEnabled = true,
-                UseBackgroundThreadsForIO = true
+                UseBackgroundThreadsForIO = true,
+                VirtualHost = _vhost
             };
 
             var connectionName = $"{AppEnvironment.Name} {AppEnvironment.Version}";

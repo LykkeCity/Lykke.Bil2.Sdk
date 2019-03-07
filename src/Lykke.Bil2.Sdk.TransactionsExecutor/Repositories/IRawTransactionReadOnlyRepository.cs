@@ -5,6 +5,6 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Repositories
 {
     internal interface IRawTransactionReadOnlyRepository
     {
-        Task<Base58String> GetOrDefaultAsync(string transactionHash);
+        Task<Base58String> GetOrDefaultAsync(string transactionId);
     }
 }

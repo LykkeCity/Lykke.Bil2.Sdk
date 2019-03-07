@@ -19,7 +19,7 @@ namespace Lykke.Bil2.Client.SignService
         /// Should return some general service info. Used to check if the service is running.
         /// </summary>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/isalive")]
         Task<BlockchainIsAliveResponse> GetIsAliveAsync();
@@ -32,7 +32,7 @@ namespace Lykke.Bil2.Client.SignService
         /// <exception cref="NotImplementedWebApiException">
         /// Offline address creation is not supported by the blockchain integration.
         /// </exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Post("/api/addresses")]
         Task<CreateAddressResponse> CreateAddressAsync([Body] CreateAddressRequest body);
@@ -45,7 +45,7 @@ namespace Lykke.Bil2.Client.SignService
         /// <exception cref="NotImplementedWebApiException">
         /// Address tag creation is not supported by the blockchain integration.
         /// </exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Post("/api/addresses/{address}/tags")]
         Task<CreateAddressTagResponse> CreateAddressTagAsync(string address, [Body] CreateAddressTagRequest body);
@@ -55,7 +55,7 @@ namespace Lykke.Bil2.Client.SignService
         /// </summary>
         /// <exception cref="BadRequestWebApiException">Invalid request parameters</exception>
         /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
-        /// <exception cref="ApiException">Any other HTTP-related error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Post("/api/transactions/signed")]
         Task<SignTransactionResponse> SignTransactionAsync([Body] SignTransactionRequest body);

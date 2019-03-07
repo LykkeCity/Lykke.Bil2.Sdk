@@ -11,7 +11,12 @@ namespace BlocksReaderExampleClient
             return Task.CompletedTask;
         }
 
-        public Task Handle(string integrationName, TransactionExecutedEvent evt)
+        public Task Handle(string integrationName, TransferAmountTransactionExecutedEvent evt)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(string integrationName, TransferCoinsTransactionExecutedEvent evt)
         {
             return Task.CompletedTask;
         }
