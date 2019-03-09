@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Lykke.Bil2.RabbitMq.Publication;
 
 namespace Lykke.Bil2.RabbitMq.Subscription
 {
@@ -42,16 +40,49 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         }
 
         /// <inheritdoc />
-        public MessageSubscriptionsRegistry On<TMessage>(Func<TMessage, IMessagePublisher, Task> handler)
+        public MessageSubscriptionsRegistry Handle<TMessage>(Action<IMessageSubscriptionOptions<TMessage>> configureSubscription)
+            where TMessage : class
         {
-            if (handler == null)
+            if (configureSubscription == null)
             {
-                throw new ArgumentNullException(nameof(handler));
+                throw new ArgumentNullException(nameof(configureSubscription));
             }
 
-            var type = typeof(TMessage);
+            var messageType = typeof(TMessage);
+            var subscriptionOptions = new MessageSubscriptionOptions<TMessage>(messageType.Name);
 
-            _subscriptions = _subscriptions.Add(type.Name, new MessageSubscription<TMessage>(type.Name, type, handler));
+            configureSubscription.Invoke(subscriptionOptions);
+
+            if (subscriptionOptions.HandlerType == null)
+            {
+                throw new InvalidOperationException($"Handler is not registered for the message {messageType.Name}.");
+            }
+            
+            _subscriptions = _subscriptions.Add(messageType.Name, new MessageSubscription<TMessage>(subscriptionOptions));
+
+            return this;
+        }
+
+        /// <inheritdoc />
+        public MessageSubscriptionsRegistry Handle<TMessage, TState>(Action<IMessageSubscriptionOptions<TMessage, TState>> configureSubscription)
+            where TMessage : class
+        {
+            if (configureSubscription == null)
+            {
+                throw new ArgumentNullException(nameof(configureSubscription));
+            }
+
+            var messageType = typeof(TMessage);
+            var subscriptionOptions = new MessageSubscriptionOptions<TMessage, TState>(messageType.Name);
+
+            configureSubscription.Invoke(subscriptionOptions);
+
+            if (subscriptionOptions.HandlerType == null)
+            {
+                throw new InvalidOperationException($"Handler is not registered for the message {messageType.Name}.");
+            }
+           
+            _subscriptions = _subscriptions.Add(messageType.Name, new MessageSubscription<TMessage, TState>(subscriptionOptions));
 
             return this;
         }

@@ -6,7 +6,6 @@ using Lykke.Bil2.Client.TransactionsExecutor;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.SignService.Requests;
-using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Common.Log;
 using Lykke.Logs;

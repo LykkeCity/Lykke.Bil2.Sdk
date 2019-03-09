@@ -6,7 +6,6 @@ using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.RabbitMq;
 using Lykke.Bil2.RabbitMq.Subscription;
 using Lykke.Common.Log;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Bil2.Client.BlocksReader.Services
 {
@@ -66,12 +65,36 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
                 _endpoint.DeclareExchange(eventsExchangeName);
 
                 var subscriptions = new MessageSubscriptionsRegistry()
-                    .On<BlockHeaderReadEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
-                    .On<BlockNotFoundEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
-                    .On<TransferAmountTransactionExecutedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
-                    .On<TransferCoinsTransactionExecutedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
-                    .On<TransactionFailedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt))
-                    .On<LastIrreversibleBlockUpdatedEvent>((evt, publisher) => _serviceProvider.GetRequiredService<IBlockEventsHandler>().Handle(integrationName, evt));
+                    .Handle<BlockHeaderReadEvent, string>(o =>
+                    {
+                        o.WithHandler<IBlockEventsHandler>();
+                        o.WithState(integrationName);
+                    })
+                    .Handle<BlockNotFoundEvent, string>(o =>
+                    {
+                        o.WithHandler<IBlockEventsHandler>();
+                        o.WithState(integrationName);
+                    })
+                    .Handle<TransferAmountTransactionExecutedEvent, string>(o =>
+                    {
+                        o.WithHandler<IBlockEventsHandler>();
+                        o.WithState(integrationName);
+                    })
+                    .Handle<TransferCoinsTransactionExecutedEvent, string>(o =>
+                    {
+                        o.WithHandler<IBlockEventsHandler>();
+                        o.WithState(integrationName);
+                    })
+                    .Handle<TransactionFailedEvent, string>(o =>
+                    {
+                        o.WithHandler<IBlockEventsHandler>();
+                        o.WithState(integrationName);
+                    })
+                    .Handle<LastIrreversibleBlockUpdatedEvent, string>(o =>
+                    {
+                        o.WithHandler<IBlockEventsHandler>();
+                        o.WithState(integrationName);
+                    });
 
                 _endpoint.StartListening(
                     eventsExchangeName,

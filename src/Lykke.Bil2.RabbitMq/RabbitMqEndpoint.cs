@@ -14,6 +14,7 @@ namespace Lykke.Bil2.RabbitMq
     [PublicAPI]
     public class RabbitMqEndpoint : IRabbitMqEndpoint
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly ILogFactory _logFactory;
         private readonly Uri _connectionString;
         private readonly ILog _log;
@@ -28,10 +29,12 @@ namespace Lykke.Bil2.RabbitMq
         /// to start listening for the messages and publish messages.
         /// </summary>
         public RabbitMqEndpoint(
+            IServiceProvider serviceProvider,
             ILogFactory logFactory, 
             Uri connectionString, 
             string vhost = null)
         {
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _logFactory = logFactory ?? throw new ArgumentNullException(nameof(logFactory));
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _vhost = vhost;
@@ -123,6 +126,7 @@ namespace Lykke.Bil2.RabbitMq
 
             var subscriber = new MessageSubscriber
             (
+                _serviceProvider,
                 _logFactory,
                 _connection,
                 listeningExchangeName,

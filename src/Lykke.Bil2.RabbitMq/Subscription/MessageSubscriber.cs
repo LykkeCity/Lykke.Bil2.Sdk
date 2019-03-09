@@ -12,6 +12,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
 {
     internal class MessageSubscriber : IDisposable
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly ILogFactory _logFactory;
         private readonly IMessageSubscriptionsRegistry _subscriptionsRegistry;
         private readonly List<IModel> _channels;
@@ -19,6 +20,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         private Func<string, IMessagePublisher> _publisherFactory;
 
         public MessageSubscriber(
+            IServiceProvider serviceProvider,
             ILogFactory logFactory,
             IConnection connection,
             string exchangeName, 
@@ -43,6 +45,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                 throw new ArgumentOutOfRangeException(nameof(parallelism), parallelism, "Should be positive number");
             }
 
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _logFactory = logFactory ?? throw new ArgumentNullException(nameof(logFactory));
             _subscriptionsRegistry = subscriptionsRegistry ?? throw new ArgumentNullException(nameof(subscriptionsRegistry));
 
@@ -141,7 +144,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                         var publisher = _publisherFactory?.Invoke(args.BasicProperties.CorrelationId) ?? 
                                         ProhibitedRepliesMessagePublisher.Instance;
 
-                        await subscription.InvokeHandlerAsync(message, publisher);
+                        await subscription.InvokeHandlerAsync(_serviceProvider, message, publisher);
 
                         channel.BasicAck(args.DeliveryTag, false);
                     }

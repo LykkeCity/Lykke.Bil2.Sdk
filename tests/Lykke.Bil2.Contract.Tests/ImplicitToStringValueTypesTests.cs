@@ -1,5 +1,4 @@
-﻿using Lykke.Bil2.Contract.BlocksReader;
-using Lykke.Bil2.Contract.Common;
+﻿using Lykke.Bil2.Contract.Common;
 using NUnit.Framework;
 
 namespace Lykke.Bil2.Contract.Tests

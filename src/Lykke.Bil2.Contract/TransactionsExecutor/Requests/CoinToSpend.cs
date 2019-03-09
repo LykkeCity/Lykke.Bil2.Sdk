@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Newtonsoft.Json;
