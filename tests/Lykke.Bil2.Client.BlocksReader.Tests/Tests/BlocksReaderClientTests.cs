@@ -123,7 +123,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         }
 
         [Test]
-        public async Task Test_that_last_irreversible_block_updated_event_is_processed_pulling()
+        public void Test_that_last_irreversible_block_updated_event_is_processed_pulling()
         {
             //ARRANGE
             CountdownEvent countdown = new CountdownEvent(2);

@@ -14,12 +14,10 @@ using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Settings;
 using Lykke.Bil2.WebClient.Exceptions;
 using Lykke.Sdk.Settings;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Bil2.BaseTests;
@@ -35,7 +33,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         [OneTimeSetUp]
         public void GlobalSetup()
         {
-            var prepareSettings = new AppSettings()
+            var settings = new AppSettings
             {
                 Db = new DbSettings
                 {
@@ -51,6 +49,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             };
 
             var settingsMock = new SettingsMock(_pathToSettings);
+
+            settingsMock.PrepareSettings(settings);
         }
 
         [OneTimeTearDown]
@@ -530,8 +530,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         public async Task Address_format()
         {
             //ARRANGE
-            string address = "0x1";
-            IReadOnlyCollection<AddressFormat> formats = new AddressFormat[]
+            var address = "0x1";
+            IReadOnlyCollection<AddressFormat> formats = new[]
             {
                 new AddressFormat(new Address(address),"format_1"),
                 new AddressFormat(new Address("0"+address),"format_2"),
@@ -636,10 +636,9 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         }
 
         [Test]
-        public async Task Not_implemented_transfer_coins_transaction()
+        public void Not_implemented_transfer_coins_transaction()
         {
             //ARRANGE
-            string transactionResponse = "transactionResponse";
 
             var client = PrepareClient<AppSettings>((options) =>
             {
@@ -684,15 +683,14 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             Assert.ThrowsAsync<NotImplementedWebApiException>(async () =>
             {
                 var request = new BuildTransferCoinsTransactionRequest(coinsToSpend, coinsToReceive, expirationOptions);
-                var result = await client.BuildTransferCoinsTransactionAsync(request);
+                await client.BuildTransferCoinsTransactionAsync(request);
             });
         }
 
         [Test]
-        public async Task Bad_request_transfer_coins_transaction()
+        public void Bad_request_transfer_coins_transaction()
         {
             //ARRANGE
-            string transactionResponse = "transactionResponse";
 
             var client = PrepareClient<AppSettings>((options) =>
             {
@@ -742,16 +740,14 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             Assert.ThrowsAsync<TransactionBuildingWebApiException>(async () =>
             {
                 var request = new BuildTransferCoinsTransactionRequest(coinsToSpend, coinsToReceive, expirationOptions);
-                var result = await client.BuildTransferCoinsTransactionAsync(request);
+                await client.BuildTransferCoinsTransactionAsync(request);
             });
         }
 
         [Test]
-        public async Task Internal_server_error_transfer_coins_transaction()
+        public void Internal_server_error_transfer_coins_transaction()
         {
             //ARRANGE
-            string transactionResponse = "transactionResponse";
-
             var client = PrepareClient<AppSettings>((options) =>
             {
                 var aggregator = CreateMocks();
@@ -800,7 +796,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             Assert.ThrowsAsync<InternalServerErrorWebApiException>(async () =>
             {
                 var request = new BuildTransferCoinsTransactionRequest(coinsToSpend, coinsToReceive, expirationOptions);
-                var result = await client.BuildTransferCoinsTransactionAsync(request);
+                await client.BuildTransferCoinsTransactionAsync(request);
             });
         }
 
@@ -856,7 +852,6 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     AddressTagType.Text
                     ),
             };
-            var expirationOptions = new ExpirationOptions(DateTime.Now + TimeSpan.FromDays(1));
 
             var request = new EstimateTransferCoinsTransactionRequest(coinsToSpend, coinsToReceive);
             var result = await client.EstimateTransferCoinsTransactionAsync(request);
@@ -870,7 +865,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         }
 
         [Test]
-        public async Task Internal_server_error_estimate_transfer_coins_transaction()
+        public void Internal_server_error_estimate_transfer_coins_transaction()
         {
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
@@ -917,17 +912,16 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     AddressTagType.Text
                     ),
             };
-            var expirationOptions = new ExpirationOptions(DateTime.Now + TimeSpan.FromDays(1));
 
             Assert.ThrowsAsync<InternalServerErrorWebApiException>(async () =>
             {
                 var request = new EstimateTransferCoinsTransactionRequest(coinsToSpend, coinsToReceive);
-                var result = await client.EstimateTransferCoinsTransactionAsync(request);
+                await client.EstimateTransferCoinsTransactionAsync(request);
             });
         }
 
         [Test]
-        public async Task Bad_request_estimate_transfer_coins_transaction()
+        public void Bad_request_estimate_transfer_coins_transaction()
         {
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
@@ -974,12 +968,11 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     AddressTagType.Text
                     ),
             };
-            var expirationOptions = new ExpirationOptions(DateTime.Now + TimeSpan.FromDays(1));
 
             Assert.ThrowsAsync<BadRequestWebApiException>(async () =>
             {
                 var request = new EstimateTransferCoinsTransactionRequest(coinsToSpend, coinsToReceive);
-                var result = await client.EstimateTransferCoinsTransactionAsync(request);
+                await client.EstimateTransferCoinsTransactionAsync(request);
             });
         }
 
@@ -1028,17 +1021,19 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
         private static MockAggregator CreateMocks()
         {
-            var aggregator = new MockAggregator();
-            aggregator.AddressValidator = new Mock<IAddressValidator>();
-            aggregator.HealthProvider = new Mock<IHealthProvider>();
-            aggregator.IntegrationInfoService = new Mock<IIntegrationInfoService>();
-            aggregator.TransactionEstimator = new Mock<ITransferAmountTransactionsEstimator>();
-            aggregator.TransactionBroadcaster = new Mock<ITransactionBroadcaster>();
-            aggregator.TransferAmountTransactionBuilder = new Mock<ITransferAmountTransactionsBuilder>();
-            aggregator.AddressFormatsProvider = new Mock<IAddressFormatsProvider>();
-            aggregator.TransactionStateProvider = new Mock<ITransactionsStateProvider>();
-            aggregator.TransferCoinsTransactionsBuilder = new Mock<ITransferCoinsTransactionsBuilder>();
-            aggregator.TransferCoinsTransactionsEstimator= new Mock<ITransferCoinsTransactionsEstimator>();
+            var aggregator = new MockAggregator
+            {
+                AddressValidator = new Mock<IAddressValidator>(),
+                HealthProvider = new Mock<IHealthProvider>(),
+                IntegrationInfoService = new Mock<IIntegrationInfoService>(),
+                TransactionEstimator = new Mock<ITransferAmountTransactionsEstimator>(),
+                TransactionBroadcaster = new Mock<ITransactionBroadcaster>(),
+                TransferAmountTransactionBuilder = new Mock<ITransferAmountTransactionsBuilder>(),
+                AddressFormatsProvider = new Mock<IAddressFormatsProvider>(),
+                TransactionStateProvider = new Mock<ITransactionsStateProvider>(),
+                TransferCoinsTransactionsBuilder = new Mock<ITransferCoinsTransactionsBuilder>(),
+                TransferCoinsTransactionsEstimator = new Mock<ITransferCoinsTransactionsEstimator>()
+            };
 
             return aggregator;
         }
