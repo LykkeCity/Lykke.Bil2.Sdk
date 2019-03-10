@@ -23,7 +23,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
         /// RabbitMq connection string.
         /// </summary>
         [AmqpCheck]
-        string RabbitConnStrng { get; }
+        string RabbitConnString { get; }
 
         /// <summary>
         /// Monitoring period of the last irreversible block.

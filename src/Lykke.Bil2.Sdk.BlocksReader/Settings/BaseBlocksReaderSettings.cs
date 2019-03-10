@@ -20,7 +20,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
 
         /// <inheritdoc />
         [AmqpCheck]
-        public string RabbitConnStrng { get; set; }
+        public string RabbitConnString { get; set; }
 
         /// <inheritdoc />
         [Optional]

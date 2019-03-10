@@ -40,7 +40,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             var connStringRabbit = _rabbitMqConfiguration.RabbitMqConnString;
             var prepareSettings = new AppSettings()
             {
-                RabbitConnStrng = connStringRabbit,
+                RabbitConnString = connStringRabbit,
                 MessageListeningParallelism = 1,
                 LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(60),
                 Db = new DbSettings()
