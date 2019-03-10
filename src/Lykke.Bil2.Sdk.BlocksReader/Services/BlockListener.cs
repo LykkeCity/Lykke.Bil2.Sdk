@@ -26,6 +26,13 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             return Task.CompletedTask;
         }
 
+        public Task HandleBlockNotFoundAsync(BlockNotFoundEvent evt)
+        {
+            _messagePublisher.Publish(evt);
+
+            return Task.CompletedTask;
+        }
+
         public async Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransferAmountTransactionExecutedEvent evt)
         {
             var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionId, rawTransaction);

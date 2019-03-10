@@ -30,6 +30,7 @@ namespace TransactionsExecutorExample
                 options.TransferAmountTransactionsBuilderFactory = c => new TransferTransactionsBuilder();
                 options.TransactionBroadcasterFactory = c => new TransactionsBroadcaster();
                 options.AddressFormatsProviderFactory = c => new AddressFormatsProvider();
+                options.TransactionsStateProviderFactory = c => new TransactionStateProvider();
 
                 options.UseSettings = (s, settings) =>
                 {

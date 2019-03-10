@@ -20,6 +20,9 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         [JsonProperty("blockId")]
         public string BlockId { get; }
 
+        /// <summary>
+        /// Should be published when last irreversible block number is updated.
+        /// </summary>
         public LastIrreversibleBlockUpdatedEvent(long blockNumber, string blockId)
         {
             if (blockNumber < 0)
