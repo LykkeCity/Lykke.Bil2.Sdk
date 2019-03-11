@@ -16,7 +16,7 @@ namespace Lykke.Bil2.BaseTests
 
         public void PrepareSettings<TAppSettings>(TAppSettings settings)
         {
-            string serializedSettings = Newtonsoft.Json.JsonConvert.SerializeObject(settings);
+            var serializedSettings = Newtonsoft.Json.JsonConvert.SerializeObject(settings);
 
             try
             {
@@ -24,6 +24,7 @@ namespace Lykke.Bil2.BaseTests
             }
             catch
             {
+                // ignored
             }
 
             File.AppendAllText(_pathToSettings, serializedSettings);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Lykke.Bil2.BaseTests;
 using Lykke.Bil2.Client.SignService.Tests.Configuration;

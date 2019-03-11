@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Lykke.Bil2.RabbitMq.Publication;
 
 namespace Lykke.Bil2.RabbitMq.Subscription
@@ -7,6 +8,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
     /// <summary>
     /// Metadata of the message subscription
     /// </summary>
+    [PublicAPI]
     public interface IMessageSubscription
     {
         /// <summary>
@@ -22,6 +24,6 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         /// <summary>
         /// Invokes the message handler
         /// </summary>
-        Task InvokeHandlerAsync(object message, IMessagePublisher publisher);
+        Task InvokeHandlerAsync(IServiceProvider parentServiceProvider, object message, IMessagePublisher publisher);
     }
 }

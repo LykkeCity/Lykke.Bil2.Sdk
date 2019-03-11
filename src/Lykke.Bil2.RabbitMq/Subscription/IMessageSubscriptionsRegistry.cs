@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Lykke.Bil2.RabbitMq.Publication;
 
 namespace Lykke.Bil2.RabbitMq.Subscription
 {
@@ -24,8 +22,15 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         IMessageSubscription GetSubscriptionOrDefault(string messageType);
 
         /// <summary>
-        /// Register handler for the message
+        /// Configures handling of the <typeparamref name="TMessage"/> message.
         /// </summary>
-        MessageSubscriptionsRegistry On<TMessage>(Func<TMessage, IMessagePublisher, Task> handler);
+        MessageSubscriptionsRegistry Handle<TMessage>(Action<IMessageSubscriptionOptions<TMessage>> configureSubscription)
+            where TMessage : class;
+
+        /// <summary>
+        /// Configures handling of the <typeparamref name="TMessage"/> message with the <typeparamref name="TState"/> state.
+        /// </summary>
+        MessageSubscriptionsRegistry Handle<TMessage, TState>(Action<IMessageSubscriptionOptions<TMessage, TState>> configureSubscription)
+            where TMessage : class;
     }
 }

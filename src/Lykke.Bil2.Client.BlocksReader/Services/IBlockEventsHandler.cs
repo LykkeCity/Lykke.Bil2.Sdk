@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Lykke.Bil2.Contract.BlocksReader.Events;
+using Lykke.Bil2.RabbitMq.Subscription;
 
 namespace Lykke.Bil2.Client.BlocksReader.Services
 {
@@ -8,36 +8,13 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
     /// Handles events from the blockchain integration block reader application.
     /// </summary>
     [PublicAPI]
-    public interface IBlockEventsHandler
+    public interface IBlockEventsHandler :
+        IMessageHandler<BlockHeaderReadEvent, string>,
+        IMessageHandler<BlockNotFoundEvent, string>,
+        IMessageHandler<TransferAmountTransactionExecutedEvent, string>,
+        IMessageHandler<TransferCoinsTransactionExecutedEvent, string>,
+        IMessageHandler<TransactionFailedEvent, string>,
+        IMessageHandler<LastIrreversibleBlockUpdatedEvent, string>
     {
-        /// <summary>
-        /// Handles <see cref="BlockHeaderReadEvent"/>.
-        /// </summary>
-        Task Handle(string integrationName, BlockHeaderReadEvent evt);
-
-        /// <summary>
-        /// Handles <see cref="BlockNotFoundEvent"/>
-        /// </summary>
-        Task Handle(string integrationName, BlockNotFoundEvent evt);
-        
-        /// <summary>
-        /// Handles <see cref="TransferAmountTransactionExecutedEvent"/>.
-        /// </summary>
-        Task Handle(string integrationName, TransferAmountTransactionExecutedEvent evt);
-
-        /// <summary>
-        /// Handles <see cref="TransferCoinsTransactionExecutedEvent"/>.
-        /// </summary>
-        Task Handle(string integrationName, TransferCoinsTransactionExecutedEvent evt);
-        
-        /// <summary>
-        /// Handles <see cref="TransactionFailedEvent"/>.
-        /// </summary>
-        Task Handle(string integrationName, TransactionFailedEvent evt);
-
-        /// <summary>
-        /// Handles <see cref="LastIrreversibleBlockUpdatedEvent"/>
-        /// </summary>
-        Task Handle(string integrationName, LastIrreversibleBlockUpdatedEvent evt);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
+namespace Lykke.Bil2.BaseTests
 {
     [DataContract]
     public class RabbitQueue

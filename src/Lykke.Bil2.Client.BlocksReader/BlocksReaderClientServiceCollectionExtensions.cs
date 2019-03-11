@@ -57,6 +57,7 @@ namespace Lykke.Bil2.Client.BlocksReader
 
             services.AddSingleton<IRabbitMqEndpoint>(s => new RabbitMqEndpoint
             (
+                s,
                 s.GetRequiredService<ILogFactory>(),
                 new Uri(options.RabbitMqConnString),
                 options.RabbitVhost

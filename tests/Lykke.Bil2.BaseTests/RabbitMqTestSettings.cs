@@ -1,4 +1,4 @@
-﻿namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
+﻿namespace Lykke.Bil2.BaseTests
 {
     public class RabbitMqTestSettings
     {
