@@ -1,6 +1,8 @@
 ﻿using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Bil2.Contract.Common.JsonConverters;
+using Lykke.Numerics.Money;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
@@ -27,7 +29,8 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// Coin value to receive.
         /// </summary>
         [JsonProperty("value")]
-        public CoinsAmount Value { get; }
+        [JsonConverter(typeof(UMoneyJsonConverter))]
+        public UMoney Value { get; }
 
         /// <summary>
         /// Address which should receive the coin.
@@ -54,7 +57,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         public CoinToReceive(
             int coinNumber,
             AssetId assetId,
-            CoinsAmount value,
+            UMoney value,
             Address address,
             AddressTag addressTag = null,
             AddressTagType? addressTagType = null)
@@ -64,9 +67,6 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 
             if (string.IsNullOrWhiteSpace(assetId))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
-
-            if(value <= 0)
-                throw RequestValidationException.ShouldBePositiveNumber(value, nameof(value));
 
             if (string.IsNullOrWhiteSpace(address))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));

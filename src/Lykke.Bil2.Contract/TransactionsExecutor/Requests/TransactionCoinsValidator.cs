@@ -38,7 +38,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
                 .Select(g => new
                 {
                     AssetId = g.Key,
-                    Sum = g.Sum(x => x.Value)
+                    Sum = g.Select(x => x.Value).Aggregate((x, y) => x + y)
                 })
                 .OrderBy(x => x.AssetId)
                 .ToArray();
@@ -47,7 +47,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
                 .Select(g => new
                 {
                     AssetId = g.Key,
-                    Sum = g.Sum(x => x.Value)
+                    Sum = g.Select(x => x.Value).Aggregate((x, y) => x + y)
                 })
                 .OrderBy(x => x.AssetId)
                 .ToArray();

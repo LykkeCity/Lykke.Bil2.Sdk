@@ -2,6 +2,8 @@
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Bil2.Contract.Common.JsonConverters;
+using Lykke.Numerics.Money;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
@@ -21,8 +23,8 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Fee amount in particular asset to spend for the given transaction.
         /// </summary>
-        [JsonProperty("fee")]
-        public IReadOnlyDictionary<AssetId, CoinsAmount> Fee { get; }
+        [JsonProperty("fee", ItemConverterType = typeof(UMoneyJsonConverter))]
+        public IReadOnlyDictionary<AssetId, UMoney> Fee { get; }
 
         /// <summary>
         /// Optional.
@@ -43,7 +45,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// </summary>
         public BuildTransferAmountTransactionRequest(
             IReadOnlyCollection<Transfer> transfers, 
-            IReadOnlyDictionary<AssetId, CoinsAmount> fee,
+            [JsonProperty(ItemConverterType = typeof(UMoneyJsonConverter))] IReadOnlyDictionary<AssetId, UMoney> fee,
             ExpirationOptions expiration = null)
         {
             TransactionTransfersValidator.Validate(transfers);

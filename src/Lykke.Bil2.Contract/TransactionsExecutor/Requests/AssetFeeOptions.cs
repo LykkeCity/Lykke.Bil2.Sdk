@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Bil2.Contract.Common.JsonConverters;
+using Lykke.Numerics.Money;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
@@ -16,7 +17,8 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("limit")]
-        public CoinsAmount Limit { get; }
+        [JsonConverter(typeof(UMoneyJsonConverter))]
+        public UMoney? Limit { get; }
 
         /// <summary>
         /// Optional.
@@ -24,7 +26,8 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("exact")]
-        public CoinsAmount Exact { get; }
+        [JsonConverter(typeof(UMoneyJsonConverter))]
+        public UMoney? Exact { get; }
 
         /// <summary>
         /// Optional.
@@ -37,22 +40,16 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Transaction fee options for particular asset
         /// </summary>
-        public AssetFeeOptions(CoinsAmount limit, CoinsAmount exact, decimal? multiplier)
+        public AssetFeeOptions(UMoney? limit, UMoney? exact, decimal? multiplier)
         {
-            if (limit == null && exact == null && !multiplier.HasValue)
+            if (!limit.HasValue && !exact.HasValue && !multiplier.HasValue)
                 throw new RequestValidationException("At least one option should be specified", new[] {nameof(limit), nameof(exact), nameof(multiplier)});
 
-            if (limit != null && exact != null)
+            if (limit.HasValue && exact.HasValue)
                 throw new RequestValidationException($"Only one of limit or exact values can be specified. Limit: {limit}, exact: {exact}", new [] {nameof(limit), nameof(exact)});
 
-            if (multiplier.HasValue && exact != null)
+            if (multiplier.HasValue && exact.HasValue)
                 throw new RequestValidationException($"Only one of multiplier or exact values can be specified. Multiplier: {multiplier}, exact: {exact}", new [] {nameof(multiplier), nameof(exact)});
-
-            if (limit <= 0)
-                throw RequestValidationException.ShouldBePositiveNumber(limit, nameof(limit));
-
-            if (exact <= 0)
-                throw RequestValidationException.ShouldBePositiveNumber(exact, nameof(exact));
 
             if (multiplier <= 0)
                 throw RequestValidationException.ShouldBePositiveNumber(multiplier, nameof(multiplier));

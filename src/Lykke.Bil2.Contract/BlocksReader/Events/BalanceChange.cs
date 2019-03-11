@@ -1,6 +1,8 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.JsonConverters;
+using Lykke.Numerics.Money;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -30,7 +32,8 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Can be positive to increase the balance or negative to decrease the balance.
         /// </summary>
         [JsonProperty("value")]
-        public CoinsChange Value { get; }
+        [JsonConverter(typeof(MoneyJsonConverter))]
+        public Money Value { get; }
 
         /// <summary>
         /// Address.
@@ -65,7 +68,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public BalanceChange(
             string transferId, 
             AssetId assetId, 
-            CoinsChange value, 
+            Money value, 
             Address address, 
             AddressTag tag = null, 
             AddressTagType? tagType = null,
@@ -88,7 +91,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
 
             TransferId = transferId;
             AssetId = assetId;
-            Value = value ?? throw new ArgumentNullException(nameof(value));
+            Value = value;
             Address = address;
             Tag = tag;
             TagType = tagType;

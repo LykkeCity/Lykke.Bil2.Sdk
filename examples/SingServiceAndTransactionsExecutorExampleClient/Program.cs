@@ -10,6 +10,7 @@ using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Common.Log;
 using Lykke.Logs;
 using Lykke.Logs.Loggers.LykkeConsole;
+using Lykke.Numerics.Money;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
@@ -142,12 +143,12 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                         new Transfer
                         ( 
                             "STEEM",
-                            CoinsAmount.FromDecimal(100, 3),
+                            UMoney.Create(100, 3),
                             "Test:c021d892538b4a7a8520ae46f368c00f",
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new Dictionary<AssetId, CoinsAmount>()
+                    new Dictionary<AssetId, UMoney>()
                 )
             );
         }
@@ -165,19 +166,19 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                         new Transfer
                         ( 
                             "STEEM",
-                            CoinsAmount.FromDecimal(100, 3),
+                            UMoney.Create(100, 3),
                             "Test:c021d892538b4a7a8520ae46f368c00f",
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         ),
                         new Transfer
                         ( 
                             "STEEM",
-                            CoinsAmount.FromDecimal(50, 3),
+                            UMoney.Create(50, 3),
                             "Test:c021d892538b4a7a8520ae46f368c00f",
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new Dictionary<AssetId, CoinsAmount>()
+                    new Dictionary<AssetId, UMoney>()
                 )
             );
         }

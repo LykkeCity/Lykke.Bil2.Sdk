@@ -3,6 +3,7 @@ using System.Linq;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
+using Lykke.Numerics.Money;
 using NUnit.Framework;
 
 namespace Lykke.Bil2.Contract.Tests
@@ -19,14 +20,14 @@ namespace Lykke.Bil2.Contract.Tests
             (
                 new CoinReference("1", 1),
                 "KIN",
-                CoinsAmount.FromDecimal(100, 3),
+                UMoney.Create(100, 3),
                 "A"
             );
             var coinToReceive = new CoinToReceive
             (
                 0,
                 "KIN",
-                CoinsAmount.FromDecimal(100, 3),
+                UMoney.Create(100, 3),
                 "A"
             );
 
@@ -76,7 +77,7 @@ namespace Lykke.Bil2.Contract.Tests
                 (
                     new CoinReference("1", 1),
                     asset,
-                    CoinsAmount.FromDecimal(100, 3),
+                    UMoney.Create(100, 3),
                     "A"
                 ))
                 .ToArray();
@@ -86,7 +87,7 @@ namespace Lykke.Bil2.Contract.Tests
                 (
                     i,
                     asset,
-                    CoinsAmount.FromDecimal(100, 3),
+                    UMoney.Create(100, 3),
                     "A"
                 ))
                 .ToArray();
@@ -132,7 +133,7 @@ namespace Lykke.Bil2.Contract.Tests
                 (
                     new CoinReference("1", 1),
                     x[0],
-                    CoinsAmount.FromDecimal(int.Parse(x[1]), 3),
+                    UMoney.Create(int.Parse(x[1]), 3),
                     "A"
                 ))
                 .ToArray();
@@ -143,7 +144,7 @@ namespace Lykke.Bil2.Contract.Tests
                 (
                     i,
                     x[0],
-                    CoinsAmount.FromDecimal(int.Parse(x[1]), 3),
+                    UMoney.Create(int.Parse(x[1]), 3),
                     "A"
                 ))
                 .ToArray();
@@ -175,7 +176,7 @@ namespace Lykke.Bil2.Contract.Tests
             (
                 new CoinReference("1", 1),
                 "KIN",
-                CoinsAmount.FromDecimal(100, 3),
+                UMoney.Create(100, 3),
                 "A"
             );
             var coinsToReceive = coinsToReceiveNumbers
@@ -184,7 +185,7 @@ namespace Lykke.Bil2.Contract.Tests
                 (
                     int.Parse(x),
                     "KIN",
-                    CoinsAmount.FromDecimal(1, 3),
+                    UMoney.Create(1, 3),
                     "B"
                 ))
                 .ToArray();

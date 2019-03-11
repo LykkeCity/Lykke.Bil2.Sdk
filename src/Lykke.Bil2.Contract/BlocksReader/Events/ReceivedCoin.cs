@@ -1,6 +1,8 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.Contract.Common.JsonConverters;
+using Lykke.Numerics.Money;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -24,7 +26,8 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Value of the coin.
         /// </summary>
         [JsonProperty("value")]
-        public CoinsAmount Value { get; }
+        [JsonConverter(typeof(UMoneyJsonConverter))]
+        public UMoney Value { get; }
 
         /// <summary>
         /// Address which received the coin.
@@ -59,7 +62,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public ReceivedCoin(
             int coinNumber,
             AssetId assetId,
-            CoinsAmount value,
+            UMoney value,
             Address address,
             AddressTag addressTag = null,
             AddressTagType? addressTagType = null,
