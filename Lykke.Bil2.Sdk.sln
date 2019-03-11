@@ -47,6 +47,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Bil2.Client.Transacti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Bil2.Client.BlocksReader.Tests", "tests\Lykke.Bil2.Client.BlocksReader.Tests\Lykke.Bil2.Client.BlocksReader.Tests.csproj", "{6CAECEC2-DBCB-46A8-9EC1-71B864141937}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Bil2.RabbitMq.Tests", "tests\Lykke.Bil2.RabbitMq.Tests\Lykke.Bil2.RabbitMq.Tests.csproj", "{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -297,6 +299,18 @@ Global
 		{6CAECEC2-DBCB-46A8-9EC1-71B864141937}.Release|x64.Build.0 = Release|Any CPU
 		{6CAECEC2-DBCB-46A8-9EC1-71B864141937}.Release|x86.ActiveCfg = Release|Any CPU
 		{6CAECEC2-DBCB-46A8-9EC1-71B864141937}.Release|x86.Build.0 = Release|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Debug|x64.Build.0 = Debug|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Debug|x86.Build.0 = Debug|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Release|x64.ActiveCfg = Release|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Release|x64.Build.0 = Release|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Release|x86.ActiveCfg = Release|Any CPU
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -312,6 +326,7 @@ Global
 		{516979EA-7330-4509-8574-755561D2A207} = {CDF21CA8-1D14-4DEE-AC38-EF5FA113AC71}
 		{183CD1CB-4448-4AEC-88E7-3E469533B1CC} = {CDF21CA8-1D14-4DEE-AC38-EF5FA113AC71}
 		{6CAECEC2-DBCB-46A8-9EC1-71B864141937} = {CDF21CA8-1D14-4DEE-AC38-EF5FA113AC71}
+		{1BACE2DC-AA06-45BE-AC24-1D44A79B292E} = {CDF21CA8-1D14-4DEE-AC38-EF5FA113AC71}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE7931E9-23DA-419B-9806-769CE70D173E}

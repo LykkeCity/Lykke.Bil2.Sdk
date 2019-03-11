@@ -1,26 +1,21 @@
-﻿using System;
-using Lykke.Bil2.Contract.BlocksReader.Commands;
+﻿using Lykke.Bil2.Contract.BlocksReader.Commands;
 using Lykke.Bil2.RabbitMq;
 using Lykke.Bil2.RabbitMq.Subscription;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Bil2.Sdk.BlocksReader.Services
 {
     internal class RabbitMqConfigurator : IRabbitMqConfigurator
     {
         private readonly IRabbitMqEndpoint _rabbitMqEndpoint;
-        private readonly IServiceProvider _serviceProvider;
         private readonly int _listeningParallelism;
         private readonly string _integrationName;
 
         public RabbitMqConfigurator(
             IRabbitMqEndpoint rabbitMqEndpoint,
-            IServiceProvider serviceProvider,
             int listeningParallelism,
             string integrationName)
         {
             _rabbitMqEndpoint = rabbitMqEndpoint;
-            _serviceProvider = serviceProvider;
             _listeningParallelism = listeningParallelism;
             _integrationName = integrationName;
         }
@@ -36,7 +31,10 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             _rabbitMqEndpoint.DeclareExchange(eventsExchangeName);
 
             var subscriptions = new MessageSubscriptionsRegistry()
-                .On<ReadBlockCommand>((command, publisher) => _serviceProvider.GetRequiredService<ReadBlockCommandsHandler>().Handle(command, publisher));
+                .Handle<ReadBlockCommand>(o =>
+                {
+                    o.WithHandler<ReadBlockCommandsHandler>();
+                });
 
             _rabbitMqEndpoint.StartListening(
                 commandsExchangeName,

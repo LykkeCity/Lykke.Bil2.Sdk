@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Lykke.Bil2.RabbitMq.Publication;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 {
@@ -25,25 +26,28 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
     {
         private static readonly string _integrationName = "TestIntegration";
         private static readonly string _pathToSettings = "appsettings.tests.json";
-        private LaunchSettingsFixture _fixture;
-        private RabbitMqConfigurator _rabbitMqConfiguration;
+        private RabbitMqVhostInitializer _rabbitMqInitializer;
         private SettingsMock _settingsMock;
+        private RabbitMqTestSettings _rabbitMqSettings;
 
         [OneTimeSetUp]
         public async Task GlobalSetup()
         {
-            _fixture = new LaunchSettingsFixture();
-            _rabbitMqConfiguration = new RabbitMqConfigurator(_fixture);
-            await _rabbitMqConfiguration.ConfigureRabbitMqAsync();
-             _settingsMock = new SettingsMock(_pathToSettings);
+            LaunchSettingsReader.Read();
 
-            var connStringRabbit = _rabbitMqConfiguration.RabbitMqConnString;
-            var prepareSettings = new AppSettings()
+            _rabbitMqSettings = RabbitMqSettingsReader.Read();
+            _rabbitMqInitializer = new RabbitMqVhostInitializer(_rabbitMqSettings);
+
+            await _rabbitMqInitializer.InitializeAsync();
+
+            _settingsMock = new SettingsMock(_pathToSettings);
+
+            var prepareSettings = new AppSettings
             {
-                RabbitConnString = connStringRabbit,
+                RabbitConnString = _rabbitMqSettings.GetConnectionString(),
                 MessageListeningParallelism = 1,
                 LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(60),
-                Db = new DbSettings()
+                Db = new DbSettings
                 {
                     AzureDataConnString = "empty",
                     LogsConnString = "empty"
@@ -51,8 +55,10 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 NodeUrl = "http://localhost:7777/api",
                 NodeUser = "user",
                 NodePassword = "password",
-                MonitoringServiceClient = new MonitoringServiceClientSettings()
-                    { MonitoringServiceUrl = "http://localhost:5431" },
+                MonitoringServiceClient = new MonitoringServiceClientSettings
+                {
+                    MonitoringServiceUrl = "http://localhost:5431"
+                }
             };
 
             _settingsMock.PrepareSettings(prepareSettings);
@@ -61,7 +67,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         [OneTimeTearDown]
         public async Task GlobalTeardown()
         {
-            await _rabbitMqConfiguration.CleanRabbitAsync();
+            await _rabbitMqInitializer.CleanAsync();
         }
 
         [Test]
@@ -70,11 +76,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             //ARRANGE
             CountdownEvent countdown = new CountdownEvent(2);
             Mock<IBlockReader> blockReader = null;
-            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt) =>
+            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, messagePublisher) =>
             {
             });
 
-            var (httpApi, client, apiFactory, testServer) = PrepareClient<AppSettings>(
+            var (client, apiFactory, testServer) = PrepareClient<AppSettings>(
                 serverOptions =>
                 {
                     CreateMocks(
@@ -98,8 +104,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 {
                     clientOptions.BlockEventsHandlerFactory =
                         (context) => blockEventsHandlerMock.Object;
-                    clientOptions.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
-                    clientOptions.RabbitMqConnString = _rabbitMqConfiguration.RabbitMqConnString;
+                    clientOptions.RabbitVhost = _rabbitMqSettings.Vhost;
+                    clientOptions.RabbitMqConnString = _rabbitMqSettings.GetConnectionString();
                     clientOptions.AddIntegration(_integrationName);
                 });
 
@@ -112,7 +118,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
                 await apiBlocksReader.SendAsync(new ReadBlockCommand(1));
                 await apiBlocksReader.SendAsync(new ReadBlockCommand(2));
-                countdown.Wait(TimeSpan.FromMinutes(1));
+                countdown.Wait(Waiting.Timeout);
             }
 
             //ASSERT
@@ -126,22 +132,20 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         public void Test_that_last_irreversible_block_updated_event_is_processed_pulling()
         {
             //ARRANGE
-            CountdownEvent countdown = new CountdownEvent(2);
-            ManualResetEventSlim irreversibleEvent = new ManualResetEventSlim();
-            Mock<IBlockReader> blockReader = null;
-            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt) =>
+            var irreversibleEvent = new ManualResetEventSlim();
+            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, messagePublisher) =>
             {
-                if (evt is LastIrreversibleBlockUpdatedEvent @event)
+                if (evt is LastIrreversibleBlockUpdatedEvent)
                 {
                     irreversibleEvent.Set();
                 }
             });
 
-            var (httpApi, client, apiFactory, testServer) = PrepareClient<AppSettings>(
+            var (client, _, testServer) = PrepareClient<AppSettings>(
                 serverOptions =>
                 {
                     CreateMocks(
-                        out blockReader,
+                        out var blockReader,
                         out var blockProvider);
 
                     serverOptions.IntegrationName = _integrationName;
@@ -152,8 +156,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 {
                     clientOptions.BlockEventsHandlerFactory =
                         (context) => blockEventsHandlerMock.Object;
-                    clientOptions.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
-                    clientOptions.RabbitMqConnString = _rabbitMqConfiguration.RabbitMqConnString;
+                    clientOptions.RabbitVhost = _rabbitMqSettings.Vhost;
+                    clientOptions.RabbitMqConnString = _rabbitMqSettings.GetConnectionString();
                     clientOptions.AddIntegration(_integrationName);
                 });
 
@@ -162,34 +166,32 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             using (client)
             {
                 client.Start();
-                irreversibleEvent.Wait(TimeSpan.FromMinutes(1));
+                irreversibleEvent.Wait(Waiting.Timeout);
             }
 
             //ASSERT
             blockEventsHandlerMock
-                .Verify(x => x.Handle(_integrationName, It.IsNotNull<LastIrreversibleBlockUpdatedEvent>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<LastIrreversibleBlockUpdatedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
         }
 
         [Test]
         public async Task Test_that_last_irreversible_block_updated_event_is_processed_pushing()
         {
             //ARRANGE
-            CountdownEvent countdown = new CountdownEvent(2);
-            ManualResetEventSlim irreversibleEvent = new ManualResetEventSlim();
-            Mock<IBlockReader> blockReader = null;
-            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt) =>
+            var irreversibleEvent = new ManualResetEventSlim();
+            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, messagePublisher) =>
             {
-                if (evt is LastIrreversibleBlockUpdatedEvent @event)
+                if (evt is LastIrreversibleBlockUpdatedEvent)
                 {
                     irreversibleEvent.Set();
                 }
             });
 
-            var (httpApi, client, apiFactory, testServer) = PrepareClient<AppSettings>(
+            var (client, _, testServer) = PrepareClient<AppSettings>(
                 serverOptions =>
                 {
                     CreateMocks(
-                        out blockReader,
+                        out var blockReader,
                         out var blockProvider);
 
                     serverOptions.IntegrationName = _integrationName;
@@ -203,8 +205,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 {
                     clientOptions.BlockEventsHandlerFactory =
                         (context) => blockEventsHandlerMock.Object;
-                    clientOptions.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
-                    clientOptions.RabbitMqConnString = _rabbitMqConfiguration.RabbitMqConnString;
+                    clientOptions.RabbitVhost = _rabbitMqSettings.Vhost;
+                    clientOptions.RabbitMqConnString = _rabbitMqSettings.GetConnectionString();
                     clientOptions.AddIntegration(_integrationName);
                 });
 
@@ -216,12 +218,12 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 client.Start();
                 await irreversibleBlockListener.HandleNewLastIrreversibleBlockAsync(
                     new LastIrreversibleBlockUpdatedEvent(2, "2"));
-                irreversibleEvent.Wait(TimeSpan.FromMinutes(1));
+                irreversibleEvent.Wait(Waiting.Timeout);
             }
 
             //ASSERT
             blockEventsHandlerMock
-                .Verify(x => x.Handle(_integrationName, It.IsNotNull<LastIrreversibleBlockUpdatedEvent>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<LastIrreversibleBlockUpdatedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
         }
 
         [Test]
@@ -237,7 +239,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 { typeof(TransferAmountTransactionExecutedEvent), new ManualResetEventSlim()},
                 { typeof(TransferCoinsTransactionExecutedEvent), new ManualResetEventSlim()},
             };
-            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt) =>
+            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, messagePublisher) =>
             {
                 if (typeWaitHandles.TryGetValue(evt.GetType(), out var eventWaitHandle))
                 {
@@ -245,7 +247,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 }
             });
 
-            var (httpApi, client, apiFactory, testServer) = PrepareClient<AppSettings>(
+            var (client, apiFactory, testServer) = PrepareClient<AppSettings>(
                 serverOptions =>
                 {
                     CreateMocks(
@@ -275,8 +277,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                 "1",
                                 DateTime.UtcNow,
                                 256,
-                                1,
-                                null
+                                1
                             )
                         );
 
@@ -376,8 +377,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 clientOptions =>
                 {
                     clientOptions.BlockEventsHandlerFactory = context => blockEventsHandlerMock.Object;
-                    clientOptions.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
-                    clientOptions.RabbitMqConnString = _rabbitMqConfiguration.RabbitMqConnString;
+                    clientOptions.RabbitVhost = _rabbitMqSettings.Vhost;
+                    clientOptions.RabbitMqConnString = _rabbitMqSettings.GetConnectionString();
                     clientOptions.AddIntegration(_integrationName);
                 });
 
@@ -393,7 +394,10 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
                 foreach (var manualResetEventSlim in typeWaitHandles)
                 {
-                    manualResetEventSlim.Value.Wait(TimeSpan.FromSeconds(30));
+                    if (!manualResetEventSlim.Value.Wait(Waiting.Timeout))
+                    {
+                        Console.WriteLine($"Event {manualResetEventSlim.Key} has been missed!");
+                    }
                 }
             }
 
@@ -403,50 +407,54 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
             blockEventsHandlerMock
                 .Verify(x => 
-                    x.Handle(_integrationName, It.Is<BlockHeaderReadEvent>(b => b.BlockNumber == 1)), 
+                    x.HandleAsync(_integrationName, It.Is<BlockHeaderReadEvent>(b => b.BlockNumber == 1), It.IsNotNull<IMessagePublisher>()), 
                     Times.AtLeastOnce);
             blockEventsHandlerMock
                 .Verify(x => 
-                        x.Handle(_integrationName, It.Is<BlockHeaderReadEvent>(b => b.BlockNumber != 1)), 
+                    x.HandleAsync(_integrationName, It.Is<BlockHeaderReadEvent>(b => b.BlockNumber != 1), It.IsNotNull<IMessagePublisher>()), 
                     Times.Never);
 
             blockEventsHandlerMock
                 .Verify(x => 
-                    x.Handle(_integrationName, It.Is<BlockNotFoundEvent>(b => b.BlockNumber == 2)), 
+                    x.HandleAsync(_integrationName, It.Is<BlockNotFoundEvent>(b => b.BlockNumber == 2), It.IsNotNull<IMessagePublisher>()), 
                     Times.AtLeastOnce);
             blockEventsHandlerMock
                 .Verify(x => 
-                        x.Handle(_integrationName, It.Is<BlockNotFoundEvent>(b => b.BlockNumber != 2)), 
+                    x.HandleAsync(_integrationName, It.Is<BlockNotFoundEvent>(b => b.BlockNumber != 2), It.IsNotNull<IMessagePublisher>()), 
                     Times.Never);
 
             blockEventsHandlerMock
-                .Verify(x => x.Handle(_integrationName, It.IsNotNull<TransferAmountTransactionExecutedEvent>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<TransferAmountTransactionExecutedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
             blockEventsHandlerMock
-                .Verify(x => x.Handle(_integrationName, It.IsNotNull<TransactionFailedEvent>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<TransactionFailedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
             blockEventsHandlerMock
-                .Verify(x => x.Handle(_integrationName, It.IsNotNull<TransferCoinsTransactionExecutedEvent>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<TransferCoinsTransactionExecutedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
         }
 
-        private static Mock<IBlockEventsHandler> BlockEventsHandlerCreateMock(Action<string, object> callBack)
+        private static Mock<IBlockEventsHandler> BlockEventsHandlerCreateMock(Action<string, object, IMessagePublisher> callBack)
         {
             Mock<IBlockEventsHandler> blockEventsHandler = new Mock<IBlockEventsHandler>();
-            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<BlockHeaderReadEvent>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<BlockHeaderReadEvent>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransferAmountTransactionExecutedEvent>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<BlockNotFoundEvent>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransferCoinsTransactionExecutedEvent>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferAmountTransactionExecutedEvent>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<TransactionFailedEvent>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferCoinsTransactionExecutedEvent>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<LastIrreversibleBlockUpdatedEvent>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransactionFailedEvent>(), It.IsAny<IMessagePublisher>()))
+                .Returns(Task.CompletedTask)
+                .Callback(callBack)
+                .Verifiable();
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<LastIrreversibleBlockUpdatedEvent>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
@@ -477,21 +485,22 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 options.AddIrreversibleBlockPushing();
             }
 
-            options.RabbitVhost = _fixture.RabbitMqTestSettings.Vhost;
+            options.RabbitVhost = _rabbitMqSettings.Vhost;
         }
 
-        private (IBlocksReaderHttpApi,
-            IBlocksReaderClient,
+        private (IBlocksReaderClient,
             IBlocksReaderApiFactory,
-            IDisposable) PrepareClient<TAppSettings>(
-            Action<BlocksReaderServiceOptions<TAppSettings>> configureServer,
-            Action<BlocksReaderClientOptions> configureClient)
+            IDisposable) 
+            PrepareClient<TAppSettings>(
+                Action<BlocksReaderServiceOptions<TAppSettings>> configureServer,
+                Action<BlocksReaderClientOptions> configureClient)
+
             where TAppSettings : BaseBlocksReaderSettings<DbSettings>
         {
             StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(configureServer);
-            var (httpApi, blocksReaderClient, apiFactory, testServer) = CreateClientApi<StartupTemplate>("http://localhost:5000", configureClient);
+            var (blocksReaderClient, apiFactory, testServer) = CreateClientApi<StartupTemplate>(configureClient);
 
-            return (httpApi, blocksReaderClient, apiFactory, testServer);
+            return (blocksReaderClient, apiFactory, testServer);
         }
     }
 }

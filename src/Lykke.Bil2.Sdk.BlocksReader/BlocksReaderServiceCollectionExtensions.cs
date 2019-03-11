@@ -78,6 +78,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             services.AddSingleton<IRabbitMqEndpoint>(s =>
                 new RabbitMqEndpoint
                 (
+                    s,
                     s.GetRequiredService<ILogFactory>(),
                     new Uri(settings.CurrentValue.RabbitConnString),
                     options.RabbitVhost
@@ -87,7 +88,6 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                 new RabbitMqConfigurator
                 (
                     s.GetRequiredService<IRabbitMqEndpoint>(),
-                    s,
                     settings.CurrentValue.MessageListeningParallelism,
                     options.IntegrationName.CamelToKebab()
                 ));
