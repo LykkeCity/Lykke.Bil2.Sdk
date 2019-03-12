@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Linq;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 {
@@ -38,7 +39,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
                 .Select(g => new
                 {
                     AssetId = g.Key,
-                    Sum = g.Select(x => x.Value).Aggregate((x, y) => x + y)
+                    Sum = g.Sum(x => x.Value)
                 })
                 .OrderBy(x => x.AssetId)
                 .ToArray();
@@ -47,7 +48,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
                 .Select(g => new
                 {
                     AssetId = g.Key,
-                    Sum = g.Select(x => x.Value).Aggregate((x, y) => x + y)
+                    Sum = g.Sum(x => x.Value)
                 })
                 .OrderBy(x => x.AssetId)
                 .ToArray();

@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.JsonConverters;
 using Lykke.Bil2.Contract.TransactionsExecutor;
-using Lykke.Numerics.Money;
+using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -51,7 +51,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Can be omitted, if there was no fee spent for the transaction.
         /// </summary>
         [CanBeNull]
-        [JsonProperty("fee", ItemConverterType = typeof(UMoneyJsonConverter))]
+        [JsonProperty("fee")]
         public IReadOnlyDictionary<AssetId, UMoney> Fee { get; }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             string transactionId,
             TransactionBroadcastingError errorCode,
             string errorMessage,
-            [JsonProperty(ItemConverterType = typeof(UMoneyJsonConverter))] IReadOnlyDictionary<AssetId, UMoney> fee = null)
+            IReadOnlyDictionary<AssetId, UMoney> fee = null)
         {
             if (string.IsNullOrWhiteSpace(blockId))
                 throw new ArgumentException("Should be not empty string", nameof(blockId));

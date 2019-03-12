@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.JsonConverters;
-using Lykke.Numerics.Money;
+using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -26,7 +26,6 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Value of the coin.
         /// </summary>
         [JsonProperty("value")]
-        [JsonConverter(typeof(UMoneyJsonConverter))]
         public UMoney Value { get; }
 
         /// <summary>

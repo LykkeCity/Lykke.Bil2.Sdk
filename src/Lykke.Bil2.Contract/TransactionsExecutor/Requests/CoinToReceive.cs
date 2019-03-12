@@ -2,7 +2,7 @@
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.Common.JsonConverters;
-using Lykke.Numerics.Money;
+using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
@@ -29,7 +29,6 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// Coin value to receive.
         /// </summary>
         [JsonProperty("value")]
-        [JsonConverter(typeof(UMoneyJsonConverter))]
         public UMoney Value { get; }
 
         /// <summary>

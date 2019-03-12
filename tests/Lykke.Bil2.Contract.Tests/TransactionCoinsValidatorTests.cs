@@ -3,7 +3,7 @@ using System.Linq;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
-using Lykke.Numerics.Money;
+using Lykke.Numerics;
 using NUnit.Framework;
 
 namespace Lykke.Bil2.Contract.Tests

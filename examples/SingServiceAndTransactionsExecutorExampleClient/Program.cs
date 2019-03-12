@@ -10,7 +10,7 @@ using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Common.Log;
 using Lykke.Logs;
 using Lykke.Logs.Loggers.LykkeConsole;
-using Lykke.Numerics.Money;
+using Lykke.Numerics;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 

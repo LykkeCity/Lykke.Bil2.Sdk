@@ -21,8 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Bil2.BaseTests;
-using Lykke.Numerics.Money;
-using Newtonsoft.Json;
+using Lykke.Numerics;
 
 namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 {

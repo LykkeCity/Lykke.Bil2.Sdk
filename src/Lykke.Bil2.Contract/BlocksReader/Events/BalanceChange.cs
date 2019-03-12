@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.JsonConverters;
-using Lykke.Numerics.Money;
+using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -32,7 +32,6 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Can be positive to increase the balance or negative to decrease the balance.
         /// </summary>
         [JsonProperty("value")]
-        [JsonConverter(typeof(MoneyJsonConverter))]
         public Money Value { get; }
 
         /// <summary>

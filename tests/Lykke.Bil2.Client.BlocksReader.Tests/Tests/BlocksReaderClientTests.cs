@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Lykke.Bil2.RabbitMq.Publication;
-using Lykke.Numerics.Money;
+using Lykke.Numerics;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.JsonConverters;
-using Lykke.Numerics.Money;
+using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -53,7 +53,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Can be omitted, if fee can be determined from the balance changes and cancellations.
         /// </summary>
         [CanBeNull]
-        [JsonProperty("fee", ItemConverterType = typeof(UMoneyJsonConverter))]
+        [JsonProperty("fee")]
         public IReadOnlyDictionary<AssetId, UMoney> Fee { get; }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             string transactionId,
             IReadOnlyCollection<ReceivedCoin> receivedCoins,
             IReadOnlyCollection<CoinReference> spentCoins,
-            [JsonProperty(ItemConverterType = typeof(UMoneyJsonConverter))] IReadOnlyDictionary<AssetId, UMoney> fee = null,
+            IReadOnlyDictionary<AssetId, UMoney> fee = null,
             bool? isIrreversible = null)
         {
             if (string.IsNullOrWhiteSpace(blockId))

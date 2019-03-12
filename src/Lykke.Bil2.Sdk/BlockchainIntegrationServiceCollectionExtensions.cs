@@ -6,7 +6,7 @@ using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Sdk.AspNetCore;
 using Lykke.Bil2.Sdk.Services;
 using Lykke.Logs.Loggers.LykkeSlack;
-using Lykke.Numerics.Money;
+using Lykke.Numerics;
 using Lykke.Sdk;
 using Lykke.Sdk.Settings;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
