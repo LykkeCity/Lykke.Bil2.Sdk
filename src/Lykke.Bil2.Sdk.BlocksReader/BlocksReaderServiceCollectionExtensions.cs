@@ -80,7 +80,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                 (
                     s,
                     s.GetRequiredService<ILogFactory>(),
-                    new Uri(settings.CurrentValue.RabbitConnStrng),
+                    new Uri(settings.CurrentValue.RabbitConnString),
                     options.RabbitVhost
                 ));
 
