@@ -56,6 +56,6 @@ namespace Lykke.Bil2.Client.BlocksReader
         /// <summary>
         /// Use it only in tests
         /// </summary>
-        internal string RabbitVhost { get; set; } = null;
+        internal string RabbitVhost { get; set; }
     }
 }

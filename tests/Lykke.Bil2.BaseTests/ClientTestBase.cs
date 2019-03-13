@@ -5,10 +5,6 @@ namespace Lykke.Bil2.BaseTests
 {
     public abstract class ClientTestBase
     {
-        public ClientTestBase()
-        {
-        }
-
         public TestServer CreateTestServer<TStartup>() where TStartup : class
         {
             WebHostFactory factory = new WebHostFactory();

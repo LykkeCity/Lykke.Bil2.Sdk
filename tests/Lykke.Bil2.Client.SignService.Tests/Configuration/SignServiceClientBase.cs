@@ -1,6 +1,5 @@
 ﻿using Lykke.Bil2.BaseTests;
 using Lykke.Bil2.BaseTests.HttpMessageHandlers;
-using Lykke.Common.Log;
 using Lykke.Logs;
 using Lykke.Logs.Loggers.LykkeConsole;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +11,9 @@ namespace Lykke.Bil2.Client.SignService.Tests.Configuration
         protected ISignServiceApi CreateClientApi<TStartup>(string localhost) where TStartup : class 
         {
             IServiceCollection collection = new ServiceCollection();
-            var testServer = base.CreateTestServer<TStartup>();
+            var testServer = CreateTestServer<TStartup>();
             var client = testServer.CreateClient();
-            collection.AddSingleton<ILogFactory>(LogFactory.Create().AddConsole());
+            collection.AddSingleton(LogFactory.Create().AddConsole());
             collection.AddSignServiceClient(localhost, new RedirectToTestHostMessageHandler(client));
             var provider = collection.BuildServiceProvider();
             var api =provider.GetRequiredService<ISignServiceApi>();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -46,7 +47,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </summary>
         [CanBeNull]
         [JsonProperty("fee")]
-        public IReadOnlyDictionary<AssetId, CoinsAmount> Fee { get; }
+        public IReadOnlyDictionary<AssetId, UMoney> Fee { get; }
 
         /// <summary>
         /// Optional.
@@ -67,7 +68,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             int transactionNumber,
             string transactionId,
             IReadOnlyCollection<BalanceChange> balanceChanges,
-            IReadOnlyDictionary<AssetId, CoinsAmount> fee = null,
+            IReadOnlyDictionary<AssetId, UMoney> fee = null,
             bool? isIrreversible = null)
         {
             if (string.IsNullOrWhiteSpace(blockId))

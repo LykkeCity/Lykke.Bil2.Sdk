@@ -6,6 +6,7 @@ using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Sdk.AspNetCore;
 using Lykke.Bil2.Sdk.Services;
 using Lykke.Logs.Loggers.LykkeSlack;
+using Lykke.Numerics;
 using Lykke.Sdk;
 using Lykke.Sdk.Settings;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -79,8 +80,8 @@ namespace Lykke.Bil2.Sdk
                     swaggerOptions.MapType<Version>(() => new Schema{ Type = "string", Format = "version"});
                     swaggerOptions.MapType<Base58String>(() => new Schema{ Type = "string", Format = "byte"});
                     swaggerOptions.MapType<EncryptedString>(() => new Schema{ Type = "string", Format = "byte"});
-                    swaggerOptions.MapType<CoinsAmount>(() => new Schema{ Type = "string", Format = "coinsAmount"});
-                    swaggerOptions.MapType<CoinsChange>(() => new Schema{ Type = "string", Format = "coinsChange"});
+                    swaggerOptions.MapType<UMoney>(() => new Schema{ Type = "string", Format = "coinsAmount"});
+                    swaggerOptions.MapType<Money>(() => new Schema{ Type = "string", Format = "coinsChange"});
                     swaggerOptions.MapType<AssetId>(() => new Schema{ Type = "string", Format = "assetId"});
                     swaggerOptions.MapType<Address>(() => new Schema{ Type = "string", Format = "address"});
                     swaggerOptions.MapType<AddressTag>(() => new Schema{ Type = "string", Format = "addressTag"});

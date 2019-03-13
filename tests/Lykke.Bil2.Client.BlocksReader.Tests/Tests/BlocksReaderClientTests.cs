@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Lykke.Bil2.RabbitMq.Publication;
+using Lykke.Numerics;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 {
@@ -295,15 +296,15 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                     (
                                         "1",
                                         assetId,
-                                        CoinsChange.FromDecimal(1000, 4),
+                                        Money.Create(1000, 4),
                                         new Address("0x2"),
                                         new AddressTag("tag"),
                                         AddressTagType.Text,
                                         1)
                                 },
-                                new Dictionary<AssetId, CoinsAmount>()
+                                new Dictionary<AssetId, UMoney>()
                                 {
-                                    {assetId, CoinsAmount.FromDecimal(10, 4)}
+                                    {assetId, UMoney.Create(10, 4)}
                                 },
                                 true
                             )
@@ -323,7 +324,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                     (
                                         1,
                                         assetId,
-                                        CoinsAmount.FromDecimal(1000, 4),
+                                        UMoney.Create(1000, 4),
                                         new Address("0x1"),
                                         new AddressTag("tag"),
                                         AddressTagType.Text, 1
@@ -333,9 +334,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                 {
                                     new CoinReference("tr1", 0),
                                 },
-                                new Dictionary<AssetId, CoinsAmount>()
+                                new Dictionary<AssetId, UMoney>()
                                 {
-                                    {assetId, CoinsAmount.FromDecimal(10, 4)}
+                                    {assetId, UMoney.Create(10, 4)}
                                 },
                                 true
                             )
@@ -351,9 +352,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                 "tr1",
                                 TransactionBroadcastingError.TransientFailure,
                                 "some error message",
-                                new Dictionary<AssetId, CoinsAmount>()
+                                new Dictionary<AssetId, UMoney>()
                                 {
-                                    {assetId, CoinsAmount.FromDecimal(10, 4)}
+                                    {assetId, UMoney.Create(10, 4)}
                                 }
                             )
                         );

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
+using Lykke.Numerics;
 using NUnit.Framework;
 
 namespace Lykke.Bil2.Contract.Tests
@@ -18,7 +18,7 @@ namespace Lykke.Bil2.Contract.Tests
                 new Transfer
                 ( 
                     "STEEM",
-                    CoinsAmount.FromDecimal(100, 3),
+                    UMoney.Create(100, 3),
                     "A",
                     "B"
                 )
@@ -46,21 +46,21 @@ namespace Lykke.Bil2.Contract.Tests
                 new Transfer
                 ( 
                     asset1,
-                    CoinsAmount.FromDecimal(100, 3),
+                    UMoney.Create(100, 3),
                     source1,
                     destination1
                 ),
                 new Transfer
                 ( 
                     asset2,
-                    CoinsAmount.FromDecimal(80, 5),
+                    UMoney.Create(80, 5),
                     source2,
                     destination2
                 ),
                 new Transfer
                 ( 
                     asset3,
-                    CoinsAmount.FromDecimal(80, 5),
+                    UMoney.Create(80, 5),
                     source3,
                     destination3
                 )
@@ -87,14 +87,14 @@ namespace Lykke.Bil2.Contract.Tests
                 new Transfer
                 (
                     "XRP",
-                    CoinsAmount.FromDecimal(100, 3),
+                    UMoney.Create(100, 3),
                     "A",
                     "B"
                 ),
                 new Transfer
                 (
                     "XRP",
-                    CoinsAmount.FromDecimal(80, 5),
+                    UMoney.Create(80, 5),
                     "A",
                     "B"
                 )

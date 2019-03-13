@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Numerics.Linq;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 {
@@ -68,6 +69,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
                     x => x.AssetId,
                     (input, output) => new
                     {
+                        // ReSharper disable once RedundantAnonymousTypePropertyName
                         AssetId = input.AssetId,
                         SumToSpend = input.Sum,
                         SumToReceive = output.Sum

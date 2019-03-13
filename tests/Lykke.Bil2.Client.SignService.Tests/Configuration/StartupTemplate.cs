@@ -15,7 +15,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Configuration
         [UsedImplicitly]
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            return services.BuildBlockchainSignServiceProvider<AppSettings>(StartupDependencyFactorySingleton.Instance.GetOptionsConfiguration<AppSettings>());
+            return services.BuildBlockchainSignServiceProvider(StartupDependencyFactorySingleton.Instance.GetOptionsConfiguration<AppSettings>());
         }
 
         [UsedImplicitly]

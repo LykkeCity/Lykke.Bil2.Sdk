@@ -19,7 +19,9 @@ namespace Lykke.Bil2.BaseTests
         {
             try
             {
-                using (var file = File.OpenText("Properties\\launchSettings.json"))
+                var path = Path.Combine("Properties", "launchSettings.json");
+                
+                using (var file = File.OpenText(path))
                 {
                     var reader = new JsonTextReader(file);
                     var jObject = JObject.Load(reader);

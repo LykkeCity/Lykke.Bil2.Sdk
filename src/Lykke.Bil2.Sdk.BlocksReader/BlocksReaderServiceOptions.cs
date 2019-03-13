@@ -71,8 +71,8 @@ namespace Lykke.Bil2.Sdk.BlocksReader
         /// <summary>
         /// Disable logging in test scenarios
         /// </summary>
-        internal bool DisableLogging { get; set; } = false;
+        internal bool DisableLogging { get; set; }
 
-        internal string RabbitVhost { get; set; } = null;
+        internal string RabbitVhost { get; set; }
     }
 }

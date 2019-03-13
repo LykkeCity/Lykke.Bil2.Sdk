@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Bil2.BaseTests;
+using Lykke.Numerics;
 
 namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 {
@@ -200,11 +201,11 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new Transfer(
                     new AssetId("asset"),
-                    CoinsAmount.FromDecimal(1000000000, 4),
+                    UMoney.Create(1000000000, 4),
                     new Address("x1"),
                     new Address("x2")),
             };
-            var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, CoinsAmount>());
+            var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, UMoney>());
             var result = await client.BuildTransferAmountTransactionAsync(request);
 
             //ASSERT
@@ -245,11 +246,11 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 {
                     new Transfer(
                         new AssetId("asset"),
-                        CoinsAmount.FromDecimal(1000000000, 4),
+                        UMoney.Create(1000000000, 4),
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, CoinsAmount>());
+                var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, UMoney>());
                 await client.BuildTransferAmountTransactionAsync(request);
             });
         }
@@ -289,11 +290,11 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 {
                     new Transfer(
                         new AssetId("asset"),
-                        CoinsAmount.FromDecimal(1000000000, 4),
+                        UMoney.Create(1000000000, 4),
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, CoinsAmount>());
+                var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, UMoney>());
                 await client.BuildTransferAmountTransactionAsync(request);
             });
         }
@@ -302,11 +303,10 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         public async Task Estimate_transfer_amount_transaction()
         {
             //ARRANGE
-            var dict = new Dictionary<AssetId, CoinsAmount>()
+            var dict = new Dictionary<AssetId, UMoney>()
             {
-                { new AssetId("asset"), CoinsAmount.FromDecimal(1000, 4) }
+                { new AssetId("asset"), UMoney.Create(1000, 4) }
             };
-
 
             var client = PrepareClient<AppSettings>((options) =>
             {
@@ -333,7 +333,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new Transfer(
                     new AssetId("asset"),
-                    CoinsAmount.FromDecimal(1000000000, 4),
+                    UMoney.Create(1000000000, 4),
                     new Address("x1"),
                     new Address("x2")),
             };
@@ -344,7 +344,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var estimation = result.EstimatedFee.First();
             Assert.True(result != null);
             Assert.True(estimation.Key == "asset");
-            Assert.True(estimation.Value.ToDecimal() == CoinsAmount.FromDecimal(1000, 4).ToDecimal());
+            Assert.True(estimation.Value == UMoney.Create(1000, 4));
         }
 
         [Test]
@@ -378,7 +378,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 {
                     new Transfer(
                         new AssetId("asset"),
-                        CoinsAmount.FromDecimal(1000000000, 4),
+                        UMoney.Create(1000000000, 4),
                         new Address("x1"),
                         new Address("x2")),
                 };
@@ -609,7 +609,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
                     1),
@@ -618,7 +618,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToReceive(0,
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4), 
                     new Address("0x2"),
                     new AddressTag("tag"),
                     AddressTagType.Text
@@ -663,7 +663,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
                     1),
@@ -672,7 +672,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToReceive(0,
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
                     AddressTagType.Text
@@ -720,7 +720,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
                     1),
@@ -729,7 +729,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToReceive(0,
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
                     AddressTagType.Text
@@ -776,7 +776,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
                     1),
@@ -785,7 +785,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToReceive(0,
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
                     AddressTagType.Text
@@ -804,9 +804,9 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         public async Task Estimate_transfer_coins_transaction()
         {
             //ARRANGE
-            var dict = new Dictionary<AssetId, CoinsAmount>()
+            var dict = new Dictionary<AssetId, UMoney>()
             {
-                { new AssetId("asset"), CoinsAmount.FromDecimal(1000, 4) }
+                { new AssetId("asset"), UMoney.Create(1000, 4) }
             };
 
             var client = PrepareClient<AppSettings>((options) =>
@@ -837,7 +837,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
                     1),
@@ -846,7 +846,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToReceive(0,
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
                     AddressTagType.Text
@@ -861,7 +861,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var estimation = result.EstimatedFee.First();
             Assert.True(result != null);
             Assert.True(estimation.Key == "asset");
-            Assert.True(estimation.Value.ToDecimal() == CoinsAmount.FromDecimal(1000, 4).ToDecimal());
+            Assert.True(estimation.Value == UMoney.Create(1000, 4));
         }
 
         [Test]
@@ -897,7 +897,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
                     1),
@@ -906,7 +906,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToReceive(0,
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
                     AddressTagType.Text
@@ -953,7 +953,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
                     1),
@@ -962,7 +962,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 new CoinToReceive(0,
                     new AssetId("assetId"),
-                    CoinsAmount.FromDecimal(1000, 4),
+                    UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
                     AddressTagType.Text

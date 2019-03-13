@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.TransactionsExecutor;
+using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -50,7 +51,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </summary>
         [CanBeNull]
         [JsonProperty("fee")]
-        public IReadOnlyDictionary<AssetId, CoinsAmount> Fee { get; }
+        public IReadOnlyDictionary<AssetId, UMoney> Fee { get; }
 
         /// <summary>
         /// Should be published for each failed transaction in the block being read.
@@ -61,7 +62,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             string transactionId,
             TransactionBroadcastingError errorCode,
             string errorMessage,
-            IReadOnlyDictionary<AssetId, CoinsAmount> fee = null)
+            IReadOnlyDictionary<AssetId, UMoney> fee = null)
         {
             if (string.IsNullOrWhiteSpace(blockId))
                 throw new ArgumentException("Should be not empty string", nameof(blockId));
