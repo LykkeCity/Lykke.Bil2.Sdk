@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
-using Lykke.Bil2.Contract.Common.JsonConverters;
 using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Numerics;
 using Newtonsoft.Json;

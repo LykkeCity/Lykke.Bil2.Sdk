@@ -1,7 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
-using Lykke.Bil2.Contract.Common.JsonConverters;
 using Lykke.Numerics;
 using Newtonsoft.Json;
 
