@@ -35,10 +35,10 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public int BlockSize { get; }
 
         /// <summary>
-        /// Number of the transactions in the block.
+        /// Count of the transactions in the block.
         /// </summary>
-        [JsonProperty("blockTransactionsNumber")]
-        public int BlockTransactionsNumber { get; }
+        [JsonProperty("blockTransactionsCount")]
+        public int BlockTransactionsCount { get; }
 
         /// <summary>
         /// Optional.
@@ -56,7 +56,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             string blockId,
             DateTime blockMiningMoment,
             int blockSize,
-            int blockTransactionsNumber,
+            int blockTransactionsCount,
             string previousBlockId = null)
         {
             if (blockNumber < 0)
@@ -68,8 +68,8 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (blockSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(blockSize), blockSize, "Should be positive number");
 
-            if (blockTransactionsNumber <= 0)
-                throw new ArgumentOutOfRangeException(nameof(blockTransactionsNumber), blockTransactionsNumber, "Should be positive number");
+            if (blockTransactionsCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(blockTransactionsCount), blockTransactionsCount, "Should be positive number or zero");
 
             if (blockNumber > 1 && string.IsNullOrWhiteSpace(previousBlockId))
                 throw new ArgumentException("Should be not empty string for the not first block", nameof(previousBlockId));
@@ -78,7 +78,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             BlockId = blockId;
             BlockMiningMoment = blockMiningMoment;
             BlockSize = blockSize;
-            BlockTransactionsNumber = blockTransactionsNumber;
+            BlockTransactionsCount = blockTransactionsCount;
             PreviousBlockId = previousBlockId;
         }
     }

@@ -34,6 +34,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public Money Value { get; }
 
         /// <summary>
+        /// Optional.
         /// Address.
         /// </summary>
         [JsonProperty("address")]
@@ -67,7 +68,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             string transferId, 
             AssetId assetId, 
             Money value, 
-            Address address, 
+            Address address = null, 
             AddressTag tag = null, 
             AddressTagType? tagType = null,
             long? nonce = null)
@@ -78,11 +79,14 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (string.IsNullOrWhiteSpace(assetId))
                 throw new ArgumentException("Should be not empty string", nameof(assetId));
 
-            if (string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be not empty string", nameof(address));
+            if (address != null && string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("Should be either null or not empty string", nameof(address));
 
             if (tag != null && string.IsNullOrWhiteSpace(tag))
                 throw new ArgumentException("Should be either null or not empty string", nameof(tag));
+
+            if (!string.IsNullOrWhiteSpace(tag) && string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("If the tag is specified, the address should be specified too");
 
             if (tagType.HasValue && tag == null)
                 throw new ArgumentException("If the tag type is specified, the tag should be specified too");

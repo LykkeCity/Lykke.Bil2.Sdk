@@ -10,7 +10,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
     public class ReceivedCoin
     {
         /// <summary>
-        /// Number of received coin in the coin in the transaction.
+        /// Number of received coin in the transaction.
         /// </summary>
         [JsonProperty("coinNumber")]
         public int CoinNumber { get; }
@@ -28,6 +28,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public UMoney Value { get; }
 
         /// <summary>
+        /// Optional.
         /// Address which received the coin.
         /// </summary>
         [JsonProperty("address")]
@@ -61,7 +62,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             int coinNumber,
             AssetId assetId,
             UMoney value,
-            Address address,
+            Address address = null,
             AddressTag addressTag = null,
             AddressTagType? addressTagType = null,
             long? addressNonce = null)
@@ -72,11 +73,14 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (string.IsNullOrWhiteSpace(assetId))
                 throw new ArgumentException("Should be not empty string", nameof(assetId));
 
-            if (string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be not empty string", nameof(address));
+            if (address != null && string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("Should be either null or not empty string", nameof(address));
 
             if (addressTag != null && string.IsNullOrWhiteSpace(addressTag))
                 throw new ArgumentException("Should be either null or not empty string", nameof(addressTag));
+
+            if (!string.IsNullOrWhiteSpace(addressTag) && string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("If the tag is specified, the address should be specified too");
 
             if (addressTagType.HasValue && addressTag == null)
                 throw new ArgumentException("If the tag type is specified, the tag should be specified too");
