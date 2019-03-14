@@ -25,6 +25,8 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Endpoint: [POST] /api/transactions/estimated/transfers/coins
         /// </summary>
+        /// <param name="coinsToSpend">The coins which should be spend within the transaction.</param>
+        /// <param name="coinsToReceive">The coins which should be received within the transaction.</param>
         public EstimateTransferCoinsTransactionRequest(
             IReadOnlyCollection<CoinToSpend> coinsToSpend, 
             IReadOnlyCollection<CoinToReceive> coinsToReceive)

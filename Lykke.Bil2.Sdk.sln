@@ -47,7 +47,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Bil2.Client.Transacti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Bil2.Client.BlocksReader.Tests", "tests\Lykke.Bil2.Client.BlocksReader.Tests\Lykke.Bil2.Client.BlocksReader.Tests.csproj", "{6CAECEC2-DBCB-46A8-9EC1-71B864141937}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Bil2.RabbitMq.Tests", "tests\Lykke.Bil2.RabbitMq.Tests\Lykke.Bil2.RabbitMq.Tests.csproj", "{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.Bil2.RabbitMq.Tests", "tests\Lykke.Bil2.RabbitMq.Tests\Lykke.Bil2.RabbitMq.Tests.csproj", "{1BACE2DC-AA06-45BE-AC24-1D44A79B292E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F40025FF-95C8-4CCD-9F5C-B928075095B7}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -56,6 +56,20 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// <summary>
         /// Should be published for each failed transaction in the block being read.
         /// </summary>
+        /// <param name="blockId">ID of the block.</param>
+        /// <param name="transactionNumber">One-based number of the transaction in the block.</param>
+        /// <param name="transactionId">ID of the transaction.</param>
+        /// <param name="errorCode">Code of the error.</param>
+        /// <param name="errorMessage">
+        /// Optional.
+        /// Fee in the particular asset ID, that was spent for the transaction.
+        /// Can be omitted, if there was no fee spent for the transaction.
+        /// </param>
+        /// <param name="fee">
+        /// Optional.
+        /// Fee in the particular asset ID, that was spent for the transaction.
+        /// Can be omitted, if there was no fee spent for the transaction.
+        /// </param>
         public TransactionFailedEvent(
             string blockId,
             int transactionNumber,

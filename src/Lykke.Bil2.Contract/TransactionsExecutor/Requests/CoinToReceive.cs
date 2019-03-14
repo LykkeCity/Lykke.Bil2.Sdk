@@ -52,6 +52,21 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         [JsonProperty("addressTagType")]
         public AddressTagType? AddressTagType { get; }
 
+        /// <summary>
+        /// Coin to receive for the transaction.
+        /// </summary>
+        /// <param name="coinNumber">Number of the coin inside the transaction.</param>
+        /// <param name="assetId">Asset ID of the coin.</param>
+        /// <param name="value">Coin value to receive.</param>
+        /// <param name="address">Address which should receive the coin.</param>
+        /// <param name="addressTag">
+        /// Optional.
+        /// Receiving address tag.
+        /// </param>
+        /// <param name="addressTagType">
+        /// Optional.
+        /// Type of the receiving address tag.
+        /// </param>
         public CoinToReceive(
             int coinNumber,
             AssetId assetId,

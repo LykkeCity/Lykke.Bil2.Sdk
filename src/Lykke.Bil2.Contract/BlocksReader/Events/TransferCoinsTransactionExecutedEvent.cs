@@ -69,6 +69,20 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// integration uses “transfer coins” transactions model. Integration should either
         /// support “transfer coins” or “transfer amount” transactions model.
         /// </summary>
+        /// <param name="blockId">ID of the block.</param>
+        /// <param name="transactionNumber">Number of the transaction in the block.</param>
+        /// <param name="transactionId">ID of the transaction.</param>
+        /// <param name="receivedCoins">Coins which were received within the transaction.</param>
+        /// <param name="spentCoins">Coins which were spent within the transaction.</param>
+        /// <param name="fee">
+        /// Optional.
+        /// Fee in the particular asset ID, that was spent for the transaction.
+        /// Can be omitted, if fee can be determined from the balance changes and cancellations.
+        /// </param>
+        /// <param name="isIrreversible">
+        /// Optional.
+        /// Flag which indicates, if transaction is irreversible.
+        /// </param>
         public TransferCoinsTransactionExecutedEvent(
             string blockId,
             int transactionNumber,

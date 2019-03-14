@@ -26,6 +26,8 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// <summary>
         /// Endpoint: [POST] /api/transactions/signed
         /// </summary>
+        /// <param name="signedTransaction">Implementation specific signed transaction.</param>
+        /// <param name="transactionId">ID of the signed transaction in the blockchain.</param>
         public SignTransactionResponse(Base58String signedTransaction, string transactionId)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction?.ToString()))

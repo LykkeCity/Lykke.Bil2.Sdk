@@ -20,6 +20,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// <summary>
         /// Endpoint: [POST] /api/transactions/receiving/built
         /// </summary>
+        /// <param name="transactionContext">Implementation specific transaction context. </param>
         public BuildReceivingTransactionResponse(Base58String transactionContext)
         {
             if (string.IsNullOrWhiteSpace(transactionContext?.ToString()))

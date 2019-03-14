@@ -64,6 +64,35 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         [JsonProperty("nonce")]
         public long? Nonce { get; }
 
+        /// <summary>
+        /// Change of the address balance made by a transaction
+        /// </summary>
+        /// <param name="transferId">
+        /// ID of the transfer within the transaction.
+        /// Can group several balance changing operations into the single transfer,
+        /// or can be just the output number.
+        /// </param>
+        /// <param name="assetId">ID of the asset.</param>
+        /// <param name="value">
+        /// Value for which the balance of the address was changed.
+        /// Can be positive to increase the balance or negative to decrease the balance.
+        /// </param>
+        /// <param name="address">
+        /// Optional.
+        /// Address.
+        /// </param>
+        /// <param name="tag">
+        /// Optional.
+        /// Tag of the address.
+        /// </param>
+        /// <param name="tagType">
+        /// Optional.
+        /// Type of the address tag.
+        /// </param>
+        /// <param name="nonce">
+        /// Optional.
+        /// Nonce number of the transaction for the address.
+        /// </param>
         public BalanceChange(
             string transferId, 
             AssetId assetId, 

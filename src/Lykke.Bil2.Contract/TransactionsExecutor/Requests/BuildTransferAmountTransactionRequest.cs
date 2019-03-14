@@ -27,13 +27,13 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 
         /// <summary>
         /// Optional.
-        /// Transaction expiration options. If omitted and
-        /// blockchain requires transaction expiration to be
-        /// specified, default value for the blockchain/integration 
-        /// should be used. If several expiration options are
-        /// specified at once, and blockchain supports
-        /// them, then transaction should be expired when earliest
-        /// condition is triggered.
+        /// Transaction expiration options. Used if blockchain
+        /// supports transaction expiration. If blockchain supports
+        /// transaction expiration and the value is omitted,
+        /// it should be interpreted as infinite expiration.
+        /// If several expiration options are specified at once,
+        /// and blockchain supports both of them, then transaction
+        /// should be expired when earliest condition is met.
         /// </summary>
         [CanBeNull]
         [JsonProperty("expiration")]
@@ -42,6 +42,18 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Endpoint: [POST] /api/transactions/built/transfers/amount
         /// </summary>
+        /// <param name="transfers">Transaction transfers.</param>
+        /// <param name="fee">Fee amount in particular asset to spend for the given transaction.</param>
+        /// <param name="expiration">
+        /// Optional.
+        /// Transaction expiration options. Used if blockchain
+        /// supports transaction expiration. If blockchain supports
+        /// transaction expiration and the value is omitted,
+        /// it should be interpreted as infinite expiration.
+        /// If several expiration options are specified at once,
+        /// and blockchain supports both of them, then transaction
+        /// should be expired when earliest condition is met.
+        /// </param>
         public BuildTransferAmountTransactionRequest(
             IReadOnlyCollection<Transfer> transfers, 
             IReadOnlyDictionary<AssetId, UMoney> fee,

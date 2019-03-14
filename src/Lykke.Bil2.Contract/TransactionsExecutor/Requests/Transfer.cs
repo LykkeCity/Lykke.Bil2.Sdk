@@ -72,6 +72,26 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Transfer of the transaction.
         /// </summary>
+        /// <param name="assetId">Asset ID to transfer.</param>
+        /// <param name="amount">Amount to transfer from the source address to the destination address.</param>
+        /// <param name="sourceAddress">Address to transfer from.</param>
+        /// <param name="destinationAddress">Address to transfer to.</param>
+        /// <param name="sourceAddressContext">
+        /// Optional.
+        /// Source address context associated with the address.
+        /// </param>
+        /// <param name="sourceAddressNonce">
+        /// Optional.
+        /// Nonce number of the transaction for the source address.
+        /// </param>
+        /// <param name="destinationAddressTag">
+        /// Optional.
+        /// Destination address tag.
+        /// </param>
+        /// <param name="destinationAddressTagType">
+        /// Optional.
+        /// Type of the destination address tag.
+        /// </param>
         public Transfer(
             AssetId assetId,
             UMoney amount,

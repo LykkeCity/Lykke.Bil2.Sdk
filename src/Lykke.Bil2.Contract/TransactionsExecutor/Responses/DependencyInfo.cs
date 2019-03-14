@@ -4,6 +4,9 @@ using Newtonsoft.Json.Converters;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
 {
+    /// <summary>
+    /// Integration dependency info.
+    /// </summary>
     public class DependencyInfo
     {
         /// <summary>
@@ -20,6 +23,11 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         [JsonConverter(typeof(VersionConverter))]
         public Version LatestAvailableVersion { get; }
 
+        /// <summary>
+        /// Integration dependency info.
+        /// </summary>
+        /// <param name="runningVersion">Running version of the dependency.</param>
+        /// <param name="latestAvailableVersion">Latest available version of the dependency.</param>
         public DependencyInfo(Version runningVersion, Version latestAvailableVersion)
         {
             RunningVersion = runningVersion;

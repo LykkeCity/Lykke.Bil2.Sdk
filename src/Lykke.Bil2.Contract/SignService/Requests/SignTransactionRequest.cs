@@ -29,6 +29,13 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// <summary>
         /// Endpoint: [POST] /api/transactions/signed
         /// </summary>
+        /// <param name="privateKeys">
+        /// Private keys of the addresses which should sign the transaction.
+        /// Multiple keys can be used for the/ transactions with multiple inputs.
+        /// </param>
+        /// <param name="transactionContext">
+        /// Implementation specific transaction context.
+        /// </param>
         public SignTransactionRequest(IReadOnlyCollection<EncryptedString> privateKeys, Base58String transactionContext)
         {
             if (privateKeys == null || !privateKeys.Any() || privateKeys.Any(x => x == null))

@@ -18,6 +18,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// <summary>
         /// Endpoint: [GET] /api/transactions/{transactionId}/state
         /// </summary>
+        /// <param name="state">State of the transaction.</param>
         public TransactionStateResponse(TransactionState state)
         {
             State = state;

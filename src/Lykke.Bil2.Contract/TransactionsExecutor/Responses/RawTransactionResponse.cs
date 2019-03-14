@@ -20,6 +20,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// <summary>
         /// Endpoint: [GET] /api/transactions/{transactionId}/raw
         /// </summary>
+        /// <param name="raw">Raw transaction.</param>
         public RawTransactionResponse(Base58String raw)
         {
             if (string.IsNullOrWhiteSpace(raw?.ToString()))

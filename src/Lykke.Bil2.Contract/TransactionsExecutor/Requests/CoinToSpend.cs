@@ -52,6 +52,21 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         [JsonProperty("addressNonce")]
         public long? AddressNonce { get; }
 
+        /// <summary>
+        /// Coin to spend for the transaction.
+        /// </summary>
+        /// <param name="coin">Reference to the coin which should be spend.</param>
+        /// <param name="assetId">Asset ID of the coin.</param>
+        /// <param name="value">Coin value to spend.</param>
+        /// <param name="address">Address that owns the coin.</param>
+        /// <param name="addressContext">
+        /// Optional.
+        /// Address context associated with the owner address.
+        /// </param>
+        /// <param name="addressNonce">
+        /// Optional.
+        /// Nonce number of the transaction for the owner address.
+        /// </param>
         public CoinToSpend(
             CoinReference coin,
             AssetId assetId,

@@ -24,8 +24,8 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// - [POST] /api/transactions/estimated/transfers/amount
         /// - [POST] /api/transactions/estimated/transfers/coins
         /// </summary>
-        public EstimateTransactionResponse(
-            IReadOnlyDictionary<AssetId, UMoney> estimatedFee)
+        /// <param name="estimatedFee">Estimated transaction fee for the particular asset ID.</param>
+        public EstimateTransactionResponse(IReadOnlyDictionary<AssetId, UMoney> estimatedFee)
         {
             EstimatedFee = estimatedFee ?? throw new ArgumentNullException(nameof(estimatedFee));
         }

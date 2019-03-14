@@ -17,8 +17,9 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public long BlockNumber { get; }
 
         /// <summary>
-        /// Number of the block.
+        /// Should be published if block requested by ReadBlockCommand is not found.
         /// </summary>
+        /// <param name="blockNumber">Number of the block.</param>
         public BlockNotFoundEvent(long blockNumber)
         {
             if (blockNumber < 0)

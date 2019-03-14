@@ -25,6 +25,15 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         [JsonProperty("formatName")]
         public string FormatName { get; }
 
+        /// <summary>
+        /// Particular format of an address.
+        /// </summary>
+        /// <param name="address">Address in the particular format.</param>
+        /// <param name="formatName">
+        /// Optional.
+        /// Name of the format. Can be omitted for one item in the list.
+        /// Omitted value will be interpreted as default address format.
+        /// </param>
         public AddressFormat(Address address, string formatName = null)
         {
             if (string.IsNullOrWhiteSpace(address))

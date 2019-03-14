@@ -51,6 +51,15 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// <summary>
         /// Should be published when a block header has been read.
         /// </summary>
+        /// <param name="blockNumber">Number of the block.</param>
+        /// <param name="blockId">ID of the block.</param>
+        /// <param name="blockMiningMoment">Moment when the block is mined.</param>
+        /// <param name="blockSize">Size of the block in bytes.</param>
+        /// <param name="blockTransactionsCount">Count of the transactions in the block.</param>
+        /// <param name="previousBlockId">
+        /// Optional.
+        /// ID of the previous block. Optional only for the first block (blockNumber 0 or 1)
+        /// </param>
         public BlockHeaderReadEvent(
             long blockNumber,
             string blockId,

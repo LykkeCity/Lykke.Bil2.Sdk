@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
+    /// <summary>
+    /// Received coin.
+    /// </summary>
     [PublicAPI]
     public class ReceivedCoin
     {
@@ -58,6 +61,28 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         [JsonProperty("addressNonce")]
         public long? AddressNonce { get; }
 
+        /// <summary>
+        /// Received coin.
+        /// </summary>
+        /// <param name="coinNumber">Number of received coin in the transaction.</param>
+        /// <param name="assetId">Asset ID of the coin.</param>
+        /// <param name="value">Value of the coin.</param>
+        /// <param name="address">
+        /// Optional.
+        /// Address which received the coin.
+        /// </param>
+        /// <param name="addressTag">
+        /// Optional.
+        /// Tag of the receiving address.
+        /// </param>
+        /// <param name="addressTagType">
+        /// Optional.
+        /// Type of the receiving address tag.
+        /// </param>
+        /// <param name="addressNonce">
+        /// Optional.
+        /// Nonce number of the transaction for the receiving address.
+        /// </param>
         public ReceivedCoin(
             int coinNumber,
             AssetId assetId,
