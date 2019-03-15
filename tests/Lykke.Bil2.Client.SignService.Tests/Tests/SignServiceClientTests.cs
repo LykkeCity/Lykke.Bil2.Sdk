@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Lykke.Bil2.BaseTests;
 using Lykke.Bil2.Client.SignService.Tests.Configuration;
@@ -205,7 +206,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
         }
 
         [Test]
-        public void Not_Supported_address_tag_creation()
+        public void Not_supported_address_tag_creation()
         {
             //ARRANGE
             var address = Guid.NewGuid().ToString();
@@ -234,11 +235,47 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
             
         }
 
-        private ISignServiceApi PrepareClient<TAppSettings>(Action<SignServiceOptions<TAppSettings>> config)
+        [Test]
+        public void Check_timeout()
+        {
+            //ARRANGE
+            var address = Guid.NewGuid().ToString();
+            var tag = Guid.NewGuid().ToString();
+            var addressContext = "AddressContext";
+            var timeout = TimeSpan.FromMilliseconds(100);
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                Mock<IAddressGenerator> addressGenerator = new Mock<IAddressGenerator>();
+                Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
+
+                addressGenerator.Setup(x =>
+                        x.CreateAddressTagAsync(It.IsAny<string>(), It.IsAny<CreateAddressTagRequest>()))
+                    .ReturnsAsync(() =>
+                    {
+                        Thread.Sleep(timeout);
+                        return new CreateAddressTagResponse(new AddressTag(tag),
+                            Base58String.Encode(addressContext));
+                    });
+
+                options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_create_address_tag)}";
+                options.AddressGeneratorFactory = (context) => addressGenerator.Object;
+                options.TransactionSignerFactory = (context) => transactionSigner.Object;
+            }, timeout);
+
+            //ACT && ASSERT
+            Assert.ThrowsAsync<TimeoutException>(async () =>
+            {
+                var request = new CreateAddressTagRequest(Base58String.Encode(addressContext), AddressTagType.Text);
+                var result = await client.CreateAddressTagAsync(address, request);
+            });
+        }
+
+        private ISignServiceApi PrepareClient<TAppSettings>(Action<SignServiceOptions<TAppSettings>> config, TimeSpan? timeout = null)
             where TAppSettings : BaseSignServiceSettings
         {
             StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(config);
-            var client = CreateClientApi<StartupTemplate>("http://localhost:5000");
+            var client = CreateClientApi<StartupTemplate>("http://localhost:5000", timeout);
 
             return client;
         }

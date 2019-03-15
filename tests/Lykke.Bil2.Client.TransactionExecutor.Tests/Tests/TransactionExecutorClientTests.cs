@@ -527,6 +527,44 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         }
 
         [Test]
+        public void Check_timeout()
+        {
+            //ARRANGE
+            string transactionId = "transactionId";
+            string transactionResult = "result";
+            var timeout = TimeSpan.FromMilliseconds(100);
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                var aggregator = CreateMocks();
+
+                var rawTransactionReadOnlyRepository = new Mock<IRawTransactionReadOnlyRepository>();
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
+                rawTransactionReadOnlyRepository.Setup(x => x.GetOrDefaultAsync(transactionId))
+                    .ReturnsAsync(Base58String.Encode(transactionResult));
+
+                options.RawTransactionReadOnlyRepositoryFactory = (name, context) => rawTransactionReadOnlyRepository.Object;
+
+                ConfigureFactories(options,
+                    aggregator.AddressValidator,
+                    aggregator.HealthProvider,
+                    aggregator.IntegrationInfoService,
+                    aggregator.TransactionEstimator,
+                    aggregator.TransactionBroadcaster,
+                    aggregator.TransferAmountTransactionBuilder,
+                    aggregator.AddressFormatsProvider,
+                    aggregator.TransactionStateProvider);
+            }, timeout);
+
+            //ACT && ASSERT
+            Assert.ThrowsAsync<TimeoutException>(async () =>
+            {
+                var result = await client.GetRawTransactionAsync(transactionId);
+            });
+        }
+
+        [Test]
         public async Task Address_format()
         {
             //ARRANGE
@@ -1067,11 +1105,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 options.TransferCoinsTransactionsEstimatorFactory = c => transferCoinsTransactionsEstimator.Object;
         }
 
-        private ITransactionsExecutorApi PrepareClient<TAppSettings>(Action<TransactionsExecutorServiceOptions<TAppSettings>> config)
+        private ITransactionsExecutorApi PrepareClient<TAppSettings>(Action<TransactionsExecutorServiceOptions<TAppSettings>> config,
+            TimeSpan? timeout = null)
             where TAppSettings : BaseTransactionsExecutorSettings<DbSettings>
         {
             StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(config);
-            var client = CreateClientApi<StartupTemplate>("http://localhost:5000");
+            var client = CreateClientApi<StartupTemplate>("http://localhost:5000", timeout);
 
             return client;
         }

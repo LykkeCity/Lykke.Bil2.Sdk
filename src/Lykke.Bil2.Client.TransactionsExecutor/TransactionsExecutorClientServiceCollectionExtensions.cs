@@ -11,10 +11,20 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
     [PublicAPI]
     public static class TransactionsExecutorClientServiceCollectionExtensions
     {
+
         /// <summary>
         /// Adds the client of the blockchain integration transactions executor to the app services as <see cref="ITransactionsExecutorApi"/>
         /// </summary>
-        public static IServiceCollection AddTransactionsExecutorClient(this IServiceCollection services, string url, params DelegatingHandler[] handlers)
+        public static IServiceCollection AddTransactionsExecutorClient(this IServiceCollection services, string url
+            , params DelegatingHandler[] handlers)
+        {
+            return AddTransactionsExecutorClient(services, url, null, handlers);
+        }
+
+        /// <summary>
+            /// Adds the client of the blockchain integration transactions executor to the app services as <see cref="ITransactionsExecutorApi"/>
+            /// </summary>
+            public static IServiceCollection AddTransactionsExecutorClient(this IServiceCollection services, string url, TimeSpan? timeout = null, params DelegatingHandler[] handlers)
         {
             if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _))
             {
@@ -33,6 +43,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
                     options.Url = url;
                     options.Handlers = handlers;
                     options.LogFactory = s.GetRequiredService<ILogFactory>();
+                    options.Timeout = timeout;
                 });
 
                 return generator.Generate<ITransactionsExecutorApi>();

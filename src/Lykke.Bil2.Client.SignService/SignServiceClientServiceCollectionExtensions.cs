@@ -16,6 +16,14 @@ namespace Lykke.Bil2.Client.SignService
         /// </summary>
         public static IServiceCollection AddSignServiceClient(this IServiceCollection services, string url, params DelegatingHandler[] handlers)
         {
+            return AddSignServiceClient(services, url, null, handlers);
+        }
+
+        /// <summary>
+        /// Adds the client of the blockchain integration sign service to the app services as <see cref="ISignServiceApi"/>
+        /// </summary>
+        public static IServiceCollection AddSignServiceClient(this IServiceCollection services, string url, TimeSpan? timeout = null, params DelegatingHandler[] handlers)
+        {
             if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _))
             {
                 throw new ArgumentException($"Should be a valid URL. Actual value: {url}", nameof(url));
@@ -33,6 +41,7 @@ namespace Lykke.Bil2.Client.SignService
                     options.Url = url;
                     options.LogFactory = s.GetRequiredService<ILogFactory>();
                     options.Handlers = handlers;
+                    options.Timeout = timeout;
                 });
 
                 return generator.Generate<ISignServiceApi>();
