@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using Lykke.Common.Log;
 
 namespace Lykke.Bil2.WebClient
@@ -10,6 +11,8 @@ namespace Lykke.Bil2.WebClient
         public ILogFactory LogFactory { get; set; }
 
         public DelegatingHandler[] Handlers { get; set; }
+
+        public TimeSpan? Timeout { get; set; }
 
         internal HttpClientGeneratorOptions()
         {
