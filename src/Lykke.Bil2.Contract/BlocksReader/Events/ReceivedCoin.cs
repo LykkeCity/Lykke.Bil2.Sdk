@@ -95,23 +95,14 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (coinNumber < 0)
                 throw new ArgumentOutOfRangeException(nameof(coinNumber), coinNumber, "Should be zero or positive number");
 
-            if (string.IsNullOrWhiteSpace(assetId))
-                throw new ArgumentException("Should be not empty string", nameof(assetId));
-
-            if (address != null && string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be either null or not empty string", nameof(address));
-
-            if (addressTag != null && string.IsNullOrWhiteSpace(addressTag))
-                throw new ArgumentException("Should be either null or not empty string", nameof(addressTag));
-
-            if (!string.IsNullOrWhiteSpace(addressTag) && string.IsNullOrWhiteSpace(address))
+            if (addressTag != null && address == null)
                 throw new ArgumentException("If the tag is specified, the address should be specified too");
 
             if (addressTagType.HasValue && addressTag == null)
                 throw new ArgumentException("If the tag type is specified, the tag should be specified too");
 
             CoinNumber = coinNumber;
-            AssetId = assetId;
+            AssetId = assetId ?? throw new ArgumentNullException(nameof(assetId));
             Value = value;
             Address = address;
             AddressTag = addressTag;

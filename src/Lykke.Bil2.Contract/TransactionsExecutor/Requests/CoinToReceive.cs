@@ -78,22 +78,13 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             if (coinNumber < 0)
                 throw RequestValidationException.ShouldBeZeroOrPositiveNumber(coinNumber, nameof(coinNumber));
 
-            if (string.IsNullOrWhiteSpace(assetId))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
-
-            if (string.IsNullOrWhiteSpace(address))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
-
-            if (addressTag != null && string.IsNullOrWhiteSpace(addressTag))
-                throw new RequestValidationException("Should be either null or not empty string", nameof(addressTag));
-
             if (addressTagType.HasValue && addressTag == null)
                 throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(addressTagType), nameof(addressTag)});
 
             CoinNumber = coinNumber;
-            AssetId = assetId;
+            AssetId = assetId ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
             Value = value;
-            Address = address;
+            Address = address ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
             AddressTag = addressTag;
             AddressTagType = addressTagType;
         }

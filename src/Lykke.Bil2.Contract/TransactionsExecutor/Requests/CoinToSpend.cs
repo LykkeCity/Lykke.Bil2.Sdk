@@ -75,16 +75,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             Base58String addressContext = null,
             long? addressNonce = null)
         {
-            if (string.IsNullOrWhiteSpace(assetId))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
-
-            if (string.IsNullOrWhiteSpace(address))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
-
             Coin = coin ?? throw RequestValidationException.ShouldBeNotNull(nameof(coin));
-            AssetId = assetId;
+            AssetId = assetId ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
             Value = value;
-            Address = address;
+            Address = address ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
             AddressContext = addressContext;
             AddressNonce = addressNonce;
         }

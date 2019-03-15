@@ -42,11 +42,8 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// </param>
         public CreateAddressResponse(EncryptedString privateKey, Address address, Base58String addressContext = null)
         {
-            if (string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be not empty string", nameof(address));
-
             PrivateKey = privateKey ?? throw new ArgumentNullException(nameof(privateKey));
-            Address = address;
+            Address = address ?? throw new ArgumentNullException(nameof(address));
             AddressContext = addressContext;
         }
     }

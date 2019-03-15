@@ -35,10 +35,7 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// </param>
         public CreateAddressTagResponse(AddressTag tag, Base58String tagContext = null)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentException("Should be not empty string", nameof(tag));
-
-            Tag = tag;
+            Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             TagContext = tagContext;
         }
     }

@@ -101,28 +101,16 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             long? sourceAddressNonce = null,
             AddressTag destinationAddressTag = null,
             AddressTagType? destinationAddressTagType = null)
-        {
-            if (string.IsNullOrWhiteSpace(assetId))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
-
-            if (string.IsNullOrWhiteSpace(sourceAddress))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(sourceAddress));
-
-            if (string.IsNullOrWhiteSpace(destinationAddress))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(destinationAddress));
-
-            if (destinationAddressTag != null && string.IsNullOrWhiteSpace(destinationAddressTag))
-                throw new RequestValidationException("Should be either null or not empty string", nameof(destinationAddressTag));
-            
+        {           
             if (destinationAddressTagType.HasValue && destinationAddressTag == null)
                 throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(destinationAddressTagType), nameof(destinationAddressTag)});
 
-            AssetId = assetId;
+            AssetId = assetId ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
             Amount = amount;
-            SourceAddress = sourceAddress;
+            SourceAddress = sourceAddress ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(sourceAddress));
             SourceAddressContext = sourceAddressContext;
             SourceAddressNonce = sourceAddressNonce;
-            DestinationAddress = destinationAddress;
+            DestinationAddress = destinationAddress ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(destinationAddress));
             DestinationAddressTag = destinationAddressTag;
             DestinationAddressTagType = destinationAddressTagType;
         }

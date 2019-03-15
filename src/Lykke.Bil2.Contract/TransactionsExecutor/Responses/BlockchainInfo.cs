@@ -27,8 +27,8 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// <param name="latestBlockMoment">Moment of the latest available block in the blockchain according to the integration.</param>
         public BlockchainInfo(long latestBlockNumber, DateTime latestBlockMoment)
         {
-            if(latestBlockNumber < 1)
-                throw new ArgumentOutOfRangeException(nameof(latestBlockNumber), latestBlockNumber, "Should be positive number");
+            if(latestBlockNumber < 0)
+                throw new ArgumentOutOfRangeException(nameof(latestBlockNumber), latestBlockNumber, "Should be positive number or zero");
 
             LatestBlockNumber = latestBlockNumber;
             LatestBlockMoment = latestBlockMoment;

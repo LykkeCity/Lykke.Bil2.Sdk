@@ -36,13 +36,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// </param>
         public AddressFormat(Address address, string formatName = null)
         {
-            if (string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be not empty string", nameof(address));
-
             if (formatName != null && string.IsNullOrWhiteSpace(formatName))
                 throw new ArgumentException("Should be either null or not empty string", nameof(formatName));
 
-            Address = address;
+            Address = address ?? throw new ArgumentNullException(nameof(address));
             FormatName = formatName;
         }
     }
