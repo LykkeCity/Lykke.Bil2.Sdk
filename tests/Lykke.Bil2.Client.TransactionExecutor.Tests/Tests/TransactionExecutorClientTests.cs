@@ -542,7 +542,11 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 rawTransactionReadOnlyRepository.Setup(x => x.GetOrDefaultAsync(transactionId))
-                    .ReturnsAsync(Base58String.Encode(transactionResult));
+                    .ReturnsAsync(() =>
+                    {
+                        Task.Delay(timeout).Wait();
+                        return Base58String.Encode(transactionResult);
+                    });
 
                 options.RawTransactionReadOnlyRepositoryFactory = (name, context) => rawTransactionReadOnlyRepository.Object;
 
