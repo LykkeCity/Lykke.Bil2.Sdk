@@ -19,10 +19,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         public int CoinNumber { get; }
 
         /// <summary>
-        /// Asset ID of the coin.
+        /// Asset of the coin.
         /// </summary>
-        [JsonProperty("assetId")]
-        public AssetId AssetId { get; }
+        [JsonProperty("asset")]
+        public Asset Asset { get; }
 
         /// <summary>
         /// Coin value to receive.
@@ -56,7 +56,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// Coin to receive for the transaction.
         /// </summary>
         /// <param name="coinNumber">Number of the coin inside the transaction.</param>
-        /// <param name="assetId">Asset ID of the coin.</param>
+        /// <param name="asset">Asset of the coin.</param>
         /// <param name="value">Coin value to receive.</param>
         /// <param name="address">Address which should receive the coin.</param>
         /// <param name="addressTag">
@@ -69,7 +69,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// </param>
         public CoinToReceive(
             int coinNumber,
-            AssetId assetId,
+            Asset asset,
             UMoney value,
             Address address,
             AddressTag addressTag = null,
@@ -82,9 +82,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
                 throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(addressTagType), nameof(addressTag)});
 
             CoinNumber = coinNumber;
-            AssetId = assetId ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
+            Asset = asset ?? throw RequestValidationException.ShouldBeNotNull(nameof(asset));
             Value = value;
-            Address = address ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
+            Address = address ?? throw RequestValidationException.ShouldBeNotNull(nameof(address));
             AddressTag = addressTag;
             AddressTagType = addressTagType;
         }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
@@ -23,12 +22,13 @@ namespace TransactionsExecutorExample.Services
 
             return Task.FromResult(new EstimateTransactionResponse
             (
-                new Dictionary<AssetId, UMoney>
+                new[]
                 {
-                    {
-                        request.Transfers.Single().AssetId,
+                    new Fee
+                    (
+                        request.Transfers.Single().Asset,
                         UMoney.Round(fee, 6)
-                    }
+                    )
                 }
             ));
         }

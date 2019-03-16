@@ -200,12 +200,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var transfers = new[]
             {
                 new Transfer(
-                    new AssetId("asset"),
+                    new Asset("asset"),
                     UMoney.Create(1000000000, 4),
                     new Address("x1"),
                     new Address("x2")),
             };
-            var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, UMoney>());
+            var request = new BuildTransferAmountTransactionRequest(transfers, Array.Empty<Fee>());
             var result = await client.BuildTransferAmountTransactionAsync(request);
 
             //ASSERT
@@ -245,12 +245,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 var transfers = new[]
                 {
                     new Transfer(
-                        new AssetId("asset"),
+                        new Asset("asset"),
                         UMoney.Create(1000000000, 4),
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, UMoney>());
+                var request = new BuildTransferAmountTransactionRequest(transfers, Array.Empty<Fee>());
                 await client.BuildTransferAmountTransactionAsync(request);
             });
         }
@@ -289,12 +289,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 var transfers = new[]
                 {
                     new Transfer(
-                        new AssetId("asset"),
+                        new Asset("asset"),
                         UMoney.Create(1000000000, 4),
                         new Address("x1"),
                         new Address("x2")),
                 };
-                var request = new BuildTransferAmountTransactionRequest(transfers, new Dictionary<AssetId, UMoney>());
+                var request = new BuildTransferAmountTransactionRequest(transfers, Array.Empty<Fee>());
                 await client.BuildTransferAmountTransactionAsync(request);
             });
         }
@@ -303,9 +303,9 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         public async Task Estimate_transfer_amount_transaction()
         {
             //ARRANGE
-            var dict = new Dictionary<AssetId, UMoney>()
+            var fees = new[]
             {
-                { new AssetId("asset"), UMoney.Create(1000, 4) }
+                new Fee(new Asset("asset"), UMoney.Create(1000, 4))
             };
 
             var client = PrepareClient<AppSettings>((options) =>
@@ -315,7 +315,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Estimate_transfer_amount_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransactionEstimator.Setup(x => x.EstimateTransferAmountAsync(It.IsAny<EstimateTransferAmountTransactionRequest>()))
-                    .ReturnsAsync(new EstimateTransactionResponse(dict));
+                    .ReturnsAsync(new EstimateTransactionResponse(fees));
 
                 ConfigureFactories(options,
                     aggregator.AddressValidator,
@@ -332,7 +332,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var transfers = new[]
             {
                 new Transfer(
-                    new AssetId("asset"),
+                    new Asset("asset"),
                     UMoney.Create(1000000000, 4),
                     new Address("x1"),
                     new Address("x2")),
@@ -341,10 +341,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var result = await client.EstimateTransferAmountTransactionAsync(request);
 
             //ASSERT
-            var estimation = result.EstimatedFee.First();
-            Assert.True(result != null);
-            Assert.True(estimation.Key == "asset");
-            Assert.True(estimation.Value == UMoney.Create(1000, 4));
+            Assert.NotNull(result);
+
+            var estimation = result.EstimatedFees.SingleOrDefault();
+
+            Assert.NotNull(estimation);
+            Assert.AreEqual(new Asset("asset"), estimation.Asset);
+            Assert.AreEqual(UMoney.Create(1000, 4), estimation.Amount);
         }
 
         [Test]
@@ -377,7 +380,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 var transfers = new[]
                 {
                     new Transfer(
-                        new AssetId("asset"),
+                        new Asset("asset"),
                         UMoney.Create(1000000000, 4),
                         new Address("x1"),
                         new Address("x2")),
@@ -650,7 +653,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToSpend = new[]
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
@@ -659,7 +662,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToReceive = new[]
             {
                 new CoinToReceive(0,
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4), 
                     new Address("0x2"),
                     new AddressTag("tag"),
@@ -704,7 +707,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToSpend = new[]
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
@@ -713,7 +716,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToReceive = new[]
             {
                 new CoinToReceive(0,
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
@@ -761,7 +764,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToSpend = new[]
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
@@ -770,7 +773,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToReceive = new[]
             {
                 new CoinToReceive(0,
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
@@ -817,7 +820,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToSpend = new[]
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
@@ -826,7 +829,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToReceive = new[]
             {
                 new CoinToReceive(0,
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
@@ -846,9 +849,9 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         public async Task Estimate_transfer_coins_transaction()
         {
             //ARRANGE
-            var dict = new Dictionary<AssetId, UMoney>()
+            var fees = new[]
             {
-                { new AssetId("asset"), UMoney.Create(1000, 4) }
+                new Fee(new Asset("asset"), UMoney.Create(1000, 4))
             };
 
             var client = PrepareClient<AppSettings>((options) =>
@@ -859,7 +862,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransferCoinsTransactionsEstimator
                     .Setup(x => x.EstimateTransferCoinsAsync(It.IsAny<EstimateTransferCoinsTransactionRequest>()))
-                    .ReturnsAsync(new EstimateTransactionResponse(dict));
+                    .ReturnsAsync(new EstimateTransactionResponse(fees));
 
                 ConfigureFactories(options,
                     aggregator.AddressValidator,
@@ -878,7 +881,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToSpend = new[]
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
@@ -887,7 +890,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToReceive = new[]
             {
                 new CoinToReceive(0,
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
@@ -899,11 +902,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var result = await client.EstimateTransferCoinsTransactionAsync(request);
 
             //ASSERT
+            Assert.NotNull(result);
 
-            var estimation = result.EstimatedFee.First();
-            Assert.True(result != null);
-            Assert.True(estimation.Key == "asset");
-            Assert.True(estimation.Value == UMoney.Create(1000, 4));
+            var estimation = result.EstimatedFees.SingleOrDefault();
+
+            Assert.NotNull(estimation);
+            Assert.AreEqual(new Asset("asset"), estimation.Asset);
+            Assert.AreEqual(UMoney.Create(1000, 4), estimation.Amount);
         }
 
         [Test]
@@ -938,7 +943,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToSpend = new[]
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
@@ -947,7 +952,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToReceive = new[]
             {
                 new CoinToReceive(0,
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),
@@ -994,7 +999,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToSpend = new[]
             {
                 new CoinToSpend(new CoinReference("tx1", 0),
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
                     Base58String.Encode("context"),
@@ -1003,7 +1008,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var coinsToReceive = new[]
             {
                 new CoinToReceive(0,
-                    new AssetId("assetId"),
+                    new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x2"),
                     new AddressTag("tag"),

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
-using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -41,13 +40,10 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public IReadOnlyCollection<BalanceChange> BalanceChanges { get; }
 
         /// <summary>
-        /// Optional.
-        /// Fee in the particular asset ID, that was spent for the transaction.
-        /// Can be omitted, if fee can be determined from the balance changes and cancellations.
+        /// Fees in the particular asset, that was spent for the transaction.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("fee")]
-        public IReadOnlyDictionary<AssetId, UMoney> Fee { get; }
+        [JsonProperty("fees")]
+        public IReadOnlyCollection<Fee> Fees { get; }
 
         /// <summary>
         /// Optional.
@@ -67,11 +63,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// <param name="transactionNumber">Number of the transaction in the block.</param>
         /// <param name="transactionId">ID of the transaction.</param>
         /// <param name="balanceChanges">Balance changing operations.</param>
-        /// <param name="fee">
-        /// Optional.
-        /// Fee in the particular asset ID, that was spent for the transaction.
-        /// Can be omitted, if fee can be determined from the balance changes and cancellations.
-        /// </param>
+        /// <param name="fees">Fees in the particular asset, that was spent for the transaction.</param>
         /// <param name="isIrreversible">
         /// Optional.
         /// Flag which indicates, if transaction is irreversible.
@@ -81,7 +73,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             int transactionNumber,
             string transactionId,
             IReadOnlyCollection<BalanceChange> balanceChanges,
-            IReadOnlyDictionary<AssetId, UMoney> fee = null,
+            IReadOnlyCollection<Fee> fees,
             bool? isIrreversible = null)
         {
             if (string.IsNullOrWhiteSpace(blockId))
@@ -97,7 +89,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             TransactionNumber = transactionNumber;
             TransactionId = transactionId;
             BalanceChanges = balanceChanges ?? throw new ArgumentNullException(nameof(balanceChanges));
-            Fee = fee;
+            Fees = fees ?? throw new ArgumentNullException(nameof(fees));
             IsIrreversible = isIrreversible;
         }
     }
