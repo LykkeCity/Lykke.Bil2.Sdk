@@ -26,7 +26,12 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// <param name="estimatedFees">Estimated transaction fee for the particular asset.</param>
         public EstimateTransactionResponse(IReadOnlyCollection<Fee> estimatedFees)
         {
-            EstimatedFees = estimatedFees ?? throw new ArgumentNullException(nameof(estimatedFees));
+            if(estimatedFees == null)
+                throw new ArgumentNullException(nameof(estimatedFees));
+
+            FeesValidator.ValidateFees(estimatedFees, isRequest: false);
+
+            EstimatedFees = estimatedFees;
         }
     }
 }

@@ -58,10 +58,14 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             IReadOnlyCollection<Fee> fees,
             ExpirationOptions expiration = null)
         {
-            TransactionTransfersValidator.Validate(transfers);
+            if (fees == null)
+                throw RequestValidationException.ShouldBeNotNull(nameof(fees));
 
+            TransactionTransfersValidator.Validate(transfers);
+            FeesValidator.ValidateFees(fees, isRequest: true);
+            
             Transfers = transfers;
-            Fees = fees ?? throw RequestValidationException.ShouldBeNotNull(nameof(fees));
+            Fees = fees;
             Expiration = expiration;
         }
     }

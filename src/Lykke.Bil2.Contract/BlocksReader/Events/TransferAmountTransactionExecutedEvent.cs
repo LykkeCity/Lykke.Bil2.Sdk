@@ -85,11 +85,16 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (string.IsNullOrWhiteSpace(transactionId))
                 throw new ArgumentException("Should be not empty string", nameof(transactionId));
 
+            if (fees == null)
+                throw new ArgumentNullException(nameof(fees));
+            
+            FeesValidator.ValidateFees(fees, isRequest: false);
+
             BlockId = blockId;
             TransactionNumber = transactionNumber;
             TransactionId = transactionId;
             BalanceChanges = balanceChanges ?? throw new ArgumentNullException(nameof(balanceChanges));
-            Fees = fees ?? throw new ArgumentNullException(nameof(fees));
+            Fees = fees;
             IsIrreversible = isIrreversible;
         }
     }
