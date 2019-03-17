@@ -88,7 +88,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (fees == null)
                 throw new ArgumentNullException(nameof(fees));
             
-            FeesValidator.ValidateFees(fees, isRequest: false);
+            FeesValidator.ValidateFeesInResponse(fees);
 
             BlockId = blockId;
             TransactionNumber = transactionNumber;

@@ -87,7 +87,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
                 throw new ArgumentException("Should be not empty string", nameof(transactionId));
 
             if (fees != null)
-                FeesValidator.ValidateFees(fees, isRequest: false);
+                FeesValidator.ValidateFeesInResponse(fees);
 
             BlockId = blockId;
             TransactionNumber = transactionNumber;

@@ -29,7 +29,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
             if(estimatedFees == null)
                 throw new ArgumentNullException(nameof(estimatedFees));
 
-            FeesValidator.ValidateFees(estimatedFees, isRequest: false);
+            FeesValidator.ValidateFeesInResponse(estimatedFees);
 
             EstimatedFees = estimatedFees;
         }

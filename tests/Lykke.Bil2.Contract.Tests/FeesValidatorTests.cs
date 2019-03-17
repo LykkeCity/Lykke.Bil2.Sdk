@@ -23,11 +23,11 @@ namespace Lykke.Bil2.Contract.Tests
             
             if (shouldThrow)
             {
-                Assert.Throws<ArgumentException>(() => FeesValidator.ValidateFees(fees, false));
+                Assert.Throws<ArgumentException>(() => FeesValidator.ValidateFeesInResponse(fees));
             }
             else
             {
-                FeesValidator.ValidateFees(fees, false);
+                FeesValidator.ValidateFeesInResponse(fees);
             }
         }
     }

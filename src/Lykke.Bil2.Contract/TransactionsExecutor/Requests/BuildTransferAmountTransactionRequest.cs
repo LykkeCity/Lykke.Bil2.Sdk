@@ -62,7 +62,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
                 throw RequestValidationException.ShouldBeNotNull(nameof(fees));
 
             TransactionTransfersValidator.Validate(transfers);
-            FeesValidator.ValidateFees(fees, isRequest: true);
+            FeesValidator.ValidateFeesInRequest(fees);
             
             Transfers = transfers;
             Fees = fees;
