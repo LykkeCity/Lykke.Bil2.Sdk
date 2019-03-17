@@ -11,13 +11,16 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
     [PublicAPI]
     public class BroadcastTransactionRequest
     {
-        // The signed transaction.
+        /// <summary>
+        /// The signed transaction.
+        /// </summary>
         [JsonProperty("signedTransaction")]
         public Base58String SignedTransaction { get; }
 
         /// <summary>
         /// Endpoint: [POST] /api/transactions/broadcasted
         /// </summary>
+        /// <param name="signedTransaction">The signed transaction.</param> 
         public BroadcastTransactionRequest(Base58String signedTransaction)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction?.ToString()))

@@ -72,6 +72,26 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Transfer of the transaction.
         /// </summary>
+        /// <param name="assetId">Asset ID to transfer.</param>
+        /// <param name="amount">Amount to transfer from the source address to the destination address.</param>
+        /// <param name="sourceAddress">Address to transfer from.</param>
+        /// <param name="destinationAddress">Address to transfer to.</param>
+        /// <param name="sourceAddressContext">
+        /// Optional.
+        /// Source address context associated with the address.
+        /// </param>
+        /// <param name="sourceAddressNonce">
+        /// Optional.
+        /// Nonce number of the transaction for the source address.
+        /// </param>
+        /// <param name="destinationAddressTag">
+        /// Optional.
+        /// Destination address tag.
+        /// </param>
+        /// <param name="destinationAddressTagType">
+        /// Optional.
+        /// Type of the destination address tag.
+        /// </param>
         public Transfer(
             AssetId assetId,
             UMoney amount,
@@ -81,28 +101,16 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             long? sourceAddressNonce = null,
             AddressTag destinationAddressTag = null,
             AddressTagType? destinationAddressTagType = null)
-        {
-            if (string.IsNullOrWhiteSpace(assetId))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
-
-            if (string.IsNullOrWhiteSpace(sourceAddress))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(sourceAddress));
-
-            if (string.IsNullOrWhiteSpace(destinationAddress))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(destinationAddress));
-
-            if (destinationAddressTag != null && string.IsNullOrWhiteSpace(destinationAddressTag))
-                throw new RequestValidationException("Should be either null or not empty string", nameof(destinationAddressTag));
-            
+        {           
             if (destinationAddressTagType.HasValue && destinationAddressTag == null)
                 throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(destinationAddressTagType), nameof(destinationAddressTag)});
 
-            AssetId = assetId;
+            AssetId = assetId ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
             Amount = amount;
-            SourceAddress = sourceAddress;
+            SourceAddress = sourceAddress ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(sourceAddress));
             SourceAddressContext = sourceAddressContext;
             SourceAddressNonce = sourceAddressNonce;
-            DestinationAddress = destinationAddress;
+            DestinationAddress = destinationAddress ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(destinationAddress));
             DestinationAddressTag = destinationAddressTag;
             DestinationAddressTagType = destinationAddressTagType;
         }

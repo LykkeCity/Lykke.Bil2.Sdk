@@ -17,7 +17,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Services
         /// Integration should either support “transfer coins”  or “transfer amount” transactions model.
         /// </summary>
         /// <exception cref="RequestValidationException">
-        /// Should be thrown if a transaction can’t be estimated with the given parameters and it will be never possible to
+        /// Should be thrown if a transaction can’t be estimated with the given parameters and it will never be possible to
         /// estimate the transaction with exactly the same parameters.
         /// </exception>
         /// <exception cref="Exception">

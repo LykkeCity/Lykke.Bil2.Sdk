@@ -34,6 +34,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public Money Value { get; }
 
         /// <summary>
+        /// Optional.
         /// Address.
         /// </summary>
         [JsonProperty("address")]
@@ -63,11 +64,40 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         [JsonProperty("nonce")]
         public long? Nonce { get; }
 
+        /// <summary>
+        /// Change of the address balance made by a transaction
+        /// </summary>
+        /// <param name="transferId">
+        /// ID of the transfer within the transaction.
+        /// Can group several balance changing operations into the single transfer,
+        /// or can be just the output number.
+        /// </param>
+        /// <param name="assetId">ID of the asset.</param>
+        /// <param name="value">
+        /// Value for which the balance of the address was changed.
+        /// Can be positive to increase the balance or negative to decrease the balance.
+        /// </param>
+        /// <param name="address">
+        /// Optional.
+        /// Address.
+        /// </param>
+        /// <param name="tag">
+        /// Optional.
+        /// Tag of the address.
+        /// </param>
+        /// <param name="tagType">
+        /// Optional.
+        /// Type of the address tag.
+        /// </param>
+        /// <param name="nonce">
+        /// Optional.
+        /// Nonce number of the transaction for the address.
+        /// </param>
         public BalanceChange(
             string transferId, 
             AssetId assetId, 
             Money value, 
-            Address address, 
+            Address address = null, 
             AddressTag tag = null, 
             AddressTagType? tagType = null,
             long? nonce = null)
@@ -75,20 +105,14 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (string.IsNullOrWhiteSpace(transferId))
                 throw new ArgumentException("Should be not empty string", nameof(transferId));
 
-            if (string.IsNullOrWhiteSpace(assetId))
-                throw new ArgumentException("Should be not empty string", nameof(assetId));
-
-            if (string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be not empty string", nameof(address));
-
-            if (tag != null && string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentException("Should be either null or not empty string", nameof(tag));
+            if (tag != null && address == null)
+                throw new ArgumentException("If the tag is specified, the address should be specified too");
 
             if (tagType.HasValue && tag == null)
                 throw new ArgumentException("If the tag type is specified, the tag should be specified too");
 
             TransferId = transferId;
-            AssetId = assetId;
+            AssetId = assetId ?? throw new ArgumentNullException(nameof(assetId));
             Value = value;
             Address = address;
             Tag = tag;

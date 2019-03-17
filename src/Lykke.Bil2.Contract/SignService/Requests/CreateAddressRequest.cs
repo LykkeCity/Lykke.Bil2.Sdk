@@ -23,6 +23,12 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// <summary>
         /// Endpoint: [POST] /api/addresses
         /// </summary>
+        /// <param name="encryptionPublicKey">
+        /// Encryption public key which should be used to encrypt
+        /// the private key of the address being created before
+        /// return it in the encryptedPrivateKey field of the
+        /// response.
+        /// </param>
         public CreateAddressRequest(Base58String encryptionPublicKey)
         {
             if (string.IsNullOrWhiteSpace(encryptionPublicKey?.ToString()))

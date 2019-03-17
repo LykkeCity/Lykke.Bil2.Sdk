@@ -28,6 +28,8 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Transaction expiration options.
         /// </summary>
+        /// <param name="afterMoment">Transaction should be expired after given moment.</param>
+        /// <param name="afterBlockNumber">Transaction should be expired after given block number.</param>
         public ExpirationOptions(DateTime? afterMoment = null, long? afterBlockNumber = null)
         {
             if (!afterMoment.HasValue && !afterBlockNumber.HasValue)

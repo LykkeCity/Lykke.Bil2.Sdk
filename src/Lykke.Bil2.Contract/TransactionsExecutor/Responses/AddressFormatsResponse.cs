@@ -13,11 +13,15 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
     public class AddressFormatsResponse
     {
         /// <summary>
-        /// List of the all known formats for the given address.
+        /// List of all known formats for the given address.
         /// </summary>
         [JsonProperty("formats")]
         public IReadOnlyCollection<AddressFormat> Formats { get; }
 
+        /// <summary>
+        /// Endpoint: [GET] /api/addresses/{address}/formats
+        /// </summary>
+        /// <param name="formats">List of all known formats for the given address.</param>
         public AddressFormatsResponse(IReadOnlyCollection<AddressFormat> formats)
         {
             if (formats == null)

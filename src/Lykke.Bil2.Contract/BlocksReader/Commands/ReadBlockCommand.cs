@@ -16,6 +16,12 @@ namespace Lykke.Bil2.Contract.BlocksReader.Commands
         [JsonProperty("blockNumber")]
         public long BlockNumber { get; }
 
+        /// <summary>
+        /// Service should start reading of the specified block and send events corresponding to all transactions included in the block.
+        /// </summary>
+        /// <param name="blockNumber">
+        /// Number of the block to read.
+        /// </param>
         public ReadBlockCommand(long blockNumber)
         {
             if (blockNumber < 0)

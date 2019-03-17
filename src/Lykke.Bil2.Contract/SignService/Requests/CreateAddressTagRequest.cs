@@ -29,6 +29,14 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// <summary>
         /// Endpoint: [POST] /api/addresses/{address}/tags
         /// </summary>
+        /// <param name="addressContext">
+        /// Optional.
+        /// Implementation specific address context associated with the address.
+        /// </param>
+        /// <param name="type">
+        /// Optional.
+        /// Type of the address tag being created. Actual value depends on implementation.
+        /// </param>
         public CreateAddressTagRequest(Base58String addressContext = null, AddressTagType? type = null)
         {
             AddressContext = addressContext;

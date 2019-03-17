@@ -17,6 +17,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Endpoint: [POST] /api/transactions/estimated/transfers/amount
         /// </summary>
+        /// <param name="transfers">Transaction transfers.</param>
         public EstimateTransferAmountTransactionRequest(IReadOnlyCollection<Transfer> transfers)
         {
             TransactionTransfersValidator.Validate(transfers);

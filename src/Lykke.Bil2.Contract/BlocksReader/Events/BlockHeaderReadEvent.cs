@@ -35,10 +35,10 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public int BlockSize { get; }
 
         /// <summary>
-        /// Number of the transactions in the block.
+        /// Count of the transactions in the block.
         /// </summary>
-        [JsonProperty("blockTransactionsNumber")]
-        public int BlockTransactionsNumber { get; }
+        [JsonProperty("blockTransactionsCount")]
+        public int BlockTransactionsCount { get; }
 
         /// <summary>
         /// Optional.
@@ -51,12 +51,21 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// <summary>
         /// Should be published when a block header has been read.
         /// </summary>
+        /// <param name="blockNumber">Number of the block.</param>
+        /// <param name="blockId">ID of the block.</param>
+        /// <param name="blockMiningMoment">Moment when the block is mined.</param>
+        /// <param name="blockSize">Size of the block in bytes.</param>
+        /// <param name="blockTransactionsCount">Count of the transactions in the block.</param>
+        /// <param name="previousBlockId">
+        /// Optional.
+        /// ID of the previous block. Optional only for the first block (blockNumber 0 or 1)
+        /// </param>
         public BlockHeaderReadEvent(
             long blockNumber,
             string blockId,
             DateTime blockMiningMoment,
             int blockSize,
-            int blockTransactionsNumber,
+            int blockTransactionsCount,
             string previousBlockId = null)
         {
             if (blockNumber < 0)
@@ -68,8 +77,8 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (blockSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(blockSize), blockSize, "Should be positive number");
 
-            if (blockTransactionsNumber <= 0)
-                throw new ArgumentOutOfRangeException(nameof(blockTransactionsNumber), blockTransactionsNumber, "Should be positive number");
+            if (blockTransactionsCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(blockTransactionsCount), blockTransactionsCount, "Should be positive number or zero");
 
             if (blockNumber > 1 && string.IsNullOrWhiteSpace(previousBlockId))
                 throw new ArgumentException("Should be not empty string for the not first block", nameof(previousBlockId));
@@ -78,7 +87,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             BlockId = blockId;
             BlockMiningMoment = blockMiningMoment;
             BlockSize = blockSize;
-            BlockTransactionsNumber = blockTransactionsNumber;
+            BlockTransactionsCount = blockTransactionsCount;
             PreviousBlockId = previousBlockId;
         }
     }

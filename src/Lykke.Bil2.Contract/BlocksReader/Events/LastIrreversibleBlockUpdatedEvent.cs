@@ -23,6 +23,8 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// <summary>
         /// Should be published when last irreversible block number is updated.
         /// </summary>
+        /// <param name="blockNumber">Number of the last irreversible block.</param>
+        /// <param name="blockId">ID of the last irreversible block.</param>
         public LastIrreversibleBlockUpdatedEvent(long blockNumber, string blockId)
         {
             if (blockNumber < 0)

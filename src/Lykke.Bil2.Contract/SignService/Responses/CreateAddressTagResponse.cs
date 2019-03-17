@@ -28,12 +28,14 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// <summary>
         /// Endpoint: [POST] /api/addresses/{address}/tags
         /// </summary>
+        /// <param name="tag">Generated address tag.</param>
+        /// <param name="tagContext">
+        /// Optional.
+        /// Any non security sensitive, implementation specific information associated with the address tag.
+        /// </param>
         public CreateAddressTagResponse(AddressTag tag, Base58String tagContext = null)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentException("Should be not empty string", nameof(tag));
-
-            Tag = tag;
+            Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             TagContext = tagContext;
         }
     }

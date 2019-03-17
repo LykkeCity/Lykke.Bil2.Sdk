@@ -34,13 +34,16 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// <summary>
         /// Endpoint: [POST] /api/addresses
         /// </summary>
+        /// <param name="privateKey">Private key of the address.</param>
+        /// <param name="address">Generated address.</param>
+        /// <param name="addressContext">
+        /// Optional.
+        /// Any non security sensitive, implementation specific information associated with the address. 
+        /// </param>
         public CreateAddressResponse(EncryptedString privateKey, Address address, Base58String addressContext = null)
         {
-            if (string.IsNullOrWhiteSpace(address))
-                throw new ArgumentException("Should be not empty string", nameof(address));
-
             PrivateKey = privateKey ?? throw new ArgumentNullException(nameof(privateKey));
-            Address = address;
+            Address = address ?? throw new ArgumentNullException(nameof(address));
             AddressContext = addressContext;
         }
     }

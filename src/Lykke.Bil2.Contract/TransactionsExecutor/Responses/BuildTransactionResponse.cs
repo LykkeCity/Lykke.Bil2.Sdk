@@ -24,6 +24,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// - [POST] /api/transactions/built/transfers/amount
         /// - [POST] /api/transactions/built/transfers/coins
         /// </summary>
+        /// <param name="transactionContext">Implementation specific transaction context.</param>
         public BuildTransactionResponse(Base58String transactionContext)
         {
             if (string.IsNullOrWhiteSpace(transactionContext?.ToString()))

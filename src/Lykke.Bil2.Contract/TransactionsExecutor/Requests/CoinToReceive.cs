@@ -52,6 +52,21 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         [JsonProperty("addressTagType")]
         public AddressTagType? AddressTagType { get; }
 
+        /// <summary>
+        /// Coin to receive for the transaction.
+        /// </summary>
+        /// <param name="coinNumber">Number of the coin inside the transaction.</param>
+        /// <param name="assetId">Asset ID of the coin.</param>
+        /// <param name="value">Coin value to receive.</param>
+        /// <param name="address">Address which should receive the coin.</param>
+        /// <param name="addressTag">
+        /// Optional.
+        /// Receiving address tag.
+        /// </param>
+        /// <param name="addressTagType">
+        /// Optional.
+        /// Type of the receiving address tag.
+        /// </param>
         public CoinToReceive(
             int coinNumber,
             AssetId assetId,
@@ -63,22 +78,13 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             if (coinNumber < 0)
                 throw RequestValidationException.ShouldBeZeroOrPositiveNumber(coinNumber, nameof(coinNumber));
 
-            if (string.IsNullOrWhiteSpace(assetId))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
-
-            if (string.IsNullOrWhiteSpace(address))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
-
-            if (addressTag != null && string.IsNullOrWhiteSpace(addressTag))
-                throw new RequestValidationException("Should be either null or not empty string", nameof(addressTag));
-
             if (addressTagType.HasValue && addressTag == null)
                 throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(addressTagType), nameof(addressTag)});
 
             CoinNumber = coinNumber;
-            AssetId = assetId;
+            AssetId = assetId ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
             Value = value;
-            Address = address;
+            Address = address ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
             AddressTag = addressTag;
             AddressTagType = addressTagType;
         }

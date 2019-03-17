@@ -26,6 +26,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// <summary>
         /// Endpoint: [GET] /api/integration-info
         /// </summary>
+        /// <param name="blockchain">Blockchain specific information.</param>
+        /// <param name="dependencies">
+        /// Info concerning services on which integration is dependent. This should include node and all intermediate APIs.
+        /// </param>
         public IntegrationInfoResponse(
             BlockchainInfo blockchain,
             IReadOnlyDictionary<string, DependencyInfo> dependencies)
