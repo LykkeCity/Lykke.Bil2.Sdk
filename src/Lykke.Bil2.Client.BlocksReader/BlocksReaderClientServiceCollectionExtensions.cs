@@ -20,7 +20,7 @@ namespace Lykke.Bil2.Client.BlocksReader
         /// </summary>
         /// <remarks>
         /// In order to use <see cref="IBlocksReaderClient"/>,
-        /// call <see cref="IBlocksReaderClient.StartSending"/> and <see cref="IBlocksReaderClient.StartListening"/> first.
+        /// call <see cref="IBlocksReaderClient.Initialize"/> and <see cref="IBlocksReaderClient.StartListening"/> first.
         /// </remarks>
         public static void AddBlocksReaderClient(
             this IServiceCollection services,

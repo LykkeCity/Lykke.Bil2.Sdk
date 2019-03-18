@@ -114,7 +114,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             using (testServer)
             using (client)
             {
-                client.StartSending();
+                client.Initialize();
                 
                 var apiBlocksReader = apiFactory.Create(_integrationName);
 
@@ -167,7 +167,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             using (testServer)
             using (client)
             {
-                client.StartSending();
+                client.Initialize();
                 client.StartListening();
 
                 irreversibleEvent.Wait(Waiting.Timeout);
@@ -219,7 +219,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             using (testServer)
             using (client)
             {
-                client.StartSending();
+                client.Initialize();
                 client.StartListening();
 
                 await irreversibleBlockListener.HandleNewLastIrreversibleBlockAsync(
@@ -392,7 +392,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             using (testServer)
             using (client)
             {
-                client.StartSending();
+                client.Initialize();
                 client.StartListening();
 
                 var apiBlocksReader = apiFactory.Create(_integrationName);

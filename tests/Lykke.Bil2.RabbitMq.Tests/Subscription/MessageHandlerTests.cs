@@ -63,12 +63,13 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 _services.AddTransient(s => new DisposableDependency(dependencyCalls, disposalEvent));
                 
                 using (var serviceProvider = _services.BuildServiceProvider())
-                using (var endpoint = StartRabbitMqEndpoint(serviceProvider))
+                using (var endpoint = InitializeRabbitMqEndpoint(serviceProvider))
                 {
                     var subscriptionsRegistry = new MessageSubscriptionsRegistry()
                         .Handle<TestMessage>(o => o.WithHandler<TestMessageHandler>());
 
-                    endpoint.StartListening(ExchangeName, RouteName, subscriptionsRegistry);
+                    endpoint.Subscribe(ExchangeName, RouteName, subscriptionsRegistry);
+                    endpoint.StartListening();
 
                     var publisher = endpoint.CreatePublisher(ExchangeName);
 
@@ -105,7 +106,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 _services.AddTransient(s => new DisposableDependency(dependencyCalls, disposalEvent));
 
                 using (var serviceProvider = _services.BuildServiceProvider())
-                using (var endpoint = StartRabbitMqEndpoint(serviceProvider))
+                using (var endpoint = InitializeRabbitMqEndpoint(serviceProvider))
                 {
                     var subscriptionsRegistry = new MessageSubscriptionsRegistry()
                         .Handle<TestMessage, string>(o =>
@@ -114,7 +115,8 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                             o.WithState("123");
                         });
 
-                    endpoint.StartListening(ExchangeName, RouteName, subscriptionsRegistry);
+                    endpoint.Subscribe(ExchangeName, RouteName, subscriptionsRegistry);
+                    endpoint.StartListening();
 
                     var publisher = endpoint.CreatePublisher(ExchangeName);
 
@@ -136,7 +138,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
             }
         }
 
-        private RabbitMqEndpoint StartRabbitMqEndpoint(ServiceProvider serviceProvider)
+        private RabbitMqEndpoint InitializeRabbitMqEndpoint(ServiceProvider serviceProvider)
         {
             var endpoint = new RabbitMqEndpoint(
                 serviceProvider,
@@ -144,7 +146,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 new Uri(_rabbitMqSettings.GetConnectionString()),
                 _rabbitMqSettings.Vhost);
 
-            endpoint.Start();
+            endpoint.Initialize();
             endpoint.DeclareExchange(ExchangeName);
 
             return endpoint;

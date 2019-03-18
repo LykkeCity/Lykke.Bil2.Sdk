@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Lykke.Bil2.RabbitMq.Publication;
@@ -14,6 +15,8 @@ namespace Lykke.Bil2.RabbitMq.Subscription
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogFactory _logFactory;
+        private readonly IConnection _connection;
+        private readonly string _queueName;
         private readonly IMessageSubscriptionsRegistry _subscriptionsRegistry;
         private readonly List<IModel> _channels;
 
@@ -25,13 +28,8 @@ namespace Lykke.Bil2.RabbitMq.Subscription
             IConnection connection,
             string exchangeName, 
             string queueName,           
-            IMessageSubscriptionsRegistry subscriptionsRegistry,
-            int parallelism = 1)
+            IMessageSubscriptionsRegistry subscriptionsRegistry)
         {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
             if (string.IsNullOrWhiteSpace(exchangeName))
             {
                 throw new ArgumentException("Should be not empty string", nameof(exchangeName));
@@ -40,13 +38,12 @@ namespace Lykke.Bil2.RabbitMq.Subscription
             {
                 throw new ArgumentException("Should be not empty string", nameof(queueName));
             }
-            if (parallelism <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(parallelism), parallelism, "Should be positive number");
-            }
+            
 
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _logFactory = logFactory ?? throw new ArgumentNullException(nameof(logFactory));
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _queueName = queueName;
             _subscriptionsRegistry = subscriptionsRegistry ?? throw new ArgumentNullException(nameof(subscriptionsRegistry));
 
             var log = logFactory.CreateLog(this);
@@ -66,11 +63,23 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                 }
             }
 
-            _channels = new List<IModel>(parallelism);
+            _channels = new List<IModel>();
+        }
+
+        public void StartListening(int parallelism = 1)
+        {
+            if (parallelism <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(parallelism), parallelism, "Should be positive number");
+            }
+            if (_channels.Any())
+            {
+                throw new InvalidOperationException("Listening already has been started.");
+            }
 
             for (var i = 0; i < parallelism; ++i)
             {
-                var channel = connection.CreateModel();
+                var channel = _connection.CreateModel();
                 var consumer = new EventingBasicConsumer(channel);
 
                 consumer.Received += (sender, args) =>
@@ -78,7 +87,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                     HandleMessage(((EventingBasicConsumer)sender).Model, args).ConfigureAwait(false).GetAwaiter().GetResult();
                 };
 
-                channel.BasicConsume(queueName, false, consumer);
+                channel.BasicConsume(_queueName, false, consumer);
 
                 _channels.Add(channel);
             }

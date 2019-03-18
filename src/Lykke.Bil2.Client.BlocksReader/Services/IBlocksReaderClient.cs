@@ -14,14 +14,14 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
     public interface IBlocksReaderClient : IDisposable
     {
         /// <summary>
-        /// Starts the commands sending engine. Should be called in order to send commands via <see cref="IBlocksReaderApi"/> and start events
+        /// Initializes the client. Should be called in order to send commands via <see cref="IBlocksReaderApi"/> and start events
         /// listening using <see cref="StartListening"/>.
         /// </summary>
-        void StartSending();
+        void Initialize();
 
         /// <summary>
-        /// Starts the events listening engine. Should be called in order to receive events via <see cref="IBlockEventsHandler"/>. Should be called
-        /// after <see cref="StartSending"/>.
+        /// Starts the events listening. Should be called in order to receive events via <see cref="IBlockEventsHandler"/>. Should be called
+        /// after <see cref="Initialize"/>.
         /// </summary>
         void StartListening();
     }

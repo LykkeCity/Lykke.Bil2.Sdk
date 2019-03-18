@@ -78,24 +78,15 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
                         RabbitMqExchangeNamesFactory.GetIntegrationEventsExchangeName(x.KebabName)));
         }
 
-        public void StartSending()
+        public void Initialize()
         {
-            _endpoint.Start();
+            _endpoint.Initialize();
 
             foreach (var (integrationName, exchangeNames) in _integrationsExchangeNames)
             {
-                _log.Info($"Declaring commands exchange for the blockchain integration {integrationName}...");
+                _log.Info($"Initializing RabbitMq endpoint for the blockchain integration {integrationName}...");
 
                 _endpoint.DeclareExchange(exchangeNames.CommandsExchangeName);
-            }
-        }
-
-        public void StartListening()
-        {
-            foreach (var (integrationName, exchangeNames) in _integrationsExchangeNames)
-            {
-                _log.Info($"Starting events listening for the blockchain integration {integrationName}...");
-
                 _endpoint.DeclareExchange(exchangeNames.EventsExchangeName);
 
                 var subscriptions = new MessageSubscriptionsRegistry()
@@ -130,12 +121,16 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
                         o.WithState(integrationName);
                     });
 
-                _endpoint.StartListening(
+                _endpoint.Subscribe(
                     exchangeNames.EventsExchangeName,
                     $"bil-v2.{_clientName}",
-                    subscriptions,
-                    parallelism: _listeningParallelism);
+                    subscriptions);
             }
+        }
+
+        public void StartListening()
+        {
+            _endpoint.StartListening(_listeningParallelism);
         }
 
         public void Dispose()

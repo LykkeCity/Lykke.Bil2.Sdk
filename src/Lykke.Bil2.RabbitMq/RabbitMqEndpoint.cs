@@ -21,7 +21,7 @@ namespace Lykke.Bil2.RabbitMq
         private IConnection _connection;
         private IModel _publishingChannel;
 
-        private readonly List<IDisposable> _subscribers;
+        private readonly List<MessageSubscriber> _subscribers;
         private readonly string _vhost;
 
         /// <summary>
@@ -40,11 +40,11 @@ namespace Lykke.Bil2.RabbitMq
             _vhost = vhost;
             _log = logFactory.CreateLog(this);
 
-            _subscribers = new List<IDisposable>();
+            _subscribers = new List<MessageSubscriber>();
         }
 
         /// <inheritdoc />
-        public void Start()
+        public void Initialize()
         {
             if (_connection != null)
             {
@@ -100,12 +100,11 @@ namespace Lykke.Bil2.RabbitMq
         }
 
         /// <inheritdoc />
-        public void StartListening(
+        public void Subscribe(
             string listeningExchangeName,
             string listeningRoute,
             IMessageSubscriptionsRegistry subscriptionsRegistry,
-            string replyExchangeName = null,
-            int parallelism = 1)
+            string replyExchangeName = null)
         {
             if (string.IsNullOrWhiteSpace(listeningExchangeName))
             {
@@ -131,8 +130,7 @@ namespace Lykke.Bil2.RabbitMq
                 _connection,
                 listeningExchangeName,
                 $"{listeningExchangeName}.{listeningRoute}",
-                subscriptionsRegistry,
-                parallelism
+                subscriptionsRegistry
             );
 
             if (replyExchangeName != null)
@@ -141,6 +139,15 @@ namespace Lykke.Bil2.RabbitMq
             }
 
             _subscribers.Add(subscriber);
+        }
+
+        /// <inheritdoc />
+        public void StartListening(int parallelism = 1)
+        {
+            foreach (var subscriber in _subscribers)
+            {
+                subscriber.StartListening(parallelism);
+            }
         }
 
         /// <inheritdoc />

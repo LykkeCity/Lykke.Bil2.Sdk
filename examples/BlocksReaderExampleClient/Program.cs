@@ -47,7 +47,7 @@ namespace BlocksReaderExampleClient
 
                 Console.WriteLine("Starting client...");
 
-                client.StartSending();
+                client.Initialize();
                 client.StartListening();
 
                 var apiFactory = serviceProvider.GetService<IBlocksReaderApiFactory>();
