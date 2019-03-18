@@ -19,7 +19,8 @@ namespace Lykke.Bil2.Client.BlocksReader
         /// Adds the messaging client of the blockchain integration blocks reader to the app services as <see cref="IBlocksReaderClient"/>
         /// </summary>
         /// <remarks>
-        /// In order to use <see cref="IBlocksReaderClient"/>, call <see cref="IBlocksReaderClient.Start"/> first
+        /// In order to use <see cref="IBlocksReaderClient"/>,
+        /// call <see cref="IBlocksReaderClient.StartSending"/> and <see cref="IBlocksReaderClient.StartListening"/> first.
         /// </remarks>
         public static void AddBlocksReaderClient(
             this IServiceCollection services,

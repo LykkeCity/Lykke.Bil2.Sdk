@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common.Log;
 using Lykke.Bil2.Contract.BlocksReader.Events;
 using Lykke.Bil2.Contract.Common.Extensions;
@@ -11,13 +12,25 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
 {
     internal class BlocksReaderClient : IBlocksReaderClient
     {
+        private class IntegrationExchanges
+        {
+            public string CommandsExchangeName { get; }
+            public string EventsExchangeName { get; }
+
+            public IntegrationExchanges(string commandsExchangeName, string eventsExchangeName)
+            {
+                CommandsExchangeName = commandsExchangeName;
+                EventsExchangeName = eventsExchangeName;
+            }
+        }
+        
         private ILog _log;
         private readonly IRabbitMqEndpoint _endpoint;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IReadOnlyCollection<string> _integrationNames;
         private readonly string _clientName;
         private readonly int _listeningParallelism;
-        
+        private Dictionary<string, IntegrationExchanges> _integrationsExchangeNames;
+
         public BlocksReaderClient(
             ILogFactory logFactory,
             IRabbitMqEndpoint endpoint,
@@ -34,11 +47,15 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
             {
                 throw new ArgumentException("Should be not empty string", nameof(clientName));
             }
+            if (integrationNames == null)
+            {
+                throw new ArgumentNullException(nameof(integrationNames));
+            }
 
             _log = logFactory.CreateLog(this);
             _endpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            _integrationNames = integrationNames ?? throw new ArgumentNullException(nameof(integrationNames));
+            
             _clientName = clientName;
 
             if (listeningParallelism <= 0)
@@ -47,22 +64,39 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
             }
 
             _listeningParallelism = listeningParallelism;
+
+            _integrationsExchangeNames = integrationNames
+                .Select(name => new
+                {
+                    Name = name,
+                    KebabName = name.CamelToKebab()
+                })
+                .ToDictionary(
+                    x => x.Name,
+                    x => new IntegrationExchanges(
+                        RabbitMqExchangeNamesFactory.GetIntegrationCommandsExchangeName(x.KebabName),
+                        RabbitMqExchangeNamesFactory.GetIntegrationEventsExchangeName(x.KebabName)));
         }
 
-        public void Start()
+        public void StartSending()
         {
             _endpoint.Start();
 
-            foreach (var integrationName in _integrationNames)
+            foreach (var (integrationName, exchangeNames) in _integrationsExchangeNames)
             {
-                _log.Info($"Registering blockchain integration {integrationName}");
+                _log.Info($"Declaring commands exchange for the blockchain integration {integrationName}...");
 
-                var kebabIntegrationName = integrationName.CamelToKebab();
-                var commandsExchangeName = RabbitMqExchangeNamesFactory.GetIntegrationCommandsExchangeName(kebabIntegrationName);
-                var eventsExchangeName = RabbitMqExchangeNamesFactory.GetIntegrationEventsExchangeName(kebabIntegrationName);
+                _endpoint.DeclareExchange(exchangeNames.CommandsExchangeName);
+            }
+        }
 
-                _endpoint.DeclareExchange(commandsExchangeName);
-                _endpoint.DeclareExchange(eventsExchangeName);
+        public void StartListening()
+        {
+            foreach (var (integrationName, exchangeNames) in _integrationsExchangeNames)
+            {
+                _log.Info($"Starting events listening for the blockchain integration {integrationName}...");
+
+                _endpoint.DeclareExchange(exchangeNames.EventsExchangeName);
 
                 var subscriptions = new MessageSubscriptionsRegistry()
                     .Handle<BlockHeaderReadEvent, string>(o =>
@@ -97,7 +131,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
                     });
 
                 _endpoint.StartListening(
-                    eventsExchangeName,
+                    exchangeNames.EventsExchangeName,
                     $"bil-v2.{_clientName}",
                     subscriptions,
                     parallelism: _listeningParallelism);

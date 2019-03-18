@@ -3,6 +3,7 @@ using BlocksReaderExample.Services;
 using BlocksReaderExample.Settings;
 using JetBrains.Annotations;
 using Lykke.Bil2.Sdk.BlocksReader;
+using Lykke.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,7 @@ namespace BlocksReaderExample
 
                 options.BlockReaderFactory = c => new BlockReader();
                 options.AddIrreversibleBlockPulling(c => new IrreversibleBlockProvider());
+                options.RabbitVhost = AppEnvironment.EnvInfo;
 
                 options.UseSettings = (s, settings) =>
                 {
