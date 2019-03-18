@@ -19,10 +19,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         public CoinReference Coin { get; }
 
         /// <summary>
-        /// Asset ID of the coin.
+        /// Asset of the coin.
         /// </summary>
-        [JsonProperty("assetId")]
-        public AssetId AssetId { get; }
+        [JsonProperty("asset")]
+        public Asset Asset { get; }
 
         /// <summary>
         /// Coin value to spend.
@@ -56,7 +56,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// Coin to spend for the transaction.
         /// </summary>
         /// <param name="coin">Reference to the coin which should be spend.</param>
-        /// <param name="assetId">Asset ID of the coin.</param>
+        /// <param name="asset">Asset of the coin.</param>
         /// <param name="value">Coin value to spend.</param>
         /// <param name="address">Address that owns the coin.</param>
         /// <param name="addressContext">
@@ -69,16 +69,16 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// </param>
         public CoinToSpend(
             CoinReference coin,
-            AssetId assetId,
+            Asset asset,
             UMoney value,
             Address address,
             Base58String addressContext = null,
             long? addressNonce = null)
         {
             Coin = coin ?? throw RequestValidationException.ShouldBeNotNull(nameof(coin));
-            AssetId = assetId ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
+            Asset = asset ?? throw RequestValidationException.ShouldBeNotNull(nameof(asset));
             Value = value;
-            Address = address ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
+            Address = address ?? throw RequestValidationException.ShouldBeNotNull(nameof(address));
             AddressContext = addressContext;
             AddressNonce = addressNonce;
         }

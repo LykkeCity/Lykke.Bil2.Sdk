@@ -19,14 +19,14 @@ namespace Lykke.Bil2.Contract.Tests
             var coinToSpend = new CoinToSpend
             (
                 new CoinReference("1", 1),
-                "KIN",
+                new Asset("KIN"),
                 UMoney.Create(100, 3),
                 "A"
             );
             var coinToReceive = new CoinToReceive
             (
                 0,
-                "KIN",
+                new Asset("KIN"),
                 UMoney.Create(100, 3),
                 "A"
             );
@@ -76,7 +76,7 @@ namespace Lykke.Bil2.Contract.Tests
                 .Select(asset => new CoinToSpend
                 (
                     new CoinReference("1", 1),
-                    asset,
+                    new Asset(asset),
                     UMoney.Create(100, 3),
                     "A"
                 ))
@@ -86,7 +86,7 @@ namespace Lykke.Bil2.Contract.Tests
                 .Select((asset, i) => new CoinToReceive
                 (
                     i,
-                    asset,
+                    new Asset(asset),
                     UMoney.Create(100, 3),
                     "A"
                 ))
@@ -132,7 +132,7 @@ namespace Lykke.Bil2.Contract.Tests
                 .Select(x => new CoinToSpend
                 (
                     new CoinReference("1", 1),
-                    x[0],
+                    new Asset(x[0]),
                     UMoney.Create(int.Parse(x[1]), 3),
                     "A"
                 ))
@@ -143,7 +143,7 @@ namespace Lykke.Bil2.Contract.Tests
                 .Select((x, i) => new CoinToReceive
                 (
                     i,
-                    x[0],
+                    new Asset(x[0]),
                     UMoney.Create(int.Parse(x[1]), 3),
                     "A"
                 ))
@@ -175,7 +175,7 @@ namespace Lykke.Bil2.Contract.Tests
             var coinToSpend = new CoinToSpend
             (
                 new CoinReference("1", 1),
-                "KIN",
+                new Asset("KIN"),
                 UMoney.Create(100, 3),
                 "A"
             );
@@ -184,7 +184,7 @@ namespace Lykke.Bil2.Contract.Tests
                 .Select(x => new CoinToReceive
                 (
                     int.Parse(x),
-                    "KIN",
+                    new Asset("KIN"),
                     UMoney.Create(1, 3),
                     "B"
                 ))

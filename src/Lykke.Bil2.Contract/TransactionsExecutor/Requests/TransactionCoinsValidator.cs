@@ -35,25 +35,25 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             }
 
             var coinsToSpendByAssets = coinsToSpend
-                .GroupBy(x => x.AssetId)
+                .GroupBy(x => x.Asset)
                 .Select(g => new
                 {
-                    AssetId = g.Key,
+                    Asset = g.Key,
                     Sum = g.Sum(x => x.Value)
                 })
-                .OrderBy(x => x.AssetId)
+                .OrderBy(x => x.Asset)
                 .ToArray();
             var coinsToReceiveByAssets = coinsToReceive
-                .GroupBy(x => x.AssetId)
+                .GroupBy(x => x.Asset)
                 .Select(g => new
                 {
-                    AssetId = g.Key,
+                    Asset = g.Key,
                     Sum = g.Sum(x => x.Value)
                 })
-                .OrderBy(x => x.AssetId)
+                .OrderBy(x => x.Asset)
                 .ToArray();
-            var assetsToSpend = coinsToSpendByAssets.Select(x => x.AssetId.ToString()).ToArray();
-            var assetsToReceive = coinsToReceiveByAssets.Select(x => x.AssetId.ToString()).ToArray();
+            var assetsToSpend = coinsToSpendByAssets.Select(x => x.Asset.ToString()).ToArray();
+            var assetsToReceive = coinsToReceiveByAssets.Select(x => x.Asset.ToString()).ToArray();
 
             if (!assetsToSpend.SequenceEqual(assetsToReceive))
                 throw new RequestValidationException(
@@ -65,12 +65,12 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             var mismatchedAssetSums = coinsToSpendByAssets
                 .Join(
                     coinsToReceiveByAssets,
-                    x => x.AssetId,
-                    x => x.AssetId,
+                    x => x.Asset,
+                    x => x.Asset,
                     (input, output) => new
                     {
                         // ReSharper disable once RedundantAnonymousTypePropertyName
-                        AssetId = input.AssetId,
+                        Asset = input.Asset,
                         SumToSpend = input.Sum,
                         SumToReceive = output.Sum
                     })
@@ -85,7 +85,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 
                 foreach (var assetSum in mismatchedAssetSums)
                 {
-                    mismatchesMessage.AppendLine($"Asset: {assetSum.AssetId}, sum to spend: {assetSum.SumToSpend}, sum to receive: {assetSum.SumToReceive}");
+                    mismatchesMessage.AppendLine($"Asset: {assetSum.Asset}, sum to spend: {assetSum.SumToSpend}, sum to receive: {assetSum.SumToReceive}");
                 }
 
                 throw new RequestValidationException(

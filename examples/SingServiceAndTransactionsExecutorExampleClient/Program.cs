@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Bil2.Client.SignService;
 using Lykke.Bil2.Client.TransactionsExecutor;
@@ -142,13 +141,16 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                     {
                         new Transfer
                         ( 
-                            "STEEM",
+                            new Asset( "STEEM"),
                             UMoney.Create(100, 3),
                             "Test:c021d892538b4a7a8520ae46f368c00f",
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new Dictionary<AssetId, UMoney>()
+                    new []
+                    {
+                        new Fee(new Asset( "STEEM"), UMoney.Create(0.001m, 3))
+                    }
                 )
             );
         }
@@ -165,20 +167,23 @@ namespace SingServiceAndTransactionsExecutorExampleClient
                     {
                         new Transfer
                         ( 
-                            "STEEM",
+                            new Asset( "STEEM"),
                             UMoney.Create(100, 3),
                             "Test:c021d892538b4a7a8520ae46f368c00f",
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         ),
                         new Transfer
                         ( 
-                            "STEEM",
+                            new Asset( "STEEM"),
                             UMoney.Create(50, 3),
                             "Test:c021d892538b4a7a8520ae46f368c00f",
                             "Test:0662c0c7b9954373a5803fab41d97774"
                         )
                     },
-                    new Dictionary<AssetId, UMoney>()
+                    new []
+                    {
+                        new Fee(new Asset( "STEEM"), UMoney.Create(0.001m, 3))
+                    }
                 )
             );
         }

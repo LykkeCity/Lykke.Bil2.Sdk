@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
-using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -48,12 +47,12 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
 
         /// <summary>
         /// Optional.
-        /// Fee in the particular asset ID, that was spent for the transaction.
-        /// Can be omitted, if fee can be determined from the balance changes and cancellations.
+        /// Fees in the particular asset, that was spent for the transaction.
+        /// Can be omitted, if fee can be determined from the received and spent coins.
         /// </summary>
         [CanBeNull]
-        [JsonProperty("fee")]
-        public IReadOnlyDictionary<AssetId, UMoney> Fee { get; }
+        [JsonProperty("fees")]
+        public IReadOnlyCollection<Fee> Fees { get; }
 
         /// <summary>
         /// Optional.
@@ -74,10 +73,10 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// <param name="transactionId">ID of the transaction.</param>
         /// <param name="receivedCoins">Coins which were received within the transaction.</param>
         /// <param name="spentCoins">Coins which were spent within the transaction.</param>
-        /// <param name="fee">
+        /// <param name="fees">
         /// Optional.
-        /// Fee in the particular asset ID, that was spent for the transaction.
-        /// Can be omitted, if fee can be determined from the balance changes and cancellations.
+        /// Fees in the particular asset, that was spent for the transaction.
+        /// Can be omitted, if fee can be determined from the received and spent coins.
         /// </param>
         /// <param name="isIrreversible">
         /// Optional.
@@ -89,7 +88,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             string transactionId,
             IReadOnlyCollection<ReceivedCoin> receivedCoins,
             IReadOnlyCollection<CoinReference> spentCoins,
-            IReadOnlyDictionary<AssetId, UMoney> fee = null,
+            IReadOnlyCollection<Fee> fees = null,
             bool? isIrreversible = null)
         {
             if (string.IsNullOrWhiteSpace(blockId))
@@ -100,13 +99,16 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
 
             if (string.IsNullOrWhiteSpace(transactionId))
                 throw new ArgumentException("Should be not empty string", nameof(transactionId));
-            
+
+            if (fees != null)
+                FeesValidator.ValidateFeesInResponse(fees);
+
             BlockId = blockId;
             TransactionNumber = transactionNumber;
             TransactionId = transactionId;
             ReceivedCoins = receivedCoins ?? throw new ArgumentNullException(nameof(receivedCoins));
             SpentCoins = spentCoins ?? throw new ArgumentNullException(nameof(spentCoins));
-            Fee = fee;
+            Fees = fees;
             IsIrreversible = isIrreversible;
         }
     }

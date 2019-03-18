@@ -55,7 +55,7 @@ namespace Lykke.Bil2.Contract.Common
                 return false;
             if (ReferenceEquals(this, obj)) 
                 return true;
-            return obj is TConcrete id && Equals(id);
+            return obj is TConcrete concreteObject && Equals(concreteObject);
         }
 
         public override int GetHashCode()

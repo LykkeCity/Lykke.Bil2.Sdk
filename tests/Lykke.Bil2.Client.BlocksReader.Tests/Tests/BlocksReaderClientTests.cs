@@ -268,7 +268,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                             return;
                         }
 
-                        var assetId = new AssetId("assetId");
+                        var asset = new Asset("assetId");
 
                         await blockListener.HandleHeaderAsync
                         (
@@ -295,16 +295,16 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                     new BalanceChange
                                     (
                                         "1",
-                                        assetId,
+                                        asset,
                                         Money.Create(1000, 4),
                                         new Address("0x2"),
                                         new AddressTag("tag"),
                                         AddressTagType.Text,
                                         1)
                                 },
-                                new Dictionary<AssetId, UMoney>()
+                                new[]
                                 {
-                                    {assetId, UMoney.Create(10, 4)}
+                                    new Fee(asset, UMoney.Create(10, 4))
                                 },
                                 true
                             )
@@ -323,7 +323,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                     new ReceivedCoin
                                     (
                                         1,
-                                        assetId,
+                                        asset,
                                         UMoney.Create(1000, 4),
                                         new Address("0x1"),
                                         new AddressTag("tag"),
@@ -334,9 +334,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                 {
                                     new CoinReference("tr1", 0),
                                 },
-                                new Dictionary<AssetId, UMoney>()
+                                new[]
                                 {
-                                    {assetId, UMoney.Create(10, 4)}
+                                    new Fee(asset, UMoney.Create(10, 4))
                                 },
                                 true
                             )
@@ -352,9 +352,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                 "tr1",
                                 TransactionBroadcastingError.TransientFailure,
                                 "some error message",
-                                new Dictionary<AssetId, UMoney>()
+                                new[]
                                 {
-                                    {assetId, UMoney.Create(10, 4)}
+                                    new Fee(asset, UMoney.Create(10, 4))
                                 }
                             )
                         );

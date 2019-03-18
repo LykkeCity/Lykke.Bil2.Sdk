@@ -19,10 +19,10 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public int CoinNumber { get; }
 
         /// <summary>
-        /// Asset ID of the coin.
+        /// Asset of the coin.
         /// </summary>
-        [JsonProperty("assetId")]
-        public AssetId AssetId { get; }
+        [JsonProperty("asset")]
+        public Asset Asset { get; }
 
         /// <summary>
         /// Value of the coin.
@@ -65,7 +65,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Received coin.
         /// </summary>
         /// <param name="coinNumber">Number of received coin in the transaction.</param>
-        /// <param name="assetId">Asset ID of the coin.</param>
+        /// <param name="asset">Asset of the coin.</param>
         /// <param name="value">Value of the coin.</param>
         /// <param name="address">
         /// Optional.
@@ -85,7 +85,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </param>
         public ReceivedCoin(
             int coinNumber,
-            AssetId assetId,
+            Asset asset,
             UMoney value,
             Address address = null,
             AddressTag addressTag = null,
@@ -102,7 +102,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
                 throw new ArgumentException("If the tag type is specified, the tag should be specified too");
 
             CoinNumber = coinNumber;
-            AssetId = assetId ?? throw new ArgumentNullException(nameof(assetId));
+            Asset = asset ?? throw new ArgumentNullException(nameof(asset));
             Value = value;
             Address = address;
             AddressTag = addressTag;

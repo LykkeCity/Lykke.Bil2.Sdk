@@ -21,10 +21,10 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public string TransferId { get; }
 
         /// <summary>
-        /// ID of the asset.
+        /// Asset.
         /// </summary>
-        [JsonProperty("assetId")]
-        public AssetId AssetId { get; }
+        [JsonProperty("asset")]
+        public Asset Asset { get; }
 
         /// <summary>
         /// Value for which the balance of the address was changed.
@@ -72,7 +72,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Can group several balance changing operations into the single transfer,
         /// or can be just the output number.
         /// </param>
-        /// <param name="assetId">ID of the asset.</param>
+        /// <param name="asset">Asset.</param>
         /// <param name="value">
         /// Value for which the balance of the address was changed.
         /// Can be positive to increase the balance or negative to decrease the balance.
@@ -95,7 +95,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </param>
         public BalanceChange(
             string transferId, 
-            AssetId assetId, 
+            Asset asset, 
             Money value, 
             Address address = null, 
             AddressTag tag = null, 
@@ -112,7 +112,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
                 throw new ArgumentException("If the tag type is specified, the tag should be specified too");
 
             TransferId = transferId;
-            AssetId = assetId ?? throw new ArgumentNullException(nameof(assetId));
+            Asset = asset ?? throw new ArgumentNullException(nameof(asset));
             Value = value;
             Address = address;
             Tag = tag;

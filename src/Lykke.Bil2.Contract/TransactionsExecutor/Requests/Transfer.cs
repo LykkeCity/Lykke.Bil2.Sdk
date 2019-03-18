@@ -13,10 +13,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
     public class Transfer
     {
         /// <summary>
-        /// Asset ID to transfer.
+        /// Asset to transfer.
         /// </summary>
-        [JsonProperty("assetId")]
-        public AssetId AssetId { get; }
+        [JsonProperty("asset")]
+        public Asset Asset { get; }
 
         /// <summary>
         /// Amount to transfer from the source address
@@ -72,7 +72,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Transfer of the transaction.
         /// </summary>
-        /// <param name="assetId">Asset ID to transfer.</param>
+        /// <param name="asset">Asset to transfer.</param>
         /// <param name="amount">Amount to transfer from the source address to the destination address.</param>
         /// <param name="sourceAddress">Address to transfer from.</param>
         /// <param name="destinationAddress">Address to transfer to.</param>
@@ -93,7 +93,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// Type of the destination address tag.
         /// </param>
         public Transfer(
-            AssetId assetId,
+            Asset asset,
             UMoney amount,
             Address sourceAddress,
             Address destinationAddress,
@@ -105,12 +105,12 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             if (destinationAddressTagType.HasValue && destinationAddressTag == null)
                 throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(destinationAddressTagType), nameof(destinationAddressTag)});
 
-            AssetId = assetId ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(assetId));
+            Asset = asset ?? throw RequestValidationException.ShouldBeNotNull(nameof(asset));
             Amount = amount;
-            SourceAddress = sourceAddress ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(sourceAddress));
+            SourceAddress = sourceAddress ?? throw RequestValidationException.ShouldBeNotNull(nameof(sourceAddress));
             SourceAddressContext = sourceAddressContext;
             SourceAddressNonce = sourceAddressNonce;
-            DestinationAddress = destinationAddress ?? throw RequestValidationException.ShouldBeNotEmptyString(nameof(destinationAddress));
+            DestinationAddress = destinationAddress ?? throw RequestValidationException.ShouldBeNotNull(nameof(destinationAddress));
             DestinationAddressTag = destinationAddressTag;
             DestinationAddressTagType = destinationAddressTagType;
         }

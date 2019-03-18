@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Bil2.Contract.BlocksReader.Events;
+using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Sdk.BlocksReader.Services;
 using Lykke.Numerics;
@@ -24,9 +24,13 @@ namespace BlocksReaderExample.Services
                     blockId,
                     1,
                     Guid.NewGuid().ToString("N"),
-                    new List<BalanceChange>
+                    new []
                     {
-                        new BalanceChange("1", "STEEM", Money.Create(123, 4), "abc")
+                        new BalanceChange("1", new Asset("STEEM"), Money.Create(123, 4), "abc")
+                    },
+                    new []
+                    {
+                        new Fee(new Asset( "STEEM"), UMoney.Create(0.0001m, 4)), 
                     },
                     isIrreversible: true
                 )

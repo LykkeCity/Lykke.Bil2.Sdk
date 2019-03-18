@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.TransactionsExecutor;
-using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -46,12 +45,12 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
 
         /// <summary>
         /// Optional.
-        /// Fee in the particular asset ID, that was spent for the transaction.
+        /// Fees in the particular asset, that was spent for the transaction.
         /// Can be omitted, if there was no fee spent for the transaction.
         /// </summary>
         [CanBeNull]
-        [JsonProperty("fee")]
-        public IReadOnlyDictionary<AssetId, UMoney> Fee { get; }
+        [JsonProperty("fees")]
+        public IReadOnlyCollection<Fee> Fees { get; }
 
         /// <summary>
         /// Should be published for each failed transaction in the block being read.
@@ -65,9 +64,9 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Fee in the particular asset ID, that was spent for the transaction.
         /// Can be omitted, if there was no fee spent for the transaction.
         /// </param>
-        /// <param name="fee">
+        /// <param name="fees">
         /// Optional.
-        /// Fee in the particular asset ID, that was spent for the transaction.
+        /// Fees in the particular asset, that was spent for the transaction.
         /// Can be omitted, if there was no fee spent for the transaction.
         /// </param>
         public TransactionFailedEvent(
@@ -76,7 +75,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             string transactionId,
             TransactionBroadcastingError errorCode,
             string errorMessage,
-            IReadOnlyDictionary<AssetId, UMoney> fee = null)
+            IReadOnlyCollection<Fee> fees = null)
         {
             if (string.IsNullOrWhiteSpace(blockId))
                 throw new ArgumentException("Should be not empty string", nameof(blockId));
@@ -87,12 +86,15 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (string.IsNullOrWhiteSpace(transactionId))
                 throw new ArgumentException("Should be not empty string", nameof(transactionId));
 
+            if (fees != null)
+                FeesValidator.ValidateFeesInResponse(fees);
+
             BlockId = blockId;
             TransactionNumber = transactionNumber;
             TransactionId = transactionId;
             ErrorCode = errorCode;
             ErrorMessage = errorMessage;
-            Fee = fee;
+            Fees = fees;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             var duplicatedTransfers = transfers
                 .GroupBy(x => new
                 {
-                    x.AssetId,
+                    x.Asset,
                     x.SourceAddress,
                     x.DestinationAddress
                 })
@@ -30,7 +30,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
 
                 foreach (var group in duplicatedTransfers)
                 {
-                    duplicatesMessage.AppendLine($"Asset: {group.Key.AssetId}, source address: {group.Key.SourceAddress}, destination address: {group.Key.DestinationAddress}");
+                    duplicatesMessage.AppendLine($"Asset: {group.Key.Asset}, source address: {group.Key.SourceAddress}, destination address: {group.Key.DestinationAddress}");
                 }
 
                 throw new RequestValidationException(

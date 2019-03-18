@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Lykke.Bil2.Contract.Common;
-using Lykke.Numerics;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
@@ -14,20 +13,25 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
     public class EstimateTransactionResponse
     {
         /// <summary>
-        /// Estimated transaction fee for the particular asset ID.
+        /// Estimated transaction fees for the particular asset.
         /// </summary>
-        [JsonProperty("estimatedFee")]
-        public IReadOnlyDictionary<AssetId, UMoney> EstimatedFee { get; }
+        [JsonProperty("estimatedFees")]
+        public IReadOnlyCollection<Fee> EstimatedFees { get; }
 
         /// <summary>
         /// Endpoints:
         /// - [POST] /api/transactions/estimated/transfers/amount
         /// - [POST] /api/transactions/estimated/transfers/coins
         /// </summary>
-        /// <param name="estimatedFee">Estimated transaction fee for the particular asset ID.</param>
-        public EstimateTransactionResponse(IReadOnlyDictionary<AssetId, UMoney> estimatedFee)
+        /// <param name="estimatedFees">Estimated transaction fee for the particular asset.</param>
+        public EstimateTransactionResponse(IReadOnlyCollection<Fee> estimatedFees)
         {
-            EstimatedFee = estimatedFee ?? throw new ArgumentNullException(nameof(estimatedFee));
+            if(estimatedFees == null)
+                throw new ArgumentNullException(nameof(estimatedFees));
+
+            FeesValidator.ValidateFeesInResponse(estimatedFees);
+
+            EstimatedFees = estimatedFees;
         }
     }
 }
