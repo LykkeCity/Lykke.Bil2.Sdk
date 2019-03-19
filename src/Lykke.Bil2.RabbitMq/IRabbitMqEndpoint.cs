@@ -13,28 +13,32 @@ namespace Lykke.Bil2.RabbitMq
     public interface IRabbitMqEndpoint : IDisposable
     {
         /// <summary>
+        /// Initializes endpoint. Should be called before any other methods
+        /// </summary>
+        void Initialize();
+
+        /// <summary>
         /// Creates exchange if it does not exist or just ignore it if it already exists.
         /// </summary>
         void DeclareExchange(string exchangeName);
 
         /// <summary>
-        /// Creates message publisher
+        /// Creates message publisher. Should be called after <see cref="Initialize"/>.
         /// </summary>
         IMessagePublisher CreatePublisher(string exchangeName, string correlationId = null);
-
+        
         /// <summary>
-        /// Starts listening for the messages
+        /// Subscribing for the messages. Should be called after <see cref="Initialize"/>.
         /// </summary>
-        void StartListening(
+        void Subscribe(
             string listeningExchangeName,
             string listeningRoute,
             IMessageSubscriptionsRegistry subscriptionsRegistry,
-            string replyExchangeName = null,
-            int parallelism = 1);
+            string replyExchangeName = null);
 
         /// <summary>
-        /// Starts endpoint. Should be called before any other methods
+        /// Start listening for the subscribed message. Should be called after <see cref="Subscribe"/>.
         /// </summary>
-        void Start();
+        void StartListening(int parallelism = 1);
     }
 }

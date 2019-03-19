@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Lykke.Bil2.Client.BlocksReader;
 using Lykke.Bil2.Client.BlocksReader.Services;
 using Lykke.Bil2.Contract.BlocksReader.Commands;
+using Lykke.Common;
 using Lykke.Logs;
 using Lykke.Logs.Loggers.LykkeConsole;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +34,7 @@ namespace BlocksReaderExampleClient
                 options.RabbitMqConnString = config["RabbitMqConnString"];
                 options.AddIntegration("Steem");
                 options.AddIntegration("EthereumClassic");
+                options.RabbitVhost = AppEnvironment.EnvInfo;
             });
 
             using (var serviceProvider = services.BuildServiceProvider())
@@ -45,7 +47,8 @@ namespace BlocksReaderExampleClient
 
                 Console.WriteLine("Starting client...");
 
-                client.Start();
+                client.Initialize();
+                client.StartListening();
 
                 var apiFactory = serviceProvider.GetService<IBlocksReaderApiFactory>();
 

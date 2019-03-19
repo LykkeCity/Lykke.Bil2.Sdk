@@ -22,7 +22,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
 
         public void Configure()
         {
-            _rabbitMqEndpoint.Start();
+            _rabbitMqEndpoint.Initialize();
 
             var commandsExchangeName = RabbitMqExchangeNamesFactory.GetIntegrationCommandsExchangeName(_integrationName);
             var eventsExchangeName = RabbitMqExchangeNamesFactory.GetIntegrationEventsExchangeName(_integrationName);
@@ -36,12 +36,13 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
                     o.WithHandler<ReadBlockCommandsHandler>();
                 });
 
-            _rabbitMqEndpoint.StartListening(
+            _rabbitMqEndpoint.Subscribe(
                 commandsExchangeName,
                 $"bil-v2.bcn-{_integrationName}",
                 subscriptions,
-                eventsExchangeName,
-                _listeningParallelism);
+                eventsExchangeName);
+
+            _rabbitMqEndpoint.StartListening(_listeningParallelism);
         }
     }
 }
