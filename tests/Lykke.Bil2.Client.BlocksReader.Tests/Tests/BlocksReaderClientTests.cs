@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Lykke.Bil2.Client.BlocksReader.Options;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Numerics;
 
@@ -505,7 +506,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             where TAppSettings : BaseBlocksReaderSettings<DbSettings>
         {
             StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(configureServer);
-            var (blocksReaderClient, apiFactory, testServer) = CreateClientApi<StartupTemplate>(configureClient);
+            var (blocksReaderClient, apiFactory, testServer) = CreateClientApi<StartupTemplate>("TestIntegration", configureClient);
 
             return (blocksReaderClient, apiFactory, testServer);
         }

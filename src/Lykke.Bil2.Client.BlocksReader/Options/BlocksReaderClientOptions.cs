@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Client.BlocksReader.Services;
 
-namespace Lykke.Bil2.Client.BlocksReader
+namespace Lykke.Bil2.Client.BlocksReader.Options
 {
     /// <summary>
     /// Options for a blockchain integration blocks reader client.

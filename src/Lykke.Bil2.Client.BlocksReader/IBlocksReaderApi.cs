@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.BlocksReader.Commands;
 
-namespace Lykke.Bil2.Client.BlocksReader.Services
+namespace Lykke.Bil2.Client.BlocksReader
 {
     /// <summary>
     /// Blockchain integration blocks reader messaging API.

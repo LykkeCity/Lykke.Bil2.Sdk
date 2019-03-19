@@ -5,13 +5,13 @@ using Lykke.Bil2.Contract.Common.Responses;
 using Lykke.Bil2.WebClient.Exceptions;
 using Refit;
 
-namespace Lykke.Bil2.Client.BlocksReader.Services
+namespace Lykke.Bil2.Client.BlocksReader
 {
     /// <summary>
     /// Blockchain integration blocks reader HTTP API
     /// </summary>
     [PublicAPI]
-    public interface IBlocksReaderHttpApi
+    public interface IBlocksReaderWebApi
     {
         /// <summary>
         /// Should return some general service info. Used to check if the service is running.

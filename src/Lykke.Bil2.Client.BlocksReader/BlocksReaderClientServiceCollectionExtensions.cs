@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
 using JetBrains.Annotations;
+using Lykke.Bil2.Client.BlocksReader.Options;
 using Lykke.Bil2.Client.BlocksReader.Services;
 using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.RabbitMq;
@@ -81,47 +81,20 @@ namespace Lykke.Bil2.Client.BlocksReader
         }
 
         /// <summary>
-        /// Adds the HTTP client of the blockchain integration blocks reader to the app services as <see cref="IBlocksReaderHttpApi"/>
+        /// Adds the HTTP client of the blockchain integration blocks reader to the app services as <see cref="IBlocksReaderWebApi"/>
         /// </summary>
-        public static IServiceCollection AddBlocksReaderHttpClient(this IServiceCollection services,
-            string url,
-            params DelegatingHandler[] handlers)
+        public static IServiceCollection AddBlocksReaderWebClient(
+            this IServiceCollection services,
+            Action<BlocksReaderWebClientOptions> configureClient)
         {
-            return AddBlocksReaderHttpClient(services, url, null, handlers);
-        }
-
-        /// <summary>
-            /// Adds the HTTP client of the blockchain integration blocks reader to the app services as <see cref="IBlocksReaderHttpApi"/>
-            /// </summary>
-            public static IServiceCollection AddBlocksReaderHttpClient(this IServiceCollection services, 
-            string url, 
-            TimeSpan? timeout = null, 
-            params DelegatingHandler[] handlers)
-        {
-            if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _))
-            {
-                throw new ArgumentException($"Should be a valid URL. Actual value: {url}", nameof(url));
-            }
-
-            if (services.All(x => x.ServiceType != typeof(ILogFactory)))
-            {
-                throw new InvalidOperationException($"{typeof(ILogFactory)} service should be registered");
-            }
-
-            services.AddSingleton(s =>
-            {
-                var generator = HttpClientGeneratorFactory.Create(options =>
-                {
-                    options.Url = url;
-                    options.Handlers = handlers;
-                    options.LogFactory = s.GetRequiredService<ILogFactory>();
-                    options.Timeout = timeout;
-                });
-
-                return generator.Generate<IBlocksReaderHttpApi>();
-            });
-
-            return services;
+            return services.AddBlockchainIntegrationWebClient
+                <
+                    BlocksReaderWebClientOptions,
+                    BlocksReaderWebClientIntegrationOptions,
+                    IBlocksReaderWebApi,
+                    IBlocksReaderWebApiProvider
+                >
+                (configureClient, apis => new BlocksReaderWebApiProvider(apis));
         }
     }
 }
