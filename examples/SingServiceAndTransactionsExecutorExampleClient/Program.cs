@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Lykke.Bil2.Client.SignService;
+using Lykke.Bil2.Client.SignService.Services;
 using Lykke.Bil2.Client.TransactionsExecutor;
+using Lykke.Bil2.Client.TransactionsExecutor.Services;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.SignService.Requests;
@@ -21,6 +23,8 @@ namespace SingServiceAndTransactionsExecutorExampleClient
 
         private static readonly Base58String MyPrivateKey = new Base58String("hLLPYvqqGdBtPBMGWp98NbAHtDHuoj4vnrQqNPuMBMZpRFCX2kVtbC9HgrMQthM6NzEDjQw6c88PfiRCqzegb2KpTnBN1hqLyQKfT8FuGVDGRBJEYFZbgUbbb5e5PZZVnRwabyy4Rup8c5Yb5fWJ1Lw73yUtcxvmx52ymwm8m9j3NtVRTkcb5NsXGbMdanUpa9MdAMHReFDDh1qWx8N6zTb4st4WbaTuTamhcTEueuPKosaum5TLv2udcUDj2JtaZYUhDJ6EvotsHScwLQnwcW4ZkEydSCJgqefYp4n7qgNpzNKU2ffsDmPuQDfVBLNiFkqv99TMYsvrYbemcLLRoEUiqvGTaGZBpHErd5quYq1G9187nbySGy3aJCMVqVWzApuYKewUQDRND1fx6kybQpuDy6CjBp4i5sdAub4eFNHjRwVVUUsYQjjhy8PQpES5AWszv2DgMyrqEaAGYxr3akK6HmbYyBquWriAdYjp9v8NW29yhpSBXwyGpCT5j54KA2F5yaxv6MfUiucGHxYdgNFdkhSZYRB3FgZJQzTAy6utSZTapjcBmu25nzQcdaevnSW4rMd9kuhMGJL6PtyG6niHn48bsmwxSukGZsMvfRb8UDf3ZnGnNFHXChADzywM7ghZBtohBRgbnAyduUQ7GbLv6vhuyXV7qxAkvAwuz4mipe8MbTem6cjhKJrV1Sa4Ya6pUnWR7BhqNjWEKuVbCt8D9Et2no6u8hXxyxV6kD5tKEJ932PVHYBmnLQV9jCfS2RRv2BhBjhA6bUp8zCSuW2CyVYPCgmqQCa4EahA6iiHhymdaPQ8YGChbH8san");
 
+        private const string IntegrationName = "SampleIntegration";
+
         // ReSharper disable once UnusedParameter.Global
         public static async Task Main(string[] args)
         {
@@ -29,14 +33,32 @@ namespace SingServiceAndTransactionsExecutorExampleClient
             var services = new ServiceCollection();
 
             services.AddSingleton(s => LogFactory.Create().AddUnbufferedConsole());
-            services.AddSignServiceClient("http://localhost:5000");
-            services.AddTransactionsExecutorClient("http://localhost:5001");
+            services.AddSignServiceClient(options =>
+            {
+                options.AddIntegration(
+                    IntegrationName,
+                    integrationOptions =>
+                    {
+                        integrationOptions.Url = "http://localhost:5000";
+                    });
+            });
+            services.AddTransactionsExecutorClient(options =>
+            {
+                options.AddIntegration(
+                    IntegrationName,
+                    integrationOptions =>
+                    {
+                        integrationOptions.Url = "http://localhost:5001";
+                    });
+            });
 
             using (var serviceProvider = services.BuildServiceProvider())
             {
                 var log = serviceProvider.GetRequiredService<ILogFactory>().CreateLog(typeof(Program));
-                var signServiceClient = serviceProvider.GetRequiredService<ISignServiceApi>();
-                var transactionsExecutorClient = serviceProvider.GetRequiredService<ITransactionsExecutorApi>();
+                var signServiceApiProvider = serviceProvider.GetRequiredService<ISignServiceApiProvider>();
+                var signServiceApi = signServiceApiProvider.GetApi(IntegrationName);
+                var transactionsExecutorApiProvider = serviceProvider.GetRequiredService<ITransactionsExecutorApiProvider>();
+                var transactionsExecutorApi = transactionsExecutorApiProvider.GetApi(IntegrationName);
 
                 Console.WriteLine("Press any key to start.");
 
@@ -44,14 +66,14 @@ namespace SingServiceAndTransactionsExecutorExampleClient
 
                 var tests = new Func<Task<object>>[]
                 {
-                    () => GetIsAliveAsync(signServiceClient),
-                    () => GetIsAliveAsync(transactionsExecutorClient),
-                    () => CreateAddressAsync(signServiceClient),
-                    () => CreateAddressTagAsync(signServiceClient),
-                    () => BuildTransactionAsync(transactionsExecutorClient),
-                    () => BuildInvalidTransactionAsync(transactionsExecutorClient),
-                    () => SignTransactionAsync(signServiceClient),
-                    () => BroadcastTransactionAsync(transactionsExecutorClient)
+                    () => GetIsAliveAsync(signServiceApi),
+                    () => GetIsAliveAsync(transactionsExecutorApi),
+                    () => CreateAddressAsync(signServiceApi),
+                    () => CreateAddressTagAsync(signServiceApi),
+                    () => BuildTransactionAsync(transactionsExecutorApi),
+                    () => BuildInvalidTransactionAsync(transactionsExecutorApi),
+                    () => SignTransactionAsync(signServiceApi),
+                    () => BroadcastTransactionAsync(transactionsExecutorApi)
                 };
 
                 foreach (var step in tests)

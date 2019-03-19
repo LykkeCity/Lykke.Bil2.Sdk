@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.Net.Http;
 using JetBrains.Annotations;
+using Lykke.Bil2.Client.SignService.Options;
+using Lykke.Bil2.Client.SignService.Services;
 using Lykke.Bil2.WebClient;
-using Lykke.Common.Log;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Bil2.Client.SignService
@@ -12,42 +11,19 @@ namespace Lykke.Bil2.Client.SignService
     public static class SignServiceClientServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds the client of the blockchain integration sign service to the app services as <see cref="ISignServiceApi"/>
+        /// Adds the client of the blockchain integration sign service to the app services.
+        /// Use <see cref="ISignServiceApiProvider"/> to access the API.
         /// </summary>
-        public static IServiceCollection AddSignServiceClient(this IServiceCollection services, string url, params DelegatingHandler[] handlers)
+        public static IServiceCollection AddSignServiceClient(this IServiceCollection services, Action<SignServiceClientOptions> configureClient)
         {
-            return AddSignServiceClient(services, url, null, handlers);
-        }
-
-        /// <summary>
-        /// Adds the client of the blockchain integration sign service to the app services as <see cref="ISignServiceApi"/>
-        /// </summary>
-        public static IServiceCollection AddSignServiceClient(this IServiceCollection services, string url, TimeSpan? timeout = null, params DelegatingHandler[] handlers)
-        {
-            if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _))
-            {
-                throw new ArgumentException($"Should be a valid URL. Actual value: {url}", nameof(url));
-            }
-
-            if (services.All(x => x.ServiceType != typeof(ILogFactory)))
-            {
-                throw new InvalidOperationException($"{typeof(ILogFactory)} service should be registered");
-            }
-
-            services.AddSingleton(s =>
-            {
-                var generator = HttpClientGeneratorFactory.Create(options =>
-                {
-                    options.Url = url;
-                    options.LogFactory = s.GetRequiredService<ILogFactory>();
-                    options.Handlers = handlers;
-                    options.Timeout = timeout;
-                });
-
-                return generator.Generate<ISignServiceApi>();
-            });
-
-            return services;
+            return services.AddBlockchainIntegrationWebClient
+                <
+                    SignServiceClientOptions,
+                    SignServiceClientIntegrationOptions,
+                    ISignServiceApi,
+                    ISignServiceApiProvider
+                >
+                (configureClient, apis => new SignServiceApiProvider(apis));
         }
     }
 }

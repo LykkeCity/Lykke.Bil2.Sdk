@@ -567,7 +567,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT && ASSERT
             Assert.ThrowsAsync<TimeoutException>(async () =>
             {
-                var result = await client.GetRawTransactionAsync(transactionId);
+                await client.GetRawTransactionAsync(transactionId);
             });
         }
 
@@ -1119,7 +1119,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             where TAppSettings : BaseTransactionsExecutorSettings<DbSettings>
         {
             StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(config);
-            var client = CreateClientApi<StartupTemplate>("http://localhost:5000", timeout);
+            var client = CreateClientApi<StartupTemplate>("TestIntegration","http://localhost:5000", timeout);
 
             return client;
         }

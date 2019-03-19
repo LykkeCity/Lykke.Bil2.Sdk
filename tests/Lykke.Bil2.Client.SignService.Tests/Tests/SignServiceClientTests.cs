@@ -275,7 +275,10 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
             where TAppSettings : BaseSignServiceSettings
         {
             StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(config);
-            var client = CreateClientApi<StartupTemplate>("http://localhost:5000", timeout);
+            var client = CreateClientApi<StartupTemplate>(
+                "TestIntegration",
+                "http://localhost:5000", 
+                timeout);
 
             return client;
         }
