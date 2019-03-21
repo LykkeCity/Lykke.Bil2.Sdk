@@ -40,10 +40,6 @@ namespace Lykke.Bil2.WebClient
             {
                 throw new ArgumentNullException(nameof(apiProviderFactory));
             }
-            if (services.All(x => x.ServiceType != typeof(ILogFactory)))
-            {
-                throw new InvalidOperationException($"{typeof(ILogFactory)} service should be registered");
-            }
 
             var clientOptions = new TClientOptions();
 
