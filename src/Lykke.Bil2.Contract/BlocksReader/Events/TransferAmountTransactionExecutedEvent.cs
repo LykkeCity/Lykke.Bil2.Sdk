@@ -88,12 +88,13 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (fees == null)
                 throw new ArgumentNullException(nameof(fees));
             
+            BalanceChangesValidator.Validate(balanceChanges);
             FeesValidator.ValidateFeesInResponse(fees);
-
+            
             BlockId = blockId;
             TransactionNumber = transactionNumber;
             TransactionId = transactionId;
-            BalanceChanges = balanceChanges ?? throw new ArgumentNullException(nameof(balanceChanges));
+            BalanceChanges = balanceChanges;
             Fees = fees;
             IsIrreversible = isIrreversible;
         }
