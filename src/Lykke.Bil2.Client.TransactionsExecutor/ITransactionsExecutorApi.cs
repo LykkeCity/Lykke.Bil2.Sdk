@@ -176,7 +176,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         #endregion
 
 
-        #region Raw Transactions
+        #region Transactions general
 
         /// <summary>
         /// Should return raw transaction by its id.
@@ -187,7 +187,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/transactions/{transactionId}/raw")]
-        Task<RawTransactionResponse> GetRawTransactionAsync(string transactionId);
+        Task<RawObjectResponse> GetRawTransactionAsync(string transactionId);
 
         /// <summary>
         /// Should return transaction state by its id.
@@ -198,6 +198,22 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/transactions/{transactionId}/state")]
         Task<TransactionStateResponse> GetTransactionStateAsync(string transactionId);
+
+        #endregion
+
+
+        #region Blocks
+
+        /// <summary>
+        /// Should return raw block by its id.
+        /// </summary>
+        /// <exception cref="BadRequestWebApiException">Invalid request parameters</exception>
+        /// <exception cref="NotFoundWebApiException">Block is not found</exception>
+        /// <exception cref="InternalServerErrorWebApiException">Transient server error</exception>
+        /// <exception cref="WebApiException">Any other HTTP-related error</exception>
+        /// <exception cref="Exception">Any other error</exception>
+        [Get("/api/blocks/{blockId}/raw")]
+        Task<RawObjectResponse> GetRawBlockAsync(string blockId);
 
         #endregion
     }

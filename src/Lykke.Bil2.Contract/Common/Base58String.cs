@@ -14,7 +14,9 @@ namespace Lykke.Bil2.Contract.Common
     /// </summary>
     [PublicAPI]
     [JsonConverter(typeof(Base58StringJsonConverter))]
-    public sealed class Base58String
+    public sealed class Base58String :
+        IComparable<Base58String>,
+        IEquatable<Base58String>
     {
         private static Regex _formatRegex;
 
@@ -78,6 +80,38 @@ namespace Lykke.Bil2.Contract.Common
         public override string ToString()
         {
             return Value;
+        }
+
+        public int CompareTo(Base58String other)
+        {
+            if (ReferenceEquals(this, other)) 
+                return 0;
+            if (ReferenceEquals(null, other)) 
+                return 1;
+            return string.Compare(Value, other.Value, StringComparison.Ordinal);
+        }
+
+        public bool Equals(Base58String other)
+        {
+            if (ReferenceEquals(null, other)) 
+                return false;
+            if (ReferenceEquals(this, other)) 
+                return true;
+            return string.Equals(Value, other.Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) 
+                return false;
+            if (ReferenceEquals(this, obj)) 
+                return true;
+            return obj is Base58String base58 && Equals(base58);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value != null ? Value.GetHashCode() : 0;
         }
     }
 }

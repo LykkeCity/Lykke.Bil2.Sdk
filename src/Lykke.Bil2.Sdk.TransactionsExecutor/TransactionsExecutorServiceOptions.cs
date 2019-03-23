@@ -100,9 +100,9 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
 
         /// <summary>
         /// Not Required.
-        /// <see cref="IRawTransactionReadOnlyRepository"/> implementation factory.
+        /// <see cref="IRawObjectReadOnlyRepository"/> implementation factory.
         /// </summary>
-        internal Func<string, ServiceFactoryContext<TAppSettings>, IRawTransactionReadOnlyRepository> RawTransactionReadOnlyRepositoryFactory { get; set; }
+        internal Func<string, ServiceFactoryContext<TAppSettings>, IRawObjectReadOnlyRepository> RawObjectsReadOnlyRepositoryFactory { get; set; }
 
         /// <summary>
         /// Not Required.
@@ -118,9 +118,9 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
             TransferCoinsTransactionsBuilderFactory = c => new NotSupportedTransferCoinsTransactionsBuilder();
             AddressFormatsProviderFactory = c => new NotSupportedAddressFormatsProvider();
 
-            RawTransactionReadOnlyRepositoryFactory = (integrationName, context) =>
+            RawObjectsReadOnlyRepositoryFactory = (integrationName, context) =>
             {
-                return RawTransactionReadOnlyRepository.Create(
+                return RawObjectReadOnlyRepository.Create(
                     integrationName.CamelToKebab(),
                     context.Settings.Nested(x => x.Db.AzureDataConnString));
             };

@@ -8,30 +8,30 @@ using Lykke.SettingsReader;
 
 namespace Lykke.Bil2.Sdk.TransactionsExecutor.Repositories
 {
-    internal class RawTransactionReadOnlyRepository : IRawTransactionReadOnlyRepository
+    internal class RawObjectReadOnlyRepository : IRawObjectReadOnlyRepository
     {
+        private readonly string _integrationName;
         private readonly IBlobStorage _blob;
-        private readonly string _containerName;
 
-        public static IRawTransactionReadOnlyRepository Create(
+        public static IRawObjectReadOnlyRepository Create(
             string integrationName,
             IReloadingManager<string> connectionString)
         {
             var blob = AzureBlobStorage.Create(connectionString);
 
-            return new RawTransactionReadOnlyRepository(integrationName, blob);
+            return new RawObjectReadOnlyRepository(integrationName, blob);
         }
 
-        private RawTransactionReadOnlyRepository(string integrationName, IBlobStorage blob)
+        private RawObjectReadOnlyRepository(string integrationName, IBlobStorage blob)
         {
-            _containerName = RawTransactionRepositoryTools.GetContainerName(integrationName);
+            _integrationName = integrationName;
             _blob = blob;
         }
 
-        public async Task<Base58String> GetOrDefaultAsync(string transactionId)
+        public async Task<Base58String> GetOrDefaultAsync(RawObjectType objectType, string objectId)
         {
-            var containerName = GetContainerName();
-            var blobName = RawTransactionRepositoryTools.GetBlobName(transactionId);
+            var containerName = RawObjectRepositoryTools.GetContainerName(_integrationName, objectType);
+            var blobName = RawObjectRepositoryTools.GetBlobName(objectId);
 
             if (!await _blob.HasBlobAsync(containerName, blobName))
             {
@@ -45,11 +45,6 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Repositories
 
                 return new Base58String(await textReader.ReadToEndAsync());
             }
-        }
-
-        private string GetContainerName()
-        {
-            return _containerName;
         }
     }
 }

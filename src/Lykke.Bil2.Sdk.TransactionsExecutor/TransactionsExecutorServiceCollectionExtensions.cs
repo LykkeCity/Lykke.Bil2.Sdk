@@ -57,6 +57,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
                 integrationOptions.AddController<AddressesController>();
                 integrationOptions.AddController<TransactionsController>();
                 integrationOptions.AddController<IntegrationInfoController>();
+                integrationOptions.AddController<BlocksController>();
             });
         }
 
@@ -76,7 +77,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
             ));
 
             services.AddSingleton(s =>
-                options.RawTransactionReadOnlyRepositoryFactory(options.IntegrationName.CamelToKebab(), 
+                options.RawObjectsReadOnlyRepositoryFactory(options.IntegrationName.CamelToKebab(), 
                     new ServiceFactoryContext<TAppSettings>(s, settings)));
         }
 

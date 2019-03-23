@@ -15,7 +15,21 @@ namespace BlocksReaderExample.Services
             var blockId = Guid.NewGuid().ToString("N");
             var previousBlockId = Guid.NewGuid().ToString("N");
 
-            await listener.HandleHeaderAsync(new BlockHeaderReadEvent(blockNumber, blockId, DateTime.UtcNow, 100, 1, previousBlockId));
+            await listener.HandleHeaderAsync
+            (
+                new BlockHeaderReadEvent
+                (
+                    blockNumber,
+                    blockId,
+                    DateTime.UtcNow,
+                    100,
+                    1,
+                    previousBlockId
+                )
+            );
+
+            await listener.HandleRawBlockAsync("raw-block".ToBase58(), blockId);
+
             await listener.HandleExecutedTransactionAsync
             (
                 "raw-transaction".ToBase58(),

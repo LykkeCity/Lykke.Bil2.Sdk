@@ -9,19 +9,19 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
     internal class ReadBlockCommandsHandler : IMessageHandler<ReadBlockCommand>
     {
         private readonly IBlockReader _blockReader;
-        private readonly IRawTransactionWriteOnlyRepository _rawTransactionRepository;
+        private readonly IRawObjectWriteOnlyRepository _rawObjectRepository;
 
         public ReadBlockCommandsHandler(
             IBlockReader blockReader,
-            IRawTransactionWriteOnlyRepository rawTransactionRepository)
+            IRawObjectWriteOnlyRepository rawObjectRepository)
         {
             _blockReader = blockReader;
-            _rawTransactionRepository = rawTransactionRepository;
+            _rawObjectRepository = rawObjectRepository;
         }
 
         public async Task HandleAsync(ReadBlockCommand command, IMessagePublisher messagePublisher)
         {
-            var blockListener = new BlockListener(messagePublisher, _rawTransactionRepository);
+            var blockListener = new BlockListener(messagePublisher, _rawObjectRepository);
 
             await _blockReader.ReadBlockAsync(command.BlockNumber, blockListener);
         }
