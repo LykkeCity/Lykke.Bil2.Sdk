@@ -117,7 +117,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
             {
                 if (string.IsNullOrWhiteSpace(args.RoutingKey))
                 {
-                    log.Error("Message without routing key is received. Skipping.");
+                    log.Error("Message without routing key is received. Skipping.", context: args);
 
                     channel.BasicAck(args.DeliveryTag, false);
                     return;
@@ -137,7 +137,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                     }
                     catch (Exception ex)
                     {
-                        log.Warning(args.RoutingKey, "Failed to deserialize the message.", ex, context: serializedMessage);
+                        log.Warning(args.RoutingKey, "Failed to deserialize the message.", ex, context: args);
 
                         await Task.Delay(TimeSpan.FromMinutes(10));
 
@@ -146,14 +146,18 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                         return;
                     }
 
+                    var headers = new MessageHeaders
+                    (
+                        args.BasicProperties.CorrelationId
+                    );
+
                     try
                     {
-                        log.Trace(args.RoutingKey, "Handled", message);
-
-                        var headers = new MessageHeaders
-                        (
-                            args.BasicProperties.CorrelationId
-                        );
+                        log.Trace(args.RoutingKey, "Handled", new
+                        {
+                            Headers = headers,
+                            Message = message
+                        });
 
                         var publisher = _publisherFactory?.Invoke(headers.CorrelationId) ?? 
                                         ProhibitedRepliesMessagePublisher.Instance;
@@ -164,7 +168,11 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                     }
                     catch (Exception ex)
                     {
-                        log.Warning(args.RoutingKey, "Failed to process the message", ex, message);
+                        log.Warning(args.RoutingKey, "Failed to process the message", ex, new
+                        {
+                            Headers = headers,
+                            Message = message
+                        });
 
                         await Task.Delay(TimeSpan.FromSeconds(30));
 
@@ -173,7 +181,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                 }
                 else
                 {
-                    log.Warning(args.RoutingKey, "Subscription for the message is not found.", context: serializedMessage);
+                    log.Warning(args.RoutingKey, "Subscription for the message is not found.", context: args);
 
                     await Task.Delay(TimeSpan.FromMinutes(10));
 
@@ -182,7 +190,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
             }
             catch (Exception ex)
             {
-                log.Error(args.RoutingKey, ex, "Failed to handle the message");
+                log.Error(args.RoutingKey, ex, "Failed to handle the message", args);
 
                 await Task.Delay(TimeSpan.FromSeconds(30));
 
