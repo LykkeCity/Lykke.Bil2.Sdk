@@ -586,7 +586,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 rawTransactionReadOnlyRepository.Setup(x => x.GetOrDefaultAsync(RawObjectType.Transaction, transactionId))
                     .ReturnsAsync(() =>
                     {
-                        Task.Delay(timeout).Wait();
+                        Task.Delay(timeout.Add(TimeSpan.FromMilliseconds(10))).Wait();
                         return Base58String.Encode(transactionResult);
                     });
 

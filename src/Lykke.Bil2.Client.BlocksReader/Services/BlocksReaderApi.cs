@@ -14,9 +14,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
             _messagePublisher = messagePublisher ?? throw new ArgumentNullException(nameof(messagePublisher));
         }
 
-        public Task SendAsync(ReadBlockCommand command)
+        public Task SendAsync(ReadBlockCommand command, string correlationId)
         {
-            _messagePublisher.Publish(command);
+            _messagePublisher.Publish(command, correlationId);
 
             return Task.CompletedTask;
         }

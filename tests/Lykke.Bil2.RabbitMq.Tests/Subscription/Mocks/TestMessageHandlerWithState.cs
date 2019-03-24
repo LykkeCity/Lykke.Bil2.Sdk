@@ -15,7 +15,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Mocks
             _dependency = dependency;
         }
 
-        public Task HandleAsync(string state, TestMessage message, IMessagePublisher publisher)
+        public Task HandleAsync(string state, TestMessage message, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
             return _dependency.FooWithStateAsync(message.Id, state);
         }

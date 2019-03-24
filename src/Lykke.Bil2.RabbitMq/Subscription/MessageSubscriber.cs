@@ -150,10 +150,15 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                     {
                         log.Trace(args.RoutingKey, "Handled", message);
 
-                        var publisher = _publisherFactory?.Invoke(args.BasicProperties.CorrelationId) ?? 
-                                        ProhibitedRepliesMessagePublisher.Instance;
+                        var headers = new MessageHeaders
+                        (
+                            args.BasicProperties.CorrelationId
+                        );
 
-                        await subscription.InvokeHandlerAsync(_serviceProvider, message, publisher);
+                        var publisher = _publisherFactory?.Invoke(headers.CorrelationId) ?? 
+                                        ProhibitedRepliesMessagePublisher.Instance;
+                        
+                        await subscription.InvokeHandlerAsync(_serviceProvider, message, headers, publisher);
 
                         channel.BasicAck(args.DeliveryTag, false);
                     }

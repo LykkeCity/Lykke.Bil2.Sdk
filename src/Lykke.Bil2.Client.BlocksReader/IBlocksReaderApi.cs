@@ -11,8 +11,8 @@ namespace Lykke.Bil2.Client.BlocksReader
     public interface IBlocksReaderApi
     {
         /// <summary>
-        /// Sends <see cref="ReadBlockCommand"/>.
+        /// Sends <see cref="ReadBlockCommand"/> with specified correlation ID.
         /// </summary>
-        Task SendAsync(ReadBlockCommand command);
+        Task SendAsync(ReadBlockCommand command, string correlationId);
     }
 }
