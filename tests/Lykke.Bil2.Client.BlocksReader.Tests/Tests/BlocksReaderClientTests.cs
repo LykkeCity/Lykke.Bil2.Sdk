@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Lykke.Bil2.Client.BlocksReader.Options;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.Sdk.Repositories;
+using Lykke.Bil2.RabbitMq.Subscription;
 using Lykke.Numerics;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
@@ -77,7 +78,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         public async Task Test_that_read_block_command_is_processed()
         {
             //ARRANGE
-            CountdownEvent countdown = new CountdownEvent(2);
+            var countdown = new CountdownEvent(2);
             Mock<IBlockReader> blockReader = null;
             var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, messagePublisher) =>
             {
@@ -120,8 +121,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 
                 var apiBlocksReader = apiFactory.Create(_integrationName);
 
-                await apiBlocksReader.SendAsync(new ReadBlockCommand(1));
-                await apiBlocksReader.SendAsync(new ReadBlockCommand(2));
+                await apiBlocksReader.SendAsync(new ReadBlockCommand(1), null);
+                await apiBlocksReader.SendAsync(new ReadBlockCommand(2), null);
                 countdown.Wait(Waiting.Timeout);
             }
 
@@ -177,7 +178,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
             //ASSERT
             blockEventsHandlerMock
-                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<LastIrreversibleBlockUpdatedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<LastIrreversibleBlockUpdatedEvent>(), It.IsNotNull<MessageHeaders>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
         }
 
         [Test]
@@ -231,7 +232,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
             //ASSERT
             blockEventsHandlerMock
-                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<LastIrreversibleBlockUpdatedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<LastIrreversibleBlockUpdatedEvent>(), It.IsNotNull<MessageHeaders>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
         }
 
         [Test]
@@ -392,6 +393,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     clientOptions.AddIntegration(_integrationName);
                 });
 
+            var block1CorrelationId = "correlation-id-1";
+            var block2CorrelationId = "correlation-id-2";
+
             //ACT
             using (testServer)
             using (client)
@@ -400,8 +404,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 client.StartListening();
 
                 var apiBlocksReader = apiFactory.Create(_integrationName);
-                await apiBlocksReader.SendAsync(new ReadBlockCommand(1));
-                await apiBlocksReader.SendAsync(new ReadBlockCommand(2));
+                await apiBlocksReader.SendAsync(new ReadBlockCommand(1), block1CorrelationId);
+                await apiBlocksReader.SendAsync(new ReadBlockCommand(2), block2CorrelationId);
 
                 foreach (var manualResetEventSlim in typeWaitHandles)
                 {
@@ -421,54 +425,85 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
             blockEventsHandlerMock
                 .Verify(x => 
-                    x.HandleAsync(_integrationName, It.Is<BlockHeaderReadEvent>(b => b.BlockNumber == 1), It.IsNotNull<IMessagePublisher>()), 
+                    x.HandleAsync(
+                        _integrationName, 
+                        It.Is<BlockHeaderReadEvent>(b => b.BlockId == "1"), 
+                        It.Is<MessageHeaders>(h => h.CorrelationId == block1CorrelationId),
+                        It.IsNotNull<IMessagePublisher>()), 
                     Times.AtLeastOnce);
             blockEventsHandlerMock
                 .Verify(x => 
-                    x.HandleAsync(_integrationName, It.Is<BlockHeaderReadEvent>(b => b.BlockNumber != 1), It.IsNotNull<IMessagePublisher>()), 
+                    x.HandleAsync(
+                        _integrationName, 
+                        It.Is<BlockHeaderReadEvent>(b => b.BlockId != "1"), 
+                        It.IsNotNull<MessageHeaders>(),
+                        It.IsNotNull<IMessagePublisher>()), 
                     Times.Never);
 
             blockEventsHandlerMock
                 .Verify(x => 
-                    x.HandleAsync(_integrationName, It.Is<BlockNotFoundEvent>(b => b.BlockNumber == 2), It.IsNotNull<IMessagePublisher>()), 
+                    x.HandleAsync(
+                        _integrationName, 
+                        It.Is<BlockNotFoundEvent>(b => b.BlockNumber == 2), 
+                        It.Is<MessageHeaders>(h => h.CorrelationId == block2CorrelationId),
+                        It.IsNotNull<IMessagePublisher>()), 
                     Times.AtLeastOnce);
             blockEventsHandlerMock
                 .Verify(x => 
-                    x.HandleAsync(_integrationName, It.Is<BlockNotFoundEvent>(b => b.BlockNumber != 2), It.IsNotNull<IMessagePublisher>()), 
+                    x.HandleAsync(
+                        _integrationName, 
+                        It.Is<BlockNotFoundEvent>(b => b.BlockNumber != 2),
+                        It.IsNotNull<MessageHeaders>(), 
+                        It.IsNotNull<IMessagePublisher>()), 
                     Times.Never);
 
             blockEventsHandlerMock
-                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<TransferAmountTransactionExecutedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(
+                    _integrationName, 
+                    It.Is<TransferAmountTransactionExecutedEvent>(t => t.BlockId == "1"),
+                    It.Is<MessageHeaders>(h => h.CorrelationId == block1CorrelationId),
+                    It.IsNotNull<IMessagePublisher>()), 
+                    Times.AtLeastOnce);
             blockEventsHandlerMock
-                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<TransactionFailedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(
+                    _integrationName, 
+                    It.Is<TransferAmountTransactionExecutedEvent>(t => t.BlockId == "1"),
+                    It.Is<MessageHeaders>(h => h.CorrelationId == block1CorrelationId),
+                    It.IsNotNull<IMessagePublisher>()), 
+                    Times.AtLeastOnce);
             blockEventsHandlerMock
-                .Verify(x => x.HandleAsync(_integrationName, It.IsNotNull<TransferCoinsTransactionExecutedEvent>(), It.IsNotNull<IMessagePublisher>()), Times.AtLeastOnce);
+                .Verify(x => x.HandleAsync(
+                    _integrationName, 
+                    It.Is<TransferAmountTransactionExecutedEvent>(t => t.BlockId == "1"),
+                    It.Is<MessageHeaders>(h => h.CorrelationId == block1CorrelationId),
+                    It.IsNotNull<IMessagePublisher>()),
+                    Times.AtLeastOnce);
         }
 
         private static Mock<IBlockEventsHandler> BlockEventsHandlerCreateMock(Action<string, object, IMessagePublisher> callBack)
         {
             Mock<IBlockEventsHandler> blockEventsHandler = new Mock<IBlockEventsHandler>();
-            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<BlockHeaderReadEvent>(), It.IsAny<IMessagePublisher>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<BlockHeaderReadEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<BlockNotFoundEvent>(), It.IsAny<IMessagePublisher>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<BlockNotFoundEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferAmountTransactionExecutedEvent>(), It.IsAny<IMessagePublisher>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferAmountTransactionExecutedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferCoinsTransactionExecutedEvent>(), It.IsAny<IMessagePublisher>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferCoinsTransactionExecutedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransactionFailedEvent>(), It.IsAny<IMessagePublisher>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransactionFailedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<LastIrreversibleBlockUpdatedEvent>(), It.IsAny<IMessagePublisher>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<LastIrreversibleBlockUpdatedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
                 .Returns(Task.CompletedTask)
                 .Callback(callBack)
                 .Verifiable();

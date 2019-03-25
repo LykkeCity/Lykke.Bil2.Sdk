@@ -55,8 +55,8 @@ namespace BlocksReaderExampleClient
                 var steemApi = apiFactory.Create("Steem");
                 var ethereumClassicFactory = apiFactory.Create("EthereumClassic");
 
-                await steemApi.SendAsync(new ReadBlockCommand(1000));
-                await ethereumClassicFactory.SendAsync(new ReadBlockCommand(2000));
+                await steemApi.SendAsync(new ReadBlockCommand(1000), Guid.NewGuid().ToString());
+                await ethereumClassicFactory.SendAsync(new ReadBlockCommand(2000), Guid.NewGuid().ToString());
 
                 Console.WriteLine("Press any key to exit.");
 

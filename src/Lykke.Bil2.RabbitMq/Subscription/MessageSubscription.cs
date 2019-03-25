@@ -25,6 +25,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         public async Task InvokeHandlerAsync(
             IServiceProvider parentServiceProvider, 
             object message,
+            MessageHeaders headers,
             IMessagePublisher publisher)
         {
             if (parentServiceProvider == null)
@@ -46,7 +47,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                 {
                     var handlers = (IMessageHandler<TMessage>) scope.ServiceProvider.GetRequiredService(_options.HandlerType);
 
-                    await handlers.HandleAsync(typedMessage, publisher);
+                    await handlers.HandleAsync(typedMessage, headers, publisher);
                 }
             }
             else
@@ -76,6 +77,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         public async Task InvokeHandlerAsync(
             IServiceProvider parentServiceProvider, 
             object message,
+            MessageHeaders headers,
             IMessagePublisher publisher)
         {
             if (parentServiceProvider == null)
@@ -97,7 +99,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                 {
                     var handlers = (IMessageHandler<TMessage, TState>) scope.ServiceProvider.GetRequiredService(_options.HandlerType);
 
-                    await handlers.HandleAsync(_options.State, typedMessage, publisher);
+                    await handlers.HandleAsync(_options.State, typedMessage, headers, publisher);
                 }
             }
             else
