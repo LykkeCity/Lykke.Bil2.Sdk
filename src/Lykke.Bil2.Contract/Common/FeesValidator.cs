@@ -34,6 +34,11 @@ namespace Lykke.Bil2.Contract.Common
         [Pure]
         private static string ValidateFees(IReadOnlyCollection<Fee> fees)
         {
+            if (fees == null)
+            {
+                return null;
+            }
+
             var duplicatedAssets = fees
                 .GroupBy(x => x.Asset)
                 .Select(g => new

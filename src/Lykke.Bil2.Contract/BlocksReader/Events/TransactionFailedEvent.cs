@@ -86,8 +86,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (string.IsNullOrWhiteSpace(transactionId))
                 throw new ArgumentException("Should be not empty string", nameof(transactionId));
 
-            if (fees != null)
-                FeesValidator.ValidateFeesInResponse(fees);
+            FeesValidator.ValidateFeesInResponse(fees);
 
             BlockId = blockId;
             TransactionNumber = transactionNumber;

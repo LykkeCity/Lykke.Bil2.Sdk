@@ -31,5 +31,10 @@ namespace Lykke.Bil2.Contract.Common
             TransactionId = transactionId;
             CoinNumber = coinNumber;
         }
+
+        public override string ToString()
+        {
+            return $"{TransactionId}:{CoinNumber}";
+        }
     }
 }
