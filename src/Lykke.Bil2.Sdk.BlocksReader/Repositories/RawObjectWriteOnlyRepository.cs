@@ -8,35 +8,35 @@ using Lykke.SettingsReader;
 
 namespace Lykke.Bil2.Sdk.BlocksReader.Repositories
 {
-    internal class RawTransactionWriteOnlyRepository : IRawTransactionWriteOnlyRepository
+    internal class RawObjectWriteOnlyRepository : IRawObjectWriteOnlyRepository
     {
+        private readonly string _integrationName;
         private readonly IBlobStorage _blob;
-        private readonly string _containerName;
 
-        public static IRawTransactionWriteOnlyRepository Create(
+        public static IRawObjectWriteOnlyRepository Create(
             string integrationName,
             IReloadingManager<string> connectionString)
         {
             var blob = AzureBlobStorage.Create(connectionString);
 
-            return new RawTransactionWriteOnlyRepository(integrationName, blob);
+            return new RawObjectWriteOnlyRepository(integrationName, blob);
         }
 
-        private RawTransactionWriteOnlyRepository(string integrationName, IBlobStorage blob)
+        private RawObjectWriteOnlyRepository(string integrationName, IBlobStorage blob)
         {
-            _containerName = RawTransactionRepositoryTools.GetContainerName(integrationName);
+            _integrationName = integrationName;
             _blob = blob;
         }
 
-        public async Task SaveAsync(string transactionId, Base58String rawTransaction)
+        public async Task SaveAsync(RawObjectType objectType, string objectId, Base58String rawObject)
         {
-            var containerName = GetContainerName();
-            var blobName = RawTransactionRepositoryTools.GetBlobName(transactionId);
+            var containerName = RawObjectRepositoryTools.GetContainerName(_integrationName, objectType);
+            var blobName = RawObjectRepositoryTools.GetBlobName(objectId);
 
             using (var stream = new MemoryStream())
             using (var textWriter = new StreamWriter(stream))
             {
-                textWriter.Write(rawTransaction.Value);
+                textWriter.Write(rawObject.Value);
 
                 await textWriter.FlushAsync();
                 await stream.FlushAsync();
@@ -45,11 +45,6 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Repositories
 
                 await _blob.SaveBlobAsync(containerName, blobName, stream);
             }
-        }
-
-        private string GetContainerName()
-        {
-            return _containerName;
         }
     }
 }

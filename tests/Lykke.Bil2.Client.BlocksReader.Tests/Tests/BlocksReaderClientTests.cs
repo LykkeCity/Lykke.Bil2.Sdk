@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Lykke.Bil2.Client.BlocksReader.Options;
 using Lykke.Bil2.RabbitMq.Publication;
+using Lykke.Bil2.Sdk.Repositories;
 using Lykke.Numerics;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
@@ -237,7 +238,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         public async Task Block_listener_test()
         {
             //ARRANGE
-            Mock<IRawTransactionWriteOnlyRepository> rawTransactionWriteOnlyRepository = null;
+            Mock<IRawObjectWriteOnlyRepository> rawObjectsRepository = null;
             var typeWaitHandles = new Dictionary<Type, ManualResetEventSlim>()
             {
                 { typeof(TransactionFailedEvent), new ManualResetEventSlim()},
@@ -260,9 +261,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     CreateMocks(
                         out var blockReader,
                         out var blockProvider);
-                    rawTransactionWriteOnlyRepository = new Mock<IRawTransactionWriteOnlyRepository>();
-                    rawTransactionWriteOnlyRepository
-                        .Setup(x => x.SaveAsync(It.IsNotNull<string>(), It.IsNotNull<Base58String>()))
+                    rawObjectsRepository = new Mock<IRawObjectWriteOnlyRepository>();
+                    rawObjectsRepository
+                        .Setup(x => x.SaveAsync(RawObjectType.Transaction, It.IsNotNull<string>(), It.IsNotNull<Base58String>()))
                         .Returns(Task.CompletedTask)
                         .Verifiable();
 
@@ -287,6 +288,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                 1
                             )
                         );
+
+                        await blockListener.HandleRawBlockAsync(Base58String.Encode("raw-block"), "1");
 
                         await blockListener.HandleExecutedTransactionAsync
                         (
@@ -374,7 +377,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
                     serverOptions.UseSettings = (services, set) =>
                         {
-                            services.AddSingleton(rawTransactionWriteOnlyRepository.Object);
+                            services.AddSingleton(rawObjectsRepository.Object);
                         };
                     ConfigureFactories(serverOptions,
                         blockReader,
@@ -410,8 +413,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             }
 
             //ASSERT
-            rawTransactionWriteOnlyRepository
-                .Verify(x => x.SaveAsync(It.IsNotNull<string>(), It.IsNotNull<Base58String>()), Times.AtLeast(3));
+            rawObjectsRepository
+                .Verify(x => x.SaveAsync(RawObjectType.Transaction, It.IsNotNull<string>(), It.IsNotNull<Base58String>()), Times.AtLeast(3));
+
+            rawObjectsRepository
+                .Verify(x => x.SaveAsync(RawObjectType.Block, It.IsNotNull<string>(), It.IsNotNull<Base58String>()), Times.AtLeast(1));
 
             blockEventsHandlerMock
                 .Verify(x => 

@@ -17,6 +17,11 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
         Task HandleHeaderAsync(BlockHeaderReadEvent evt);
 
         /// <summary>
+        /// Should be called when raw block is read.
+        /// </summary>
+        Task HandleRawBlockAsync(Base58String rawBlock, string blockId);
+
+        /// <summary>
         /// Should be called when requested block is not found.
         /// </summary>
         Task HandleBlockNotFoundAsync(BlockNotFoundEvent evt);

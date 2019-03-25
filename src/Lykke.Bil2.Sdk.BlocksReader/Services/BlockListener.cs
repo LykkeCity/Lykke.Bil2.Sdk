@@ -3,20 +3,21 @@ using Lykke.Bil2.Contract.BlocksReader.Events;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.Sdk.BlocksReader.Repositories;
+using Lykke.Bil2.Sdk.Repositories;
 
 namespace Lykke.Bil2.Sdk.BlocksReader.Services
 {
     internal class BlockListener : IBlockListener
     {
         private readonly IMessagePublisher _messagePublisher;
-        private readonly IRawTransactionWriteOnlyRepository _rawTransactionsRepository;
+        private readonly IRawObjectWriteOnlyRepository _rawObjectsRepository;
 
         public BlockListener(
             IMessagePublisher messagePublisher,
-            IRawTransactionWriteOnlyRepository rawTransactionsRepository)
+            IRawObjectWriteOnlyRepository rawObjectsRepository)
         {
             _messagePublisher = messagePublisher;
-            _rawTransactionsRepository = rawTransactionsRepository;
+            _rawObjectsRepository = rawObjectsRepository;
         }
 
         public Task HandleHeaderAsync(BlockHeaderReadEvent evt)
@@ -24,6 +25,11 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             _messagePublisher.Publish(evt);
 
             return Task.CompletedTask;
+        }
+
+        public Task HandleRawBlockAsync(Base58String rawBlock, string blockId)
+        {
+            return _rawObjectsRepository.SaveAsync(RawObjectType.Block, blockId, rawBlock);
         }
 
         public Task HandleBlockNotFoundAsync(BlockNotFoundEvent evt)
@@ -35,7 +41,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
 
         public async Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransferAmountTransactionExecutedEvent evt)
         {
-            var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionId, rawTransaction);
+            var rawTransactionSavingTask = _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, evt.TransactionId, rawTransaction);
 
             _messagePublisher.Publish(evt);
 
@@ -44,7 +50,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
 
         public async Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransferCoinsTransactionExecutedEvent evt)
         {
-            var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionId, rawTransaction);
+            var rawTransactionSavingTask = _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, evt.TransactionId, rawTransaction);
 
             _messagePublisher.Publish(evt);
 
@@ -53,7 +59,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
 
         public async Task HandleFailedTransactionAsync(Base58String rawTransaction, TransactionFailedEvent evt)
         {
-            var rawTransactionSavingTask = _rawTransactionsRepository.SaveAsync(evt.TransactionId, rawTransaction);
+            var rawTransactionSavingTask = _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, evt.TransactionId, rawTransaction);
 
             _messagePublisher.Publish(evt);
 

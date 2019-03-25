@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Bil2.BaseTests;
+using Lykke.Bil2.Sdk.Repositories;
 using Lykke.Numerics;
 
 namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
@@ -433,7 +434,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 var aggregator = CreateMocks();
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_broadcast_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransactionBroadcaster.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
                     .ThrowsAsync(new TransactionBroadcastingException(TransactionBroadcastingError.RetryLater, "Error"));
@@ -467,7 +468,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 var aggregator = CreateMocks();
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Internal_server_error_broadcast_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransactionBroadcaster.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
                     .ThrowsAsync(new Exception("Error"));
@@ -495,20 +496,20 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         public async Task Transaction_raw()
         {
             //ARRANGE
-            string transactionId = "transactionId";
-            string transactionResult = "result";
+            const string transactionId = "transactionId";
+            var rawTransaction = Base58String.Encode("raw-transaction");
 
             var client = PrepareClient<AppSettings>((options) =>
             {
                 var aggregator = CreateMocks();
 
-                var rawTransactionReadOnlyRepository = new Mock<IRawTransactionReadOnlyRepository>();
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                var rawObjectsRepository = new Mock<IRawObjectReadOnlyRepository>();
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Transaction_raw)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
-                rawTransactionReadOnlyRepository.Setup(x => x.GetOrDefaultAsync(transactionId))
-                    .ReturnsAsync(Base58String.Encode(transactionResult));
+                rawObjectsRepository.Setup(x => x.GetOrDefaultAsync(RawObjectType.Transaction, transactionId))
+                    .ReturnsAsync(rawTransaction);
 
-                options.RawTransactionReadOnlyRepositoryFactory = (name, context) => rawTransactionReadOnlyRepository.Object;
+                options.RawObjectsReadOnlyRepositoryFactory = (name, context) => rawObjectsRepository.Object;
 
                 ConfigureFactories(options,
                     aggregator.AddressValidator,
@@ -525,33 +526,71 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var result = await client.GetRawTransactionAsync(transactionId);
 
             //ASSERT
-            Assert.True(result != null);
-            Assert.True(result.Raw.DecodeToString() == transactionResult);
+            Assert.NotNull(result);
+            Assert.AreEqual(rawTransaction, result.Raw);
+        }
+
+        [Test]
+        public async Task Block_raw()
+        {
+            //ARRANGE
+            const string blockId = "blockId";
+            var rawBlock = Base58String.Encode("raw-block");
+
+            var client = PrepareClient<AppSettings>((options) =>
+            {
+                var aggregator = CreateMocks();
+
+                var rawObjectsRepository = new Mock<IRawObjectReadOnlyRepository>();
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Block_raw)}";
+                aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
+                rawObjectsRepository.Setup(x => x.GetOrDefaultAsync(RawObjectType.Block, blockId))
+                    .ReturnsAsync(rawBlock);
+
+                options.RawObjectsReadOnlyRepositoryFactory = (name, context) => rawObjectsRepository.Object;
+
+                ConfigureFactories(options,
+                    aggregator.AddressValidator,
+                    aggregator.HealthProvider,
+                    aggregator.IntegrationInfoService,
+                    aggregator.TransactionEstimator,
+                    aggregator.TransactionBroadcaster,
+                    aggregator.TransferAmountTransactionBuilder,
+                    aggregator.AddressFormatsProvider,
+                    aggregator.TransactionStateProvider);
+            });
+
+            //ACT
+            var result = await client.GetRawBlockAsync(blockId);
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.AreEqual(rawBlock, result.Raw);
         }
 
         [Test]
         public void Check_timeout()
         {
             //ARRANGE
-            string transactionId = "transactionId";
-            string transactionResult = "result";
+            const string transactionId = "transactionId";
+            const string transactionResult = "result";
             var timeout = TimeSpan.FromMilliseconds(100);
 
             var client = PrepareClient<AppSettings>((options) =>
             {
                 var aggregator = CreateMocks();
 
-                var rawTransactionReadOnlyRepository = new Mock<IRawTransactionReadOnlyRepository>();
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                var rawTransactionReadOnlyRepository = new Mock<IRawObjectReadOnlyRepository>();
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Check_timeout)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
-                rawTransactionReadOnlyRepository.Setup(x => x.GetOrDefaultAsync(transactionId))
+                rawTransactionReadOnlyRepository.Setup(x => x.GetOrDefaultAsync(RawObjectType.Transaction, transactionId))
                     .ReturnsAsync(() =>
                     {
                         Task.Delay(timeout).Wait();
                         return Base58String.Encode(transactionResult);
                     });
 
-                options.RawTransactionReadOnlyRepositoryFactory = (name, context) => rawTransactionReadOnlyRepository.Object;
+                options.RawObjectsReadOnlyRepositoryFactory = (name, context) => rawTransactionReadOnlyRepository.Object;
 
                 ConfigureFactories(options,
                     aggregator.AddressValidator,
@@ -586,7 +625,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 var aggregator = CreateMocks();
 
-                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
+                options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Address_format)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.AddressFormatsProvider.Setup(x => x.GetFormatsAsync(address)).ReturnsAsync(
                     new AddressFormatsResponse(formats));

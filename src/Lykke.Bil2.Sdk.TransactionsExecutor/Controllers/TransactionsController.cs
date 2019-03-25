@@ -5,6 +5,7 @@ using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.Common.Responses;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
+using Lykke.Bil2.Sdk.Repositories;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Exceptions;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Repositories;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
@@ -22,7 +23,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
         private readonly ITransactionBroadcaster _transactionBroadcaster;
         private readonly ITransferAmountTransactionsEstimator _transferAmountTransactionsEstimator;
         private readonly ITransferCoinsTransactionsEstimator _transferCoinsTransactionsEstimator;
-        private readonly IRawTransactionReadOnlyRepository _rawTransactionsRepository;
+        private readonly IRawObjectReadOnlyRepository _rawObjectsRepository;
         private readonly ITransactionsStateProvider _transactionsStateProvider;
 
         public TransactionsController(
@@ -31,7 +32,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
             ITransactionBroadcaster transactionBroadcaster,
             ITransferAmountTransactionsEstimator transferAmountTransactionsEstimator,
             ITransferCoinsTransactionsEstimator transferCoinsTransactionsEstimator,
-            IRawTransactionReadOnlyRepository rawTransactionsRepository,
+            IRawObjectReadOnlyRepository rawObjectsRepository,
             ITransactionsStateProvider transactionsStateProvider)
         {
             _transferAmountTransactionsBuilder = transferAmountTransactionsBuilder ?? throw new ArgumentNullException(nameof(transferAmountTransactionsBuilder));
@@ -39,7 +40,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
             _transactionBroadcaster = transactionBroadcaster ?? throw new ArgumentNullException(nameof(transactionBroadcaster));
             _transferAmountTransactionsEstimator = transferAmountTransactionsEstimator ?? throw new ArgumentNullException(nameof(transferAmountTransactionsEstimator));
             _transferCoinsTransactionsEstimator = transferCoinsTransactionsEstimator ?? throw new ArgumentNullException(nameof(transferCoinsTransactionsEstimator));
-            _rawTransactionsRepository = rawTransactionsRepository ?? throw new ArgumentNullException(nameof(rawTransactionsRepository));
+            _rawObjectsRepository = rawObjectsRepository ?? throw new ArgumentNullException(nameof(rawObjectsRepository));
             _transactionsStateProvider = transactionsStateProvider ?? throw new ArgumentNullException(nameof(transactionsStateProvider));
         }
 
@@ -127,18 +128,18 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
         }
 
         [HttpGet("{transactionId}/raw")]
-        public async Task<ActionResult<RawTransactionResponse>> GetRaw(string transactionId)
+        public async Task<ActionResult<RawObjectResponse>> GetRaw(string transactionId)
         {
             if (string.IsNullOrWhiteSpace(transactionId))
                 throw RequestValidationException.ShouldBeNotEmptyString(transactionId);
 
-            var raw = await _rawTransactionsRepository.GetOrDefaultAsync(transactionId);
+            var raw = await _rawObjectsRepository.GetOrDefaultAsync(RawObjectType.Transaction, transactionId);
             if (raw == null)
             {
                 return NotFound(BlockchainErrorResponse.Create($"Raw transaction [{transactionId}] not found"));
             }
 
-            return Ok(new RawTransactionResponse(raw));
+            return Ok(new RawObjectResponse(raw));
         }
 
         [HttpGet("{transactionId}/state")]

@@ -72,5 +72,48 @@ namespace Lykke.Bil2.Contract.Tests
 
             return value.DecodeToBytes();
         }
+
+        [Test]
+        [TestCase("7YKZiHCxdLJS6i", "7YKZiHCxdLJS6i", ExpectedResult = true)]
+        [TestCase("", "", ExpectedResult = true)]
+        [TestCase("7YKZiHCxdLJS6i", "", ExpectedResult = false)]
+        [TestCase("", "7YKZiHCxdLJS6i", ExpectedResult = false)]
+        [TestCase("7YKZiHCxdLJS6i", "5CwmCsCEJzoWSrM1c5bDQrcsHYF3SmfxDr5JAC167r4v6SgX8jtvtjH8WPgbUhqKWDqtsDbbpyEJUNhduXDTrRYCqUDcBNR8Wbg6gY2f4ucxvy3", ExpectedResult = false)]
+        public bool Test_equation(string a, string b)
+        {
+            var a58 = new Base58String(a);
+            var b58 = new Base58String(b);
+
+            return Equals(a58, b58);
+        }
+
+        [Test]
+        [TestCase("7YKZiHCxdLJS6i", "7YKZiHCxdLJS6i", ExpectedResult = 0)]
+        [TestCase("", "", ExpectedResult = 0)]
+        [TestCase("7YKZiHCxdLJS6i", "", ExpectedResult = 55)]
+        [TestCase("", "7YKZiHCxdLJS6i", ExpectedResult = -55)]
+        [TestCase("7YKZiHCxdLJS6i", "5CwmCsCEJzoWSrM1c5bDQrcsHYF3SmfxDr5JAC167r4v6SgX8jtvtjH8WPgbUhqKWDqtsDbbpyEJUNhduXDTrRYCqUDcBNR8Wbg6gY2f4ucxvy3", ExpectedResult = 2)]
+        public int Test_comparison(string a, string b)
+        {
+            var a58 = new Base58String(a);
+            var b58 = new Base58String(b);
+
+            return a58.CompareTo(b58);
+        }
+
+        [Test]
+        [TestCase("7YKZiHCxdLJS6i", "7YKZiHCxdLJS6i", ExpectedResult = true)]
+        [TestCase("", "", ExpectedResult = true)]
+        [TestCase("7YKZiHCxdLJS6i", "", ExpectedResult = false)]
+        [TestCase("", "7YKZiHCxdLJS6i", ExpectedResult = false)]
+        [TestCase("7YKZiHCxdLJS6i", "5CwmCsCEJzoWSrM1c5bDQrcsHYF3SmfxDr5JAC167r4v6SgX8jtvtjH8WPgbUhqKWDqtsDbbpyEJUNhduXDTrRYCqUDcBNR8Wbg6gY2f4ucxvy3", ExpectedResult = false)]
+        public bool Test_hash_code_equation(string a, string b)
+        {
+            var a58 = new Base58String(a);
+            var b58 = new Base58String(b);
+
+            return a58.GetHashCode() == b58.GetHashCode();
+        }
+
     }
 }

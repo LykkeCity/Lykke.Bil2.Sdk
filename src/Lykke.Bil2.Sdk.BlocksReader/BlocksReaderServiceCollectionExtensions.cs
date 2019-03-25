@@ -71,7 +71,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             services.AddTransient<ReadBlockCommandsHandler>();
             services.AddTransient<IStartupManager, StartupManager>();
 
-            services.AddSingleton(s => RawTransactionWriteOnlyRepository.Create(
+            services.AddSingleton(s => RawObjectWriteOnlyRepository.Create(
                 options.IntegrationName.CamelToKebab(),
                 settings.Nested(x => x.Db.AzureDataConnString)));
 

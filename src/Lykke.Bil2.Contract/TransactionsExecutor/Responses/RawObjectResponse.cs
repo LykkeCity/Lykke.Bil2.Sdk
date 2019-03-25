@@ -7,9 +7,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
 {
     /// <summary>
     /// Endpoint: [GET] /api/transactions/{transactionId}/raw
+    /// Endpoint: [GET] /api/blocks/{blockId}/raw
     /// </summary>
     [PublicAPI]
-    public class RawTransactionResponse
+    public class RawObjectResponse
     {
         /// <summary>
         /// Raw transaction.
@@ -19,9 +20,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
 
         /// <summary>
         /// Endpoint: [GET] /api/transactions/{transactionId}/raw
+        /// Endpoint: [GET] /api/blocks/{blockId}/raw
         /// </summary>
         /// <param name="raw">Raw transaction.</param>
-        public RawTransactionResponse(Base58String raw)
+        public RawObjectResponse(Base58String raw)
         {
             if (string.IsNullOrWhiteSpace(raw?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(raw));
