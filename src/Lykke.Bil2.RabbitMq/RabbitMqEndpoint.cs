@@ -81,7 +81,7 @@ namespace Lykke.Bil2.RabbitMq
 
             _log.Info($"Declaring exchange {exchangeName}...");
 
-            _publishingChannel.ExchangeDeclare(exchangeName, ExchangeType.Fanout, true);
+            _publishingChannel.ExchangeDeclare(exchangeName, ExchangeType.Topic, true);
         }
 
         /// <inheritdoc />
