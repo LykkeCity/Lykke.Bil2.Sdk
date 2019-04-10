@@ -11,20 +11,23 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Services
         private readonly ILog _log;
         private readonly IHealthMonitor _healthMonitor;
         private readonly IHealthProvider _healthProvider;
-        private readonly IIntegrationInfoService _integrationInfoService;
+        private readonly IBlockchainInfoProvider _blockchainInfoProvider;
+        private readonly IDependenciesInfoProvider _dependenciesInfoProvider;
         private readonly ISettingsRenderer _settingsRenderer;
 
         public StartupManager(
             ILogFactory logFactory,
             IHealthMonitor healthMonitor,
             IHealthProvider healthProvider,
-            IIntegrationInfoService integrationInfoService,
+            IBlockchainInfoProvider blockchainInfoProvider,
+            IDependenciesInfoProvider dependenciesInfoProvider,
             ISettingsRenderer settingsRenderer)
         {
             _log = logFactory.CreateLog(this);
             _healthMonitor = healthMonitor;
             _healthProvider = healthProvider;
-            _integrationInfoService = integrationInfoService;
+            _blockchainInfoProvider = blockchainInfoProvider;
+            _dependenciesInfoProvider = dependenciesInfoProvider;
             _settingsRenderer = settingsRenderer;
         }
 
@@ -49,11 +52,17 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Services
                 _log.Warning($"Integration is unhealthy: {disease}");
             }
 
-            _log.Info("Getting integration info...");
+            _log.Info("Getting blockchain info...");
 
-            var integrationInfo = await _integrationInfoService.GetInfoAsync();
+            var blockchainInfo = await _blockchainInfoProvider.GetInfoAsync();
 
-            _log.Info("Integration info", integrationInfo);
+            _log.Info("Blockchain info", blockchainInfo);
+
+            _log.Info("Getting dependencies info...");
+
+            var dependenciesInfo = await _dependenciesInfoProvider.GetInfoAsync();
+
+            _log.Info("Dependencies info", dependenciesInfo);
         }
     }
 }

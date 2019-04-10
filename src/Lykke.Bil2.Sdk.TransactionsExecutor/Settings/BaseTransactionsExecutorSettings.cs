@@ -20,5 +20,8 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Settings
 
         /// <inheritdoc />
         public TimeSpan HealthMonitoringPeriod { get; set; }
+
+        /// <inheritdoc />
+        public TimeSpan DependenciesInfoCacheExpirationPeriod { get; set; }
     }
 }

@@ -79,6 +79,8 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
             services.AddSingleton(s =>
                 options.RawObjectsReadOnlyRepositoryFactory(options.IntegrationName.CamelToKebab(), 
                     new ServiceFactoryContext<TAppSettings>(s, settings)));
+
+            services.AddSingleton(s => new LongLiveInMemoryCache());
         }
 
         private static void RegisterImplementationServices<TAppSettings>(
@@ -90,7 +92,18 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
         {
             services.AddTransient(s => options.AddressValidatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.HealthProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
-            services.AddTransient(s => options.IntegrationInfoServiceFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+            services.AddTransient(s => options.BlockchainInfoServiceFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+            services.AddTransient<IDependenciesInfoProvider>(s =>
+            {
+                var impl = options.DependenciesInfoProvider(new ServiceFactoryContext<TAppSettings>(s, settings));
+
+                return new CachedDependenciesInfoProviderDecorator
+                (
+                    impl,
+                    s.GetRequiredService<LongLiveInMemoryCache>(),
+                    settings.CurrentValue.DependenciesInfoCacheExpirationPeriod
+                );
+            });
             services.AddTransient(s => options.TransferAmountTransactionsEstimatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransferCoinsTransactionsEstimatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.TransferAmountTransactionsBuilderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
@@ -125,10 +138,16 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.HealthProviderFactory)} is required.");
             }
 
-            if (options.IntegrationInfoServiceFactory == null)
+            if (options.BlockchainInfoServiceFactory == null)
             {
                 throw new InvalidOperationException(
-                    $"{nameof(options)}.{nameof(options.IntegrationInfoServiceFactory)} is required.");
+                    $"{nameof(options)}.{nameof(options.BlockchainInfoServiceFactory)} is required.");
+            }
+
+            if (options.DependenciesInfoProvider == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(options)}.{nameof(options.DependenciesInfoProvider)} is required.");
             }
 
             if (options.TransferAmountTransactionsEstimatorFactory == null)

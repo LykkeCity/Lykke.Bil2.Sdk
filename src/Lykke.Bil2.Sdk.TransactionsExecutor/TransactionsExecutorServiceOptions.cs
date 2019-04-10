@@ -44,9 +44,15 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
 
         /// <summary>
         /// Required.
-        /// <see cref="IIntegrationInfoService"/> implementation factory.
+        /// <see cref="IBlockchainInfoProvider"/> implementation factory.
         /// </summary>
-        public Func<ServiceFactoryContext<TAppSettings>, IIntegrationInfoService> IntegrationInfoServiceFactory { get; set; }
+        public Func<ServiceFactoryContext<TAppSettings>, IBlockchainInfoProvider> BlockchainInfoServiceFactory { get; set; }
+
+        /// <summary>
+        /// Required.
+        /// <see cref="IDependenciesInfoProvider"/> implementation factory.
+        /// </summary>
+        public Func<ServiceFactoryContext<TAppSettings>, IDependenciesInfoProvider> DependenciesInfoProvider { get; set; }
 
         /// <summary>
         ///  Required only for "Transfer amount" transactions model. Integration should either support “transfer coins”
