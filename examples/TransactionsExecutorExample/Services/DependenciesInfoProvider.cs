@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 
@@ -16,7 +17,7 @@ namespace TransactionsExecutorExample.Services
             {
                 {
                     "node", 
-                    new DependencyInfo(new Version(1, 2, 3), new Version(1, 4, 2))
+                    new DependencyInfo(new Semver("1.2.3"), new Semver("1.4.2"))
                 }
             };
 

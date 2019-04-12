@@ -87,8 +87,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var blockchainInfo = new BlockchainInfo(123, DateTime.UtcNow);
             var dependencies = new Dictionary<string, DependencyInfo>()
             {
-                {"dependency", new DependencyInfo(new Version(1, 0, 0),
-                    new Version(1, 0, 0))},
+                {"dependency", new DependencyInfo(new Semver("1.0.0"), new Semver("1.0.0"))}
             };
 
             var client = PrepareClient<AppSettings>((options) =>
@@ -105,12 +104,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var result = await client.GetIntegrationInfoAsync();
 
             //ASSERT
-            var dependency = dependencies.First();
+            var (dependencyName, dependencyInfo) = dependencies.First();
             Assert.True(result != null);
             Assert.True(result.Blockchain.LatestBlockMoment == blockchainInfo.LatestBlockMoment);
             Assert.True(result.Blockchain.LatestBlockNumber == blockchainInfo.LatestBlockNumber);
-            Assert.True(result.Dependencies[dependency.Key].LatestAvailableVersion == dependency.Value.LatestAvailableVersion);
-            Assert.True(result.Dependencies[dependency.Key].RunningVersion == dependency.Value.RunningVersion);
+            Assert.True(result.Dependencies[dependencyName].LatestAvailableVersion.Equals(dependencyInfo.LatestAvailableVersion));
+            Assert.True(result.Dependencies[dependencyName].RunningVersion.Equals(dependencyInfo.RunningVersion));
         }
 
         [Test]
