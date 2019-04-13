@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Numerics.Linq;
 
 namespace Lykke.Bil2.Contract.Common

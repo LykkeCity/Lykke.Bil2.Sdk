@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Numerics;
 using Newtonsoft.Json;
 
@@ -13,10 +13,10 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
     public class CoinToSpend
     {
         /// <summary>
-        /// Reference to the coin which should be spend.
+        /// Id of the coin which should be spend.
         /// </summary>
-        [JsonProperty("coin")]
-        public CoinReference Coin { get; }
+        [JsonProperty("coinId")]
+        public CoinId Coin { get; }
 
         /// <summary>
         /// Asset of the coin.
@@ -55,7 +55,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// <summary>
         /// Coin to spend for the transaction.
         /// </summary>
-        /// <param name="coin">Reference to the coin which should be spend.</param>
+        /// <param name="coinId">Reference to the coin which should be spend.</param>
         /// <param name="asset">Asset of the coin.</param>
         /// <param name="value">Coin value to spend.</param>
         /// <param name="address">Address that owns the coin.</param>
@@ -68,14 +68,14 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// Nonce number of the transaction for the owner address.
         /// </param>
         public CoinToSpend(
-            CoinReference coin,
+            CoinId coinId,
             Asset asset,
             UMoney value,
             Address address,
             Base58String addressContext = null,
             long? addressNonce = null)
         {
-            Coin = coin ?? throw RequestValidationException.ShouldBeNotNull(nameof(coin));
+            Coin = coinId ?? throw RequestValidationException.ShouldBeNotNull(nameof(coinId));
             Asset = asset ?? throw RequestValidationException.ShouldBeNotNull(nameof(asset));
             Value = value;
             Address = address ?? throw RequestValidationException.ShouldBeNotNull(nameof(address));

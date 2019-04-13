@@ -3,8 +3,6 @@ using Lykke.Bil2.Client.BlocksReader.Services;
 using Lykke.Bil2.Client.BlocksReader.Tests.Configuration;
 using Lykke.Bil2.Contract.BlocksReader.Commands;
 using Lykke.Bil2.Contract.BlocksReader.Events;
-using Lykke.Bil2.Contract.Common;
-using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Sdk.BlocksReader;
 using Lykke.Bil2.Sdk.BlocksReader.Repositories;
 using Lykke.Bil2.Sdk.BlocksReader.Services;
@@ -21,6 +19,7 @@ using Lykke.Bil2.Client.BlocksReader.Options;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.Sdk.Repositories;
 using Lykke.Bil2.RabbitMq.Subscription;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Numerics;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
@@ -342,7 +341,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                 },
                                 new[]
                                 {
-                                    new CoinReference("tr1", 0),
+                                    new CoinId("tr1", 0),
                                 },
                                 new[]
                                 {

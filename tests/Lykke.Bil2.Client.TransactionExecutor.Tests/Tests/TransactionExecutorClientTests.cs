@@ -3,7 +3,6 @@ using Lykke.Bil2.Client.TransactionsExecutor;
 using Lykke.Bil2.Client.TransactionsExecutor.Exceptions;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
-using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
 using Lykke.Bil2.Sdk.TransactionsExecutor;
@@ -21,6 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Lykke.Bil2.BaseTests;
 using Lykke.Bil2.Sdk.Repositories;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Numerics;
 
 namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
@@ -529,7 +529,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT
             var coinsToSpend = new[]
             {
-                new CoinToSpend(new CoinReference("tx1", 0),
+                new CoinToSpend(new CoinId("tx1", 0),
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
@@ -574,7 +574,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT && ASSERT
             var coinsToSpend = new[]
             {
-                new CoinToSpend(new CoinReference("tx1", 0),
+                new CoinToSpend(new CoinId("tx1", 0),
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
@@ -619,7 +619,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT && ASSERT
             var coinsToSpend = new[]
             {
-                new CoinToSpend(new CoinReference("tx1", 0),
+                new CoinToSpend(new CoinId("tx1", 0),
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
@@ -663,7 +663,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT && ASSERT
             var coinsToSpend = new[]
             {
-                new CoinToSpend(new CoinReference("tx1", 0),
+                new CoinToSpend(new CoinId("tx1", 0),
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
@@ -712,7 +712,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT
             var coinsToSpend = new[]
             {
-                new CoinToSpend(new CoinReference("tx1", 0),
+                new CoinToSpend(new CoinId("tx1", 0),
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
@@ -762,7 +762,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT && ASSERT
             var coinsToSpend = new[]
             {
-                new CoinToSpend(new CoinReference("tx1", 0),
+                new CoinToSpend(new CoinId("tx1", 0),
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
@@ -806,7 +806,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT && ASSERT
             var coinsToSpend = new[]
             {
-                new CoinToSpend(new CoinReference("tx1", 0),
+                new CoinToSpend(new CoinId("tx1", 0),
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),

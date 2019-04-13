@@ -1,6 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.SharedDomain;
 
 namespace Lykke.Bil2.Sdk.SignService.Models
 {

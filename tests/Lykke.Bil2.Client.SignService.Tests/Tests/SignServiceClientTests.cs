@@ -13,6 +13,7 @@ using Lykke.Bil2.Sdk.SignService;
 using Lykke.Bil2.Sdk.SignService.Models;
 using Lykke.Bil2.Sdk.SignService.Services;
 using Lykke.Bil2.Sdk.SignService.Settings;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Bil2.WebClient.Exceptions;
 using Lykke.Sdk.Settings;
 using Moq;

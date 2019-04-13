@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
+using Lykke.Bil2.SharedDomain;
 
 namespace TransactionsExecutorExample.Services
 {

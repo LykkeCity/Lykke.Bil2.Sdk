@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common.Cryptography;
 using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.Common.JsonConverters;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.Common

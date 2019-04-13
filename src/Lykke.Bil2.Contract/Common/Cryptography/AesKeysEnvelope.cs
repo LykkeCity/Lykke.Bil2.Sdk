@@ -1,4 +1,5 @@
 ﻿using System;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.Common.Cryptography

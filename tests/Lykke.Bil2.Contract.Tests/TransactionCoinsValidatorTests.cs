@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Numerics;
 using NUnit.Framework;
 
@@ -18,7 +18,7 @@ namespace Lykke.Bil2.Contract.Tests
 
             var coinToSpend = new CoinToSpend
             (
-                new CoinReference("1", 1),
+                new CoinId("1", 1),
                 new Asset("KIN"),
                 UMoney.Create(100, 3),
                 "A"
@@ -75,7 +75,7 @@ namespace Lykke.Bil2.Contract.Tests
                 .Split(',')
                 .Select(asset => new CoinToSpend
                 (
-                    new CoinReference("1", 1),
+                    new CoinId("1", 1),
                     new Asset(asset),
                     UMoney.Create(100, 3),
                     "A"
@@ -131,7 +131,7 @@ namespace Lykke.Bil2.Contract.Tests
                 .Select(x => x.Split(':'))
                 .Select(x => new CoinToSpend
                 (
-                    new CoinReference("1", 1),
+                    new CoinId("1", 1),
                     new Asset(x[0]),
                     UMoney.Create(int.Parse(x[1]), 3),
                     "A"
@@ -174,7 +174,7 @@ namespace Lykke.Bil2.Contract.Tests
         {
             var coinToSpend = new CoinToSpend
             (
-                new CoinReference("1", 1),
+                new CoinId("1", 1),
                 new Asset("KIN"),
                 UMoney.Create(100, 3),
                 "A"

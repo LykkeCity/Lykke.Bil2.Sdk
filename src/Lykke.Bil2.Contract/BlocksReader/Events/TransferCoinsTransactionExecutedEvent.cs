@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -43,7 +44,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Coins which were spent within the transaction.
         /// </summary>
         [JsonProperty("spentCoins")]
-        public IReadOnlyCollection<CoinReference> SpentCoins { get; }
+        public IReadOnlyCollection<CoinId> SpentCoins { get; }
 
         /// <summary>
         /// Optional.
@@ -87,7 +88,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             int transactionNumber,
             string transactionId,
             IReadOnlyCollection<ReceivedCoin> receivedCoins,
-            IReadOnlyCollection<CoinReference> spentCoins,
+            IReadOnlyCollection<CoinId> spentCoins,
             IReadOnlyCollection<Fee> fees = null,
             bool? isIrreversible = null)
         {

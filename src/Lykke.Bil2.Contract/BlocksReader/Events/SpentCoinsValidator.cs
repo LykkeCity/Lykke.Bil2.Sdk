@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Bil2.SharedDomain;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
     internal static class SpentCoinsValidator
     {
-        public static void Validate(IReadOnlyCollection<CoinReference> spentCoins)
+        public static void Validate(IReadOnlyCollection<CoinId> spentCoins)
         {
             if(spentCoins == null)
                 throw new ArgumentNullException(nameof(spentCoins));
