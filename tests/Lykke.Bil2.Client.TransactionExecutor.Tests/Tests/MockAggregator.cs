@@ -9,7 +9,9 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
         public Mock<IHealthProvider> HealthProvider { get; set; }
 
-        public Mock<IIntegrationInfoService> IntegrationInfoService { get; set; }
+        public Mock<IBlockchainInfoProvider> BlockchainInfoProvider { get; set; }
+
+        public Mock<IDependenciesInfoProvider> DependenciesInfoProvider { get; set; }
 
         public Mock<ITransferAmountTransactionsEstimator> TransactionEstimator { get; set; }
 
@@ -21,8 +23,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
         public Mock<ITransactionsStateProvider> TransactionStateProvider { get; set; }
 
-        public Mock<ITransferCoinsTransactionsBuilder> TransferCoinsTransactionsBuilder { get; set; } = null;
+        public Mock<ITransferCoinsTransactionsBuilder> TransferCoinsTransactionsBuilder { get; set; }
 
-        public Mock<ITransferCoinsTransactionsEstimator> TransferCoinsTransactionsEstimator { get; set; } = null;
+        public Mock<ITransferCoinsTransactionsEstimator> TransferCoinsTransactionsEstimator { get; set; }
     }
 }

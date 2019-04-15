@@ -22,5 +22,10 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Settings
         /// Period of integration health monitoring.
         /// </summary>
         TimeSpan HealthMonitoringPeriod { get; }
+
+        /// <summary>
+        /// Expiration period of the dependencies info cache
+        /// </summary>
+        TimeSpan DependenciesInfoCacheExpirationPeriod { get; }
     }
 }

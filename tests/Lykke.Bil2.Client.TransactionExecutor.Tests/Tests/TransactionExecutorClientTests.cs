@@ -8,7 +8,6 @@ using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
 using Lykke.Bil2.Sdk.TransactionsExecutor;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Exceptions;
-using Lykke.Bil2.Sdk.TransactionsExecutor.Models;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Repositories;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Settings;
@@ -43,6 +42,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     LogsConnString = "empty"
                 },
                 HealthMonitoringPeriod = TimeSpan.FromSeconds(10),
+                DependenciesInfoCacheExpirationPeriod = TimeSpan.FromMinutes(1),
                 NodeUrl = "http://localhost:7777/api",
                 NodeUser = "user",
                 NodePassword = "password",
@@ -66,19 +66,10 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_is_alive)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
-
-                options.AddressValidatorFactory = c => aggregator.AddressValidator.Object;
-                options.HealthProviderFactory = c => aggregator.HealthProvider.Object;
-                options.IntegrationInfoServiceFactory = c => aggregator.IntegrationInfoService.Object;
-                options.TransferAmountTransactionsEstimatorFactory = c => aggregator.TransactionEstimator.Object;
-                options.TransactionBroadcasterFactory = c => aggregator.TransactionBroadcaster.Object;
-                options.TransferAmountTransactionsBuilderFactory = c => aggregator.TransferAmountTransactionBuilder.Object;
-                options.TransactionsStateProviderFactory = c => aggregator.TransactionStateProvider.Object;
-                options.DisableLogging = true;
             });
 
             //ACT
@@ -96,40 +87,29 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var blockchainInfo = new BlockchainInfo(123, DateTime.UtcNow);
             var dependencies = new Dictionary<string, DependencyInfo>()
             {
-                {"dependency", new DependencyInfo(new Version(1, 0, 0),
-                    new Version(1, 0, 0))},
+                {"dependency", new DependencyInfo(new Semver("1.0.0"), new Semver("1.0.0"))}
             };
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_integration_info)}";
-                aggregator.IntegrationInfoService.Setup(x => x.GetInfoAsync())
-                    .ReturnsAsync(new IntegrationInfo(blockchainInfo, dependencies));
+                aggregator.BlockchainInfoProvider.Setup(x => x.GetInfoAsync()).ReturnsAsync(blockchainInfo);
+                aggregator.DependenciesInfoProvider.Setup(x => x.GetInfoAsync()).ReturnsAsync(dependencies);
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT
             var result = await client.GetIntegrationInfoAsync();
 
             //ASSERT
-            var dependency = dependencies.First();
+            var (dependencyName, dependencyInfo) = dependencies.First();
             Assert.True(result != null);
             Assert.True(result.Blockchain.LatestBlockMoment == blockchainInfo.LatestBlockMoment);
             Assert.True(result.Blockchain.LatestBlockNumber == blockchainInfo.LatestBlockNumber);
-            Assert.True(result.Dependencies[dependency.Key].LatestAvailableVersion == dependency.Value.LatestAvailableVersion);
-            Assert.True(result.Dependencies[dependency.Key].RunningVersion == dependency.Value.RunningVersion);
+            Assert.True(result.Dependencies[dependencyName].LatestAvailableVersion.Equals(dependencyInfo.LatestAvailableVersion));
+            Assert.True(result.Dependencies[dependencyName].RunningVersion.Equals(dependencyInfo.RunningVersion));
         }
 
         [Test]
@@ -144,22 +124,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_address_validity)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.AddressValidator.Setup(x => x.ValidateAsync(address, tagType, tag))
                     .ReturnsAsync(new AddressValidityResponse(validationResult));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT
@@ -179,22 +149,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_transfer_amount_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransferAmountTransactionBuilder.Setup(x => x.BuildTransferAmountAsync(It.IsAny<BuildTransferAmountTransactionRequest>()))
                     .ReturnsAsync(new BuildTransactionResponse(Base58String.Encode(transactionResponse)));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT
@@ -221,22 +181,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_building_transfer_amount_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransferAmountTransactionBuilder.Setup(x => x.BuildTransferAmountAsync(It.IsAny<BuildTransferAmountTransactionRequest>()))
                     .ThrowsAsync(new RequestValidationException("NOT VALID"));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -262,7 +212,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Node_issues_while_building_transfer_amount_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
@@ -271,16 +221,6 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                         new TransactionBuildingException(
                             TransactionBuildingError.RetryLater,
                             "Node is too busy"));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -311,22 +251,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Estimate_transfer_amount_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransactionEstimator.Setup(x => x.EstimateTransferAmountAsync(It.IsAny<EstimateTransferAmountTransactionRequest>()))
                     .ReturnsAsync(new EstimateTransactionResponse(fees));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT
@@ -357,22 +287,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_while_estimating_transfer_amount_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransactionEstimator.Setup(x => x.EstimateTransferAmountAsync(It.IsAny<EstimateTransferAmountTransactionRequest>()))
                     .ThrowsAsync(new RequestValidationException("Not VALID"));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -399,22 +319,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Broadcast_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransactionBroadcaster.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
                     .Returns(Task.CompletedTask);
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -432,22 +342,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_broadcast_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransactionBroadcaster.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
                     .ThrowsAsync(new TransactionBroadcastingException(TransactionBroadcastingError.RetryLater, "Error"));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -466,22 +366,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>(options =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Internal_server_error_broadcast_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransactionBroadcaster.Setup(x => x.BroadcastAsync(It.IsAny<BroadcastTransactionRequest>()))
                     .ThrowsAsync(new Exception("Error"));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -501,7 +391,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 var rawObjectsRepository = new Mock<IRawObjectReadOnlyRepository>();
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Transaction_raw)}";
@@ -510,16 +400,6 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     .ReturnsAsync(rawTransaction);
 
                 options.RawObjectsReadOnlyRepositoryFactory = (name, context) => rawObjectsRepository.Object;
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT
@@ -539,7 +419,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 var rawObjectsRepository = new Mock<IRawObjectReadOnlyRepository>();
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Block_raw)}";
@@ -548,16 +428,6 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     .ReturnsAsync(rawBlock);
 
                 options.RawObjectsReadOnlyRepositoryFactory = (name, context) => rawObjectsRepository.Object;
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT
@@ -578,7 +448,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 var rawTransactionReadOnlyRepository = new Mock<IRawObjectReadOnlyRepository>();
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Check_timeout)}";
@@ -591,16 +461,6 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     });
 
                 options.RawObjectsReadOnlyRepositoryFactory = (name, context) => rawTransactionReadOnlyRepository.Object;
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             }, timeout);
 
             //ACT && ASSERT
@@ -623,22 +483,12 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Address_format)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.AddressFormatsProvider.Setup(x => x.GetFormatsAsync(address)).ReturnsAsync(
                     new AddressFormatsResponse(formats));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT
@@ -667,25 +517,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_transfer_coins_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransferCoinsTransactionsBuilder
                     .Setup(x => x.BuildTransferCoinsAsync(It.IsAny<BuildTransferCoinsTransactionRequest>()))
                     .ReturnsAsync(new BuildTransactionResponse(Base58String.Encode(transactionResponse)));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider,
-                    aggregator.TransferCoinsTransactionsBuilder,
-                    aggregator.TransferCoinsTransactionsEstimator);
             });
 
             //ACT
@@ -727,19 +565,10 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             var client = PrepareClient<AppSettings>((options) =>
             {
                 var aggregator = CreateMocks();
+                SetupCommonFactories(options, aggregator);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Not_implemented_transfer_coins_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider);
             });
 
             //ACT && ASSERT
@@ -778,25 +607,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_transfer_coins_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransferCoinsTransactionsBuilder
                     .Setup(x => x.BuildTransferCoinsAsync(It.IsAny<BuildTransferCoinsTransactionRequest>()))
                     .ThrowsAsync(new TransactionBuildingException(TransactionBuildingError.RetryLater, "some error"));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider,
-                    aggregator.TransferCoinsTransactionsBuilder,
-                    aggregator.TransferCoinsTransactionsEstimator);
             });
 
             //ACT && ASSERT
@@ -834,25 +651,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Internal_server_error_transfer_coins_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransferCoinsTransactionsBuilder
                     .Setup(x => x.BuildTransferCoinsAsync(It.IsAny<BuildTransferCoinsTransactionRequest>()))
                     .ThrowsAsync(new Exception("some error"));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider,
-                    aggregator.TransferCoinsTransactionsBuilder,
-                    aggregator.TransferCoinsTransactionsEstimator);
             });
 
             //ACT && ASSERT
@@ -895,25 +700,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Estimate_transfer_coins_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransferCoinsTransactionsEstimator
                     .Setup(x => x.EstimateTransferCoinsAsync(It.IsAny<EstimateTransferCoinsTransactionRequest>()))
                     .ReturnsAsync(new EstimateTransactionResponse(fees));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider,
-                    aggregator.TransferCoinsTransactionsBuilder,
-                    aggregator.TransferCoinsTransactionsEstimator);
             });
 
             //ACT
@@ -956,7 +749,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = 
                     $"{nameof(TransactionExecutorClientTests)}+{nameof(Internal_server_error_estimate_transfer_coins_transaction)}";
@@ -964,18 +757,6 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 aggregator.TransferCoinsTransactionsEstimator
                     .Setup(x => x.EstimateTransferCoinsAsync(It.IsAny<EstimateTransferCoinsTransactionRequest>()))
                     .ThrowsAsync(new Exception("some error"));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider,
-                    aggregator.TransferCoinsTransactionsBuilder,
-                    aggregator.TransferCoinsTransactionsEstimator);
             });
 
             //ACT && ASSERT
@@ -1012,7 +793,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName =
                     $"{nameof(TransactionExecutorClientTests)}+{nameof(Bad_request_estimate_transfer_coins_transaction)}";
@@ -1020,18 +801,6 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 aggregator.TransferCoinsTransactionsEstimator
                     .Setup(x => x.EstimateTransferCoinsAsync(It.IsAny<EstimateTransferCoinsTransactionRequest>()))
                     .ThrowsAsync(new RequestValidationException("some error"));
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider,
-                    aggregator.TransferCoinsTransactionsBuilder,
-                    aggregator.TransferCoinsTransactionsEstimator);
             });
 
             //ACT && ASSERT
@@ -1074,25 +843,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                var aggregator = CreateMocks();
+                var aggregator = CreateMocksAndSetupFactories(options);
 
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Get_transaction_state)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransactionStateProvider
                     .Setup(x => x.GetStateAsync(It.IsAny<string>()))
                     .ReturnsAsync(state);
-
-                ConfigureFactories(options,
-                    aggregator.AddressValidator,
-                    aggregator.HealthProvider,
-                    aggregator.IntegrationInfoService,
-                    aggregator.TransactionEstimator,
-                    aggregator.TransactionBroadcaster,
-                    aggregator.TransferAmountTransactionBuilder,
-                    aggregator.AddressFormatsProvider,
-                    aggregator.TransactionStateProvider,
-                    aggregator.TransferCoinsTransactionsBuilder,
-                    aggregator.TransferCoinsTransactionsEstimator);
             });
 
             //ACT
@@ -1104,6 +861,13 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             Assert.True(result.State == state);
         }
 
+        private static MockAggregator CreateMocksAndSetupFactories(TransactionsExecutorServiceOptions<AppSettings> options)
+        {
+            var aggregator = CreateMocks();
+            SetupAllFactories(options, aggregator);
+
+            return aggregator;
+        }
 
         private static MockAggregator CreateMocks()
         {
@@ -1111,7 +875,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             {
                 AddressValidator = new Mock<IAddressValidator>(),
                 HealthProvider = new Mock<IHealthProvider>(),
-                IntegrationInfoService = new Mock<IIntegrationInfoService>(),
+                BlockchainInfoProvider = new Mock<IBlockchainInfoProvider>(),
+                DependenciesInfoProvider = new Mock<IDependenciesInfoProvider>(),
                 TransactionEstimator = new Mock<ITransferAmountTransactionsEstimator>(),
                 TransactionBroadcaster = new Mock<ITransactionBroadcaster>(),
                 TransferAmountTransactionBuilder = new Mock<ITransferAmountTransactionsBuilder>(),
@@ -1124,33 +889,33 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             return aggregator;
         }
 
-        private static void ConfigureFactories(TransactionsExecutorServiceOptions<AppSettings> options,
-            Mock<IAddressValidator> addressValidator,
-            Mock<IHealthProvider> healthProvider,
-            Mock<IIntegrationInfoService> integrationInfoService,
-            Mock<ITransferAmountTransactionsEstimator> transactionEstimator,
-            Mock<ITransactionBroadcaster> transactionBroadcaster,
-            Mock<ITransferAmountTransactionsBuilder> transferAmountTransactionBuilder,
-            Mock<IAddressFormatsProvider> addressFormatsProvider,
-            Mock<ITransactionsStateProvider> transactionStateProvider,
-            Mock<ITransferCoinsTransactionsBuilder> transferCoinsTransactionsBuilder = null,
-            Mock<ITransferCoinsTransactionsEstimator> transferCoinsTransactionsEstimator = null)
+        private static void SetupAllFactories(
+            TransactionsExecutorServiceOptions<AppSettings> options,
+            MockAggregator aggregator)
         {
-            options.AddressFormatsProviderFactory = c => addressFormatsProvider.Object;
-            options.AddressValidatorFactory = c => addressValidator.Object;
-            options.HealthProviderFactory = c => healthProvider.Object;
-            options.IntegrationInfoServiceFactory = c => integrationInfoService.Object;
-            options.TransferAmountTransactionsEstimatorFactory = c => transactionEstimator.Object;
-            options.TransactionBroadcasterFactory = c => transactionBroadcaster.Object;
-            options.TransferAmountTransactionsBuilderFactory = c => transferAmountTransactionBuilder.Object;
-            options.TransactionsStateProviderFactory = c => transactionStateProvider.Object;
+            SetupCommonFactories(options, aggregator);
+            SetupTransferCoinsModelFactories(options, aggregator);
+        }
+
+        private static void SetupTransferCoinsModelFactories(TransactionsExecutorServiceOptions<AppSettings> options,
+            MockAggregator aggregator)
+        {
+            options.TransferCoinsTransactionsBuilderFactory = c => aggregator.TransferCoinsTransactionsBuilder.Object;
+            options.TransferCoinsTransactionsEstimatorFactory = c => aggregator.TransferCoinsTransactionsEstimator.Object;
+        }
+
+        private static void SetupCommonFactories(TransactionsExecutorServiceOptions<AppSettings> options, MockAggregator aggregator)
+        {
+            options.AddressFormatsProviderFactory = c => aggregator.AddressFormatsProvider.Object;
+            options.AddressValidatorFactory = c => aggregator.AddressValidator.Object;
+            options.HealthProviderFactory = c => aggregator.HealthProvider.Object;
+            options.BlockchainInfoServiceFactory = c => aggregator.BlockchainInfoProvider.Object;
+            options.DependenciesInfoProvider = c => aggregator.DependenciesInfoProvider.Object;
+            options.TransferAmountTransactionsEstimatorFactory = c => aggregator.TransactionEstimator.Object;
+            options.TransactionBroadcasterFactory = c => aggregator.TransactionBroadcaster.Object;
+            options.TransferAmountTransactionsBuilderFactory = c => aggregator.TransferAmountTransactionBuilder.Object;
+            options.TransactionsStateProviderFactory = c => aggregator.TransactionStateProvider.Object;
             options.DisableLogging = true;
-
-            if (transferCoinsTransactionsBuilder != null)
-                options.TransferCoinsTransactionsBuilderFactory = c => transferCoinsTransactionsBuilder.Object;
-
-            if (transferCoinsTransactionsEstimator != null)
-                options.TransferCoinsTransactionsEstimatorFactory = c => transferCoinsTransactionsEstimator.Object;
         }
 
         private ITransactionsExecutorApi PrepareClient<TAppSettings>(Action<TransactionsExecutorServiceOptions<TAppSettings>> config,

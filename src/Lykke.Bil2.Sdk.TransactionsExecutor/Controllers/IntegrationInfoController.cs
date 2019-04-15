@@ -12,26 +12,39 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     internal class IntegrationInfoController : ControllerBase
     {
-        private readonly IIntegrationInfoService _integrationInfoService;
+        private readonly IBlockchainInfoProvider _blockchainInfoProvider;
+        private readonly IDependenciesInfoProvider _dependenciesInfoProvider;
 
-        public IntegrationInfoController(IIntegrationInfoService integrationInfoService)
+        public IntegrationInfoController(
+            IBlockchainInfoProvider blockchainInfoProvider,
+            IDependenciesInfoProvider dependenciesInfoProvider)
         {
-            _integrationInfoService = integrationInfoService;
+            _blockchainInfoProvider = blockchainInfoProvider;
+            _dependenciesInfoProvider = dependenciesInfoProvider;
         }
 
         [HttpGet]
         public async Task<ActionResult<IntegrationInfoResponse>> GetInfo()
         {
-            var info = await _integrationInfoService.GetInfoAsync();
-            if (info == null)
+            var blockchainInfoTask = _blockchainInfoProvider.GetInfoAsync();
+            var dependenciesInfoTask = _dependenciesInfoProvider.GetInfoAsync();
+
+            var blockchainInfo = await blockchainInfoTask;
+            if (blockchainInfo == null)
             {
-                throw new InvalidOperationException("Not null response object expected");
+                throw new InvalidOperationException("Not null blockchain info expected");
+            }
+
+            var dependenciesInfo = await dependenciesInfoTask;
+            if (dependenciesInfo == null)
+            {
+                throw new InvalidOperationException("Not null dependencies info expected");
             }
 
             var response = new IntegrationInfoResponse
             (
-                info.Blockchain,
-                info.Dependencies
+                blockchainInfo,
+                dependenciesInfo
             );
 
             return Ok(response);

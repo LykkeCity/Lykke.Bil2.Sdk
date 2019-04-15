@@ -1,6 +1,6 @@
 ﻿using System;
+using Lykke.Bil2.Contract.Common;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
 {
@@ -13,25 +13,23 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// Running version of the dependency.
         /// </summary>
         [JsonProperty("runningVersion")]
-        [JsonConverter(typeof(VersionConverter))]
-        public Version RunningVersion { get; }
+        public Semver RunningVersion { get; }
 
         /// <summary>
         /// Latest available version of the dependency. 
         /// </summary>
         [JsonProperty("latestAvailableVersion")]
-        [JsonConverter(typeof(VersionConverter))]
-        public Version LatestAvailableVersion { get; }
+        public Semver LatestAvailableVersion { get; }
 
         /// <summary>
         /// Integration dependency info.
         /// </summary>
         /// <param name="runningVersion">Running version of the dependency.</param>
         /// <param name="latestAvailableVersion">Latest available version of the dependency.</param>
-        public DependencyInfo(Version runningVersion, Version latestAvailableVersion)
+        public DependencyInfo(Semver runningVersion, Semver latestAvailableVersion)
         {
-            RunningVersion = runningVersion;
-            LatestAvailableVersion = latestAvailableVersion;
+            RunningVersion = runningVersion ?? throw new ArgumentNullException(nameof(runningVersion));
+            LatestAvailableVersion = latestAvailableVersion ?? throw new ArgumentNullException(nameof(latestAvailableVersion));
         }
     }
 }
