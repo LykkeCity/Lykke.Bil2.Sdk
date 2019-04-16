@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
-using Lykke.Bil2.Contract.TransactionsExecutor;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
+using Lykke.Bil2.SharedDomain;
 
 namespace TransactionsExecutorExample.Services
 {

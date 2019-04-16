@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -19,7 +20,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// ID of the block.
         /// </summary>
         [JsonProperty("blockId")]
-        public string BlockId { get; }
+        public BlockId BlockId { get; }
 
         /// <summary>
         /// Number of the transaction in the block.
@@ -31,7 +32,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// ID of the transaction.
         /// </summary>
         [JsonProperty("transactionId")]
-        public string TransactionId { get; }
+        public TransactionId TransactionId { get; }
 
         /// <summary>
         /// Balance changing operations.
@@ -69,31 +70,25 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Flag which indicates, if transaction is irreversible.
         /// </param>
         public TransferAmountTransactionExecutedEvent(
-            string blockId,
+            BlockId blockId,
             int transactionNumber,
-            string transactionId,
+            TransactionId transactionId,
             IReadOnlyCollection<BalanceChange> balanceChanges,
             IReadOnlyCollection<Fee> fees,
             bool? isIrreversible = null)
         {
-            if (string.IsNullOrWhiteSpace(blockId))
-                throw new ArgumentException("Should be not empty string", nameof(blockId));
-
             if (transactionNumber < 0)
                 throw new ArgumentOutOfRangeException(nameof(transactionNumber), transactionNumber, "Should be zero or positive number");
-
-            if (string.IsNullOrWhiteSpace(transactionId))
-                throw new ArgumentException("Should be not empty string", nameof(transactionId));
 
             if (fees == null)
                 throw new ArgumentNullException(nameof(fees));
             
             BalanceChangesValidator.Validate(balanceChanges);
             FeesValidator.ValidateFeesInResponse(fees);
-            
-            BlockId = blockId;
+
+            BlockId = blockId ?? throw new ArgumentNullException(nameof(blockId));
             TransactionNumber = transactionNumber;
-            TransactionId = transactionId;
+            TransactionId = transactionId ?? throw new ArgumentNullException(nameof(transactionId));
             BalanceChanges = balanceChanges;
             Fees = fees;
             IsIrreversible = isIrreversible;

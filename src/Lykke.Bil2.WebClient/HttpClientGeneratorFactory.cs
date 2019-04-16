@@ -17,7 +17,6 @@ namespace Lykke.Bil2.WebClient
             if (optionConfiguration == null)
                 throw new ArgumentNullException(nameof(optionConfiguration));
 
-            // TODO: Request timeout
             var options = new HttpClientGeneratorOptions();
             optionConfiguration(options);
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
+using Lykke.Bil2.SharedDomain;
 
 namespace Lykke.Bil2.Sdk.TransactionsExecutor.Services
 {
@@ -13,6 +14,6 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Services
         /// Should return information about blockchain-specific integration dependencies.
         /// All required information could be gathered synchronously in the call, no caching required.
         /// </summary>
-        Task<IReadOnlyDictionary<string, DependencyInfo>> GetInfoAsync();
+        Task<IReadOnlyDictionary<DependencyName, DependencyInfo>> GetInfoAsync();
     }
 }

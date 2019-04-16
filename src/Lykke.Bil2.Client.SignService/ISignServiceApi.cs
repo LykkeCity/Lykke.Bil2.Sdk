@@ -4,7 +4,9 @@ using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common.Responses;
 using Lykke.Bil2.Contract.SignService.Requests;
 using Lykke.Bil2.Contract.SignService.Responses;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Bil2.WebClient.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using Refit;
 
 namespace Lykke.Bil2.Client.SignService
@@ -48,7 +50,7 @@ namespace Lykke.Bil2.Client.SignService
         /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Post("/api/addresses/{address}/tags")]
-        Task<CreateAddressTagResponse> CreateAddressTagAsync(string address, [Body] CreateAddressTagRequest body);
+        Task<CreateAddressTagResponse> CreateAddressTagAsync(Address address, [Body] CreateAddressTagRequest body);
 
         /// <summary>
         /// Should sign the given transaction with the specified private keys.

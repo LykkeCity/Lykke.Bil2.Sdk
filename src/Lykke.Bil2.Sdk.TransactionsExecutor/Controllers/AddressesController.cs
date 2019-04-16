@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
+using Lykke.Bil2.SharedDomain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
@@ -27,10 +27,13 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
 
         [HttpGet("{address}/validity")]
         public async Task<ActionResult<AddressValidityResponse>> Validate(
-            string address, 
+            [FromRoute] Address address, 
             [FromQuery] AddressTagType? tagType = null, 
-            [FromQuery] string tag = null)
+            [FromQuery] AddressTag tag = null)
         {
+            if (address == null)
+                throw RequestValidationException.ShouldBeNotNull(nameof(address));
+
             if (tagType.HasValue && tag == null)
                 throw new RequestValidationException("If the tag type is specified, the tag should be specified too", new [] {nameof(tagType), nameof(tag)});
 
@@ -44,8 +47,11 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
         }
 
         [HttpGet("{address}/formats")]
-        public async Task<ActionResult<AddressFormatsResponse>> GetFormats(string address)
+        public async Task<ActionResult<AddressFormatsResponse>> GetFormats([FromRoute] Address address)
         {
+            if (address == null)
+                throw RequestValidationException.ShouldBeNotNull(nameof(address));
+
             var response = await _addressFormatsProvider.GetFormatsAsync(address);
             if (response == null)
             {

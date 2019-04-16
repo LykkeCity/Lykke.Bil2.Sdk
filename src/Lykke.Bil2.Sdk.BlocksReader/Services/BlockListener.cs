@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Lykke.Bil2.Contract.BlocksReader.Events;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.Sdk.BlocksReader.Repositories;
 using Lykke.Bil2.Sdk.Repositories;
+using Lykke.Bil2.SharedDomain;
 
 namespace Lykke.Bil2.Sdk.BlocksReader.Services
 {
@@ -27,7 +27,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             return Task.CompletedTask;
         }
 
-        public Task HandleRawBlockAsync(Base58String rawBlock, string blockId)
+        public Task HandleRawBlockAsync(Base58String rawBlock, BlockId blockId)
         {
             return _rawObjectsRepository.SaveAsync(RawObjectType.Block, blockId, rawBlock);
         }

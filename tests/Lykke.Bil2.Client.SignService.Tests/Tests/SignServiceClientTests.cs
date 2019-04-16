@@ -13,6 +13,7 @@ using Lykke.Bil2.Sdk.SignService;
 using Lykke.Bil2.Sdk.SignService.Models;
 using Lykke.Bil2.Sdk.SignService.Services;
 using Lykke.Bil2.Sdk.SignService.Settings;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Bil2.WebClient.Exceptions;
 using Lykke.Sdk.Settings;
 using Moq;
@@ -130,7 +131,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
                 EncryptedString.Encrypt(MyPublicKey, MyPrivateKey2.DecodeToString()),
             };
 
-            var transactionId = "TransactionId";
+            var transactionId = new TransactionId("TransactionId");
             var signedTransaction = "From.x01.To.x02.Amount.100.Signature.F1T2A100";
 
             var client = PrepareClient<AppSettings>((options) =>

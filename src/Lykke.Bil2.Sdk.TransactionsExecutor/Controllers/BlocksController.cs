@@ -5,6 +5,7 @@ using Lykke.Bil2.Contract.Common.Responses;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
 using Lykke.Bil2.Sdk.Repositories;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Repositories;
+using Lykke.Bil2.SharedDomain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
@@ -22,10 +23,10 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
         }
 
         [HttpGet("{blockId}/raw")]
-        public async Task<ActionResult<RawObjectResponse>> GetRaw(string blockId)
+        public async Task<ActionResult<RawObjectResponse>> GetRaw([FromRoute] BlockId blockId)
         {
-            if (string.IsNullOrWhiteSpace(blockId))
-                throw RequestValidationException.ShouldBeNotEmptyString(blockId);
+            if (blockId == null)
+                throw RequestValidationException.ShouldBeNotNull(nameof(blockId));
 
             var raw = await _rawObjectsRepository.GetOrDefaultAsync(RawObjectType.Block, blockId);
             if (raw == null)

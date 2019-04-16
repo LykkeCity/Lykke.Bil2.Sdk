@@ -1,4 +1,5 @@
 ﻿using System;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -18,23 +19,20 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// ID of the last irreversible block.
         /// </summary>
         [JsonProperty("blockId")]
-        public string BlockId { get; }
+        public BlockId BlockId { get; }
 
         /// <summary>
         /// Should be published when last irreversible block number is updated.
         /// </summary>
         /// <param name="blockNumber">Number of the last irreversible block.</param>
         /// <param name="blockId">ID of the last irreversible block.</param>
-        public LastIrreversibleBlockUpdatedEvent(long blockNumber, string blockId)
+        public LastIrreversibleBlockUpdatedEvent(long blockNumber, BlockId blockId)
         {
             if (blockNumber < 0)
                 throw new ArgumentOutOfRangeException(nameof(blockNumber), blockNumber, "Should be zero or positive number");
 
-            if (string.IsNullOrWhiteSpace(blockId))
-                throw new ArgumentException("Should be not empty string", nameof(blockId));
-
             BlockNumber = blockNumber;
-            BlockId = blockId;
+            BlockId = blockId ?? throw new ArgumentNullException(nameof(blockId));
         }
     }
 }

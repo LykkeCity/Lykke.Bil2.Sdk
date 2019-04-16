@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common.Responses;
-using Lykke.Bil2.Contract.TransactionsExecutor;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Bil2.WebClient.Exceptions;
 using Refit;
 

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.BlocksReader.Events;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.SharedDomain;
 
 namespace Lykke.Bil2.Sdk.BlocksReader.Services
 {
@@ -19,7 +19,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
         /// <summary>
         /// Should be called when raw block is read.
         /// </summary>
-        Task HandleRawBlockAsync(Base58String rawBlock, string blockId);
+        Task HandleRawBlockAsync(Base58String rawBlock, BlockId blockId);
 
         /// <summary>
         /// Should be called when requested block is not found.

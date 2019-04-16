@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.SharedDomain;
 using NUnit.Framework;
 
 namespace Lykke.Bil2.Contract.Tests

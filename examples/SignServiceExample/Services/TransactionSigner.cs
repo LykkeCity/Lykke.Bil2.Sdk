@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.SignService.Responses;
 using Lykke.Bil2.Sdk.SignService.Services;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 using SignServiceExample.Settings;
 

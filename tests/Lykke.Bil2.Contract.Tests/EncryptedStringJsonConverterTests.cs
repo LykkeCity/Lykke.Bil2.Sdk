@@ -1,4 +1,5 @@
 ﻿using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 using NUnit.Framework;
 

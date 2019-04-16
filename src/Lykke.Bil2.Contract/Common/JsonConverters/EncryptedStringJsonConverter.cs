@@ -1,6 +1,8 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common.Exceptions;
+using Lykke.Bil2.SharedDomain;
+using Lykke.Bil2.SharedDomain.Exceptions;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.Common.JsonConverters

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Contract.Common.Exceptions;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Numerics;
 using NUnit.Framework;
 

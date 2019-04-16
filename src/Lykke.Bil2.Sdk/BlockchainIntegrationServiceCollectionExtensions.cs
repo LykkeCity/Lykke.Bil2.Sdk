@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Sdk.AspNetCore;
 using Lykke.Bil2.Sdk.Services;
+using Lykke.Bil2.SharedDomain;
 using Lykke.Logs.Loggers.LykkeSlack;
 using Lykke.Numerics;
 using Lykke.Sdk;

@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using AzureStorage;
 using AzureStorage.Blob;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Sdk.Repositories;
+using Lykke.Bil2.SharedDomain;
 using Lykke.SettingsReader;
 
 namespace Lykke.Bil2.Sdk.BlocksReader.Repositories

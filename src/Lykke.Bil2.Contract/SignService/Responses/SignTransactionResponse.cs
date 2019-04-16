@@ -1,6 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.SignService.Responses
@@ -21,14 +21,14 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// ID of the signed transaction in the blockchain.
         /// </summary>
         [JsonProperty("transactionId")]
-        public string TransactionId { get; }
+        public TransactionId TransactionId { get; }
 
         /// <summary>
         /// Endpoint: [POST] /api/transactions/signed
         /// </summary>
         /// <param name="signedTransaction">Implementation specific signed transaction.</param>
         /// <param name="transactionId">ID of the signed transaction in the blockchain.</param>
-        public SignTransactionResponse(Base58String signedTransaction, string transactionId)
+        public SignTransactionResponse(Base58String signedTransaction, TransactionId transactionId)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(signedTransaction));
