@@ -20,7 +20,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// ID of the block.
         /// </summary>
         [JsonProperty("blockId")]
-        public string BlockId { get; }
+        public BlockId BlockId { get; }
 
         /// <summary>
         /// Number of the transaction in the block.
@@ -32,7 +32,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// ID of the transaction.
         /// </summary>
         [JsonProperty("transactionId")]
-        public string TransactionId { get; }
+        public TransactionId TransactionId { get; }
 
         /// <summary>
         /// Coins which were received within the transaction.
@@ -84,30 +84,24 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Flag which indicates, if transaction is irreversible.
         /// </param>
         public TransferCoinsTransactionExecutedEvent(
-            string blockId,
+            BlockId blockId,
             int transactionNumber,
-            string transactionId,
+            TransactionId transactionId,
             IReadOnlyCollection<ReceivedCoin> receivedCoins,
             IReadOnlyCollection<CoinId> spentCoins,
             IReadOnlyCollection<Fee> fees = null,
             bool? isIrreversible = null)
         {
-            if (string.IsNullOrWhiteSpace(blockId))
-                throw new ArgumentException("Should be not empty string", nameof(blockId));
-
             if (transactionNumber < 0)
                 throw new ArgumentOutOfRangeException(nameof(transactionNumber), transactionNumber, "Should be zero or positive number");
-
-            if (string.IsNullOrWhiteSpace(transactionId))
-                throw new ArgumentException("Should be not empty string", nameof(transactionId));
 
             ReceivedCoinsValidator.Validate(receivedCoins);
             SpentCoinsValidator.Validate(spentCoins);
             FeesValidator.ValidateFeesInResponse(fees);
 
-            BlockId = blockId;
+            BlockId = blockId ?? throw new ArgumentNullException(nameof(blockId));
             TransactionNumber = transactionNumber;
-            TransactionId = transactionId;
+            TransactionId = transactionId ?? throw new ArgumentNullException(nameof(transactionId));
             ReceivedCoins = receivedCoins;
             SpentCoins = spentCoins;
             Fees = fees;

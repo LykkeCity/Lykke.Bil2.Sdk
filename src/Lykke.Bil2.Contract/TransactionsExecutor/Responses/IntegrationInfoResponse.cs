@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
@@ -21,7 +22,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// Info concerning services on which integration is dependent. This should include node and all intermediate APIs.
         /// </summary>
         [JsonProperty("dependencies")]
-        public IReadOnlyDictionary<string, DependencyInfo> Dependencies { get; }
+        public IReadOnlyDictionary<DependencyName, DependencyInfo> Dependencies { get; }
 
         /// <summary>
         /// Endpoint: [GET] /api/integration-info
@@ -32,7 +33,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// </param>
         public IntegrationInfoResponse(
             BlockchainInfo blockchain,
-            IReadOnlyDictionary<string, DependencyInfo> dependencies)
+            IReadOnlyDictionary<DependencyName, DependencyInfo> dependencies)
         {
             Blockchain = blockchain ?? throw new ArgumentNullException(nameof(blockchain));
             Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));

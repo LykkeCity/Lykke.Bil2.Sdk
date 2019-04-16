@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Lykke.Bil2.SharedDomain;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
@@ -20,7 +21,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// ID of the block.
         /// </summary>
         [JsonProperty("blockId")]
-        public string BlockId { get; }
+        public BlockId BlockId { get; }
 
         /// <summary>
         /// Moment when the block is mined.
@@ -46,7 +47,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </summary>
         [CanBeNull]
         [JsonProperty("previousBlockId")]
-        public string PreviousBlockId { get; }
+        public BlockId PreviousBlockId { get; }
 
         /// <summary>
         /// Should be published when a block header has been read.
@@ -62,17 +63,14 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// </param>
         public BlockHeaderReadEvent(
             long blockNumber,
-            string blockId,
+            BlockId blockId,
             DateTime blockMiningMoment,
             int blockSize,
             int blockTransactionsCount,
-            string previousBlockId = null)
+            BlockId previousBlockId = null)
         {
             if (blockNumber < 0)
                 throw new ArgumentOutOfRangeException(nameof(blockNumber), blockNumber, "Should be zero or positive number");
-
-            if (string.IsNullOrWhiteSpace(blockId))
-                throw new ArgumentException("Should be not empty string", nameof(blockId));
 
             if (blockSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(blockSize), blockSize, "Should be positive number");
@@ -80,11 +78,11 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
             if (blockTransactionsCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(blockTransactionsCount), blockTransactionsCount, "Should be positive number or zero");
 
-            if (blockNumber > 1 && string.IsNullOrWhiteSpace(previousBlockId))
-                throw new ArgumentException("Should be not empty string for the not first block", nameof(previousBlockId));
+            if (blockNumber > 1 && previousBlockId == null)
+                throw new ArgumentNullException(nameof(previousBlockId), "Should be not null for the not first block");
 
             BlockNumber = blockNumber;
-            BlockId = blockId;
+            BlockId = blockId ?? throw new ArgumentNullException(nameof(blockId));
             BlockMiningMoment = blockMiningMoment;
             BlockSize = blockSize;
             BlockTransactionsCount = blockTransactionsCount;

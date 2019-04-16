@@ -9,6 +9,7 @@ using Lykke.Bil2.Sdk.Repositories;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Exceptions;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Repositories;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
+using Lykke.Bil2.SharedDomain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
@@ -128,10 +129,10 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
         }
 
         [HttpGet("{transactionId}/raw")]
-        public async Task<ActionResult<RawObjectResponse>> GetRaw(string transactionId)
+        public async Task<ActionResult<RawObjectResponse>> GetRaw([FromRoute] TransactionId transactionId)
         {
-            if (string.IsNullOrWhiteSpace(transactionId))
-                throw RequestValidationException.ShouldBeNotEmptyString(transactionId);
+            if (transactionId == null)
+                throw RequestValidationException.ShouldBeNotNull(nameof(transactionId));
 
             var raw = await _rawObjectsRepository.GetOrDefaultAsync(RawObjectType.Transaction, transactionId);
             if (raw == null)
@@ -143,10 +144,10 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Controllers
         }
 
         [HttpGet("{transactionId}/state")]
-        public async Task<ActionResult<TransactionStateResponse>> GetState(string transactionId)
+        public async Task<ActionResult<TransactionStateResponse>> GetState([FromRoute] TransactionId transactionId)
         {
-            if (string.IsNullOrWhiteSpace(transactionId))
-                throw RequestValidationException.ShouldBeNotEmptyString(transactionId);
+            if (transactionId == null)
+                throw RequestValidationException.ShouldBeNotNull(nameof(transactionId));
 
             var state = await _transactionsStateProvider.GetStateAsync(transactionId);
 

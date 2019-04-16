@@ -27,7 +27,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             return Task.CompletedTask;
         }
 
-        public Task HandleRawBlockAsync(Base58String rawBlock, string blockId)
+        public Task HandleRawBlockAsync(Base58String rawBlock, BlockId blockId)
         {
             return _rawObjectsRepository.SaveAsync(RawObjectType.Block, blockId, rawBlock);
         }

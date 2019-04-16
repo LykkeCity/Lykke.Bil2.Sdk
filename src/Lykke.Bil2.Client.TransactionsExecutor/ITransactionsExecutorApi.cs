@@ -51,7 +51,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/addresses/{address}/validity")]
-        Task<AddressValidityResponse> GetAddressValidityAsync(string address, [Query] AddressTagType? tagType = null, [Query] string tag = null);
+        Task<AddressValidityResponse> GetAddressValidityAsync(Address address, [Query] AddressTagType? tagType = null, [Query] AddressTag tag = null);
         
         /// <summary>
         /// Optional.
@@ -63,7 +63,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/addresses/{address}/formats")]
-        Task<AddressFormatsResponse> GetAddressFormatsAsync(string address);
+        Task<AddressFormatsResponse> GetAddressFormatsAsync(Address address);
 
         #endregion
 
@@ -187,7 +187,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/transactions/{transactionId}/raw")]
-        Task<RawObjectResponse> GetRawTransactionAsync(string transactionId);
+        Task<RawObjectResponse> GetRawTransactionAsync(TransactionId transactionId);
 
         /// <summary>
         /// Should return transaction state by its id.
@@ -197,7 +197,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/transactions/{transactionId}/state")]
-        Task<TransactionStateResponse> GetTransactionStateAsync(string transactionId);
+        Task<TransactionStateResponse> GetTransactionStateAsync(TransactionId transactionId);
 
         #endregion
 
@@ -213,7 +213,7 @@ namespace Lykke.Bil2.Client.TransactionsExecutor
         /// <exception cref="WebApiException">Any other HTTP-related error</exception>
         /// <exception cref="Exception">Any other error</exception>
         [Get("/api/blocks/{blockId}/raw")]
-        Task<RawObjectResponse> GetRawBlockAsync(string blockId);
+        Task<RawObjectResponse> GetRawBlockAsync(BlockId blockId);
 
         #endregion
     }

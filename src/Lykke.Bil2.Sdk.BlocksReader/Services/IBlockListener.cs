@@ -19,7 +19,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
         /// <summary>
         /// Should be called when raw block is read.
         /// </summary>
-        Task HandleRawBlockAsync(Base58String rawBlock, string blockId);
+        Task HandleRawBlockAsync(Base58String rawBlock, BlockId blockId);
 
         /// <summary>
         /// Should be called when requested block is not found.

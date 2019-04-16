@@ -1,6 +1,6 @@
 ﻿using System;
-using Lykke.Bil2.Contract.Common;
 using Newtonsoft.Json;
+using Lykke.Bil2.SharedDomain;
 
 namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
 {

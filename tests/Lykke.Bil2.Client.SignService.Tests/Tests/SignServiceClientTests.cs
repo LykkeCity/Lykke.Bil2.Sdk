@@ -131,7 +131,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
                 EncryptedString.Encrypt(MyPublicKey, MyPrivateKey2.DecodeToString()),
             };
 
-            var transactionId = "TransactionId";
+            var transactionId = new TransactionId("TransactionId");
             var signedTransaction = "From.x01.To.x02.Amount.100.Signature.F1T2A100";
 
             var client = PrepareClient<AppSettings>((options) =>

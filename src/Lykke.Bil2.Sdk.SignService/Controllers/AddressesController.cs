@@ -6,10 +6,11 @@ using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.SignService.Requests;
 using Lykke.Bil2.Contract.SignService.Responses;
 using Lykke.Bil2.Sdk.SignService.Services;
+using Lykke.Bil2.SharedDomain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lykke.Bil2.Sdk.SignService.Controllers
-{
+{    
     [ApiController]
     [Route("/api/addresses")]
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
@@ -44,10 +45,10 @@ namespace Lykke.Bil2.Sdk.SignService.Controllers
         }
 
         [HttpPost("{address}/tags")]
-        public async Task<ActionResult<CreateAddressTagResponse>> CreateAddressTag(string address, CreateAddressTagRequest request)
+        public async Task<ActionResult<CreateAddressTagResponse>> CreateAddressTag([FromRoute] Address address, [FromBody] CreateAddressTagRequest request)
         {
-            if (string.IsNullOrWhiteSpace(address))
-                throw RequestValidationException.ShouldBeNotEmptyString(nameof(address));
+            if (address == null)
+                throw RequestValidationException.ShouldBeNotNull(nameof(address));
 
             var response = await _addressGenerator.CreateAddressTagAsync(address, request);
             if (response == null)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
+using Lykke.Bil2.SharedDomain;
 
 namespace Lykke.Bil2.Sdk.TransactionsExecutor.Services
 {
@@ -22,7 +23,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Services
             
         }
 
-        public Task<IReadOnlyDictionary<string, DependencyInfo>> GetInfoAsync()
+        public Task<IReadOnlyDictionary<DependencyName, DependencyInfo>> GetInfoAsync()
         {
             const string key = nameof(CachedDependenciesInfoProviderDecorator);
 

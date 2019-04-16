@@ -17,7 +17,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// ID of the block.
         /// </summary>
         [JsonProperty("blockId")]
-        public string BlockId { get; }
+        public BlockId BlockId { get; }
 
         /// <summary>
         /// One-based number of the transaction in the block.
@@ -29,7 +29,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// ID of the transaction.
         /// </summary>
         [JsonProperty("transactionId")]
-        public string TransactionId { get; }
+        public TransactionId TransactionId { get; }
 
         /// <summary>
         /// Code of the error.
@@ -70,27 +70,21 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Can be omitted, if there was no fee spent for the transaction.
         /// </param>
         public TransactionFailedEvent(
-            string blockId,
+            BlockId blockId,
             int transactionNumber,
-            string transactionId,
+            TransactionId transactionId,
             TransactionBroadcastingError errorCode,
             string errorMessage,
             IReadOnlyCollection<Fee> fees = null)
         {
-            if (string.IsNullOrWhiteSpace(blockId))
-                throw new ArgumentException("Should be not empty string", nameof(blockId));
-
             if (transactionNumber < 0)
                 throw new ArgumentOutOfRangeException(nameof(transactionNumber), transactionNumber, "Should be zero or positive number");
 
-            if (string.IsNullOrWhiteSpace(transactionId))
-                throw new ArgumentException("Should be not empty string", nameof(transactionId));
-
             FeesValidator.ValidateFeesInResponse(fees);
 
-            BlockId = blockId;
+            BlockId = blockId ?? throw new ArgumentNullException(nameof(blockId));
             TransactionNumber = transactionNumber;
-            TransactionId = transactionId;
+            TransactionId = transactionId ?? throw new ArgumentNullException(nameof(transactionId));
             ErrorCode = errorCode;
             ErrorMessage = errorMessage;
             Fees = fees;
