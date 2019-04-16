@@ -37,6 +37,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Optional.
         /// Address.
         /// </summary>
+        [CanBeNull]
         [JsonProperty("address")]
         public Address Address { get; }
 
