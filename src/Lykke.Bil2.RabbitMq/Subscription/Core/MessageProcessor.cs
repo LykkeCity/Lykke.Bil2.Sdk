@@ -131,7 +131,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             switch (result)
             {
                 case MessageHandlingResult.SuccessResult _:
-                case MessageHandlingResult.NonTransientErrorResult _:
+                case MessageHandlingResult.NonTransientFailureResult _:
                     CurrentMessage.Ack();
                     break;
                 case MessageHandlingResult.TransientFailureResult tfr:

@@ -4,8 +4,8 @@ namespace Lykke.Bil2.RabbitMq.Subscription
 {
     public abstract class MessageHandlingResult
     {
-        private static readonly NonTransientErrorResult NonTransientErrorResultInstance
-            = new NonTransientErrorResult();
+        private static readonly NonTransientFailureResult NonTransientFailureResultInstance
+            = new NonTransientFailureResult();
         
         private static readonly SuccessResult SuccessResultInstance
             = new SuccessResult();
@@ -16,7 +16,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         
         
         public static MessageHandlingResult NonTransientError()
-            => NonTransientErrorResultInstance;
+            => NonTransientFailureResultInstance;
         
         public static MessageHandlingResult Success()
             => SuccessResultInstance;
@@ -28,9 +28,9 @@ namespace Lykke.Bil2.RabbitMq.Subscription
             => new TransientFailureResult(retryAfter);
         
 
-        public class NonTransientErrorResult : MessageHandlingResult
+        public class NonTransientFailureResult : MessageHandlingResult
         {
-            internal NonTransientErrorResult()
+            internal NonTransientFailureResult()
             {
                 
             }
