@@ -22,6 +22,11 @@ namespace Lykke.Bil2.Sdk.BlocksReader
         public string IntegrationName { get; set; }
 
         /// <summary>
+        /// RabbitMq Vhost
+        /// </summary>
+        public string RabbitVhost { get; set; }
+
+        /// <summary>
         /// Optional.
         /// Provides options to access application settings.
         /// </summary>
@@ -72,7 +77,5 @@ namespace Lykke.Bil2.Sdk.BlocksReader
         /// Disable logging in test scenarios
         /// </summary>
         internal bool DisableLogging { get; set; }
-
-        internal string RabbitVhost { get; set; }
     }
 }

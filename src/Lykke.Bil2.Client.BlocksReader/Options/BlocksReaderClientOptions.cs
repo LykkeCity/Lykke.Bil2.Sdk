@@ -72,6 +72,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
         /// </summary>
         public Func<IServiceProvider, IBlockEventsHandler> BlockEventsHandlerFactory { get; set; }
 
+        /// <summary>
+        /// RabbitMQ Vhost
+        /// </summary>
+        public string RabbitVhost { get; set; }
+
         internal IReadOnlyCollection<string> IntegrationNames => _integrationNames;
         
         private List<string> _integrationNames;
@@ -101,10 +106,5 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
 
             _integrationNames.Add(integrationName);
         }
-
-        /// <summary>
-        /// Use it only in tests
-        /// </summary>
-        internal string RabbitVhost { get; set; }
     }
 }
