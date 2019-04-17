@@ -24,6 +24,10 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
 
         /// <inheritdoc />
         [Optional]
+        public string RabbitVhost { get; set; }
+
+        /// <inheritdoc />
+        [Optional]
         public TimeSpan LastIrreversibleBlockMonitoringPeriod { get; set; }
     }
 }

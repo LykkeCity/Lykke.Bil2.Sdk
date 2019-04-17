@@ -79,6 +79,10 @@ namespace Lykke.Bil2.Sdk
                 lykkeSdkOptions.Swagger = swaggerOptions =>
                 {
                     swaggerOptions.MapType<Version>(() => new Schema{ Type = "string", Format = "version"});
+                    swaggerOptions.MapType<Semver>(() => new Schema{ Type = "string", Format = "version"});
+                    swaggerOptions.MapType<BlockId>(() => new Schema{ Type = "string", Format = "blockId"});
+                    swaggerOptions.MapType<TransactionId>(() => new Schema{ Type = "string", Format = "transactionId"});
+                    swaggerOptions.MapType<DependencyName>(() => new Schema{ Type = "string", Format = "dependencyName"});
                     swaggerOptions.MapType<Base58String>(() => new Schema{ Type = "string", Format = "byte"});
                     swaggerOptions.MapType<EncryptedString>(() => new Schema{ Type = "string", Format = "byte"});
                     swaggerOptions.MapType<UMoney>(() => new Schema{ Type = "string", Format = "coinsAmount"});
