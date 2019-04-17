@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Commands
 {
     /// <summary>
     /// Service should start reading of the specified block and send events corresponding to all transactions included in the block.
     /// </summary>
-    [PublicAPI]
+    [PublicAPI, DataContract]
     public class ReadBlockCommand
     {
         /// <summary>
         /// Number of the block to read.
         /// </summary>
-        [JsonProperty("blockNumber")]
+        [DataMember(Order = 0)]
         public long BlockNumber { get; }
 
         /// <summary>

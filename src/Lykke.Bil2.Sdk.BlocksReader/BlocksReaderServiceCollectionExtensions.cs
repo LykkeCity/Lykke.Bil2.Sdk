@@ -89,6 +89,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                 (
                     s.GetRequiredService<IRabbitMqEndpoint>(),
                     settings.CurrentValue.MessageListeningParallelism,
+                    settings.CurrentValue.MessageProcessingParallelism,
                     options.IntegrationName.CamelToKebab()
                 ));
         }
@@ -96,7 +97,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
         private static void RegisterImplementationServices<TAppSettings>(
             IServiceCollection services,
             BlocksReaderServiceOptions<TAppSettings> options, 
-            IReloadingManager<TAppSettings> settings) 
+            IReloadingManager<TAppSettings> settings)
             
             where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
         {

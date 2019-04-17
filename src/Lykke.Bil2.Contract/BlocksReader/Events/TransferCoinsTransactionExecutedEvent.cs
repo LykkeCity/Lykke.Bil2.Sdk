@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.SharedDomain;
-using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
@@ -13,37 +13,37 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
     /// integration uses “transfer coins” transactions model. Integration should either
     /// support “transfer coins” or “transfer amount” transactions model.
     /// </summary>
-    [PublicAPI]
+    [PublicAPI, DataContract]
     public class TransferCoinsTransactionExecutedEvent
     {
         /// <summary>
         /// ID of the block.
         /// </summary>
-        [JsonProperty("blockId")]
+        [DataMember(Order = 0)]
         public BlockId BlockId { get; }
 
         /// <summary>
         /// Number of the transaction in the block.
         /// </summary>
-        [JsonProperty("transactionNumber")]
+        [DataMember(Order = 1)]
         public int TransactionNumber { get; }
 
         /// <summary>
         /// ID of the transaction.
         /// </summary>
-        [JsonProperty("transactionId")]
+        [DataMember(Order = 2)]
         public TransactionId TransactionId { get; }
 
         /// <summary>
         /// Coins which were received within the transaction.
         /// </summary>
-        [JsonProperty("receivedCoins")]
+        [DataMember(Order = 3)]
         public IReadOnlyCollection<ReceivedCoin> ReceivedCoins { get; }
 
         /// <summary>
         /// Coins which were spent within the transaction.
         /// </summary>
-        [JsonProperty("spentCoins")]
+        [DataMember(Order = 4)]
         public IReadOnlyCollection<CoinId> SpentCoins { get; }
 
         /// <summary>
@@ -51,16 +51,14 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Fees in the particular asset, that was spent for the transaction.
         /// Can be omitted, if fee can be determined from the received and spent coins.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("fees")]
+        [CanBeNull, DataMember(Order = 5)]
         public IReadOnlyCollection<Fee> Fees { get; }
 
         /// <summary>
         /// Optional.
         /// Flag which indicates, if transaction is irreversible.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("isIrreversible")]
+        [CanBeNull, DataMember(Order = 6)]
         public bool? IsIrreversible { get; }
 
         /// <summary>

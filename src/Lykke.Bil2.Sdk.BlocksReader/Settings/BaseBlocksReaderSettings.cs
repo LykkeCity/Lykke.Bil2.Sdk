@@ -28,5 +28,8 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
 
         /// <inheritdoc />
         public int MessageListeningParallelism { get; set; }
+
+        /// <inheritdoc />
+        public int MessageProcessingParallelism { get; set; }
     }
 }

@@ -19,12 +19,6 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
 
         /// <summary>
         /// Required.
-        /// Parallelism of the RabbitMq message listening for each blockchain integration.
-        /// </summary>
-        public int MessageListeningParallelism { get; set; }
-
-        /// <summary>
-        /// Required.
         /// <see cref="IBlockEventsHandler"/> implementation factory. 
         /// </summary>
         public Func<IServiceProvider, IBlockEventsHandler> BlockEventsHandlerFactory { get; set; }
@@ -36,7 +30,6 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
         internal BlocksReaderClientOptions()
         {
             _integrationNames = new List<string>();
-            MessageListeningParallelism = 8;
         }
 
         /// <summary>

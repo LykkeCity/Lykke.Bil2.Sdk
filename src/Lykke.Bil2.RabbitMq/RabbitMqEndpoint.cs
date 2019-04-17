@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Common.Log;
 using JetBrains.Annotations;
+using Lykke.Bil2.RabbitMq.MessagePack;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.RabbitMq.Subscription;
+using Lykke.Bil2.RabbitMq.Subscription.Core;
 using Lykke.Common;
 using Lykke.Common.Log;
+using Lykke.Numerics.MessagePack;
+using MessagePack;
 using RabbitMQ.Client;
 
 namespace Lykke.Bil2.RabbitMq
@@ -24,6 +29,8 @@ namespace Lykke.Bil2.RabbitMq
         private readonly List<MessageSubscriber> _subscribers;
         private readonly string _vhost;
 
+        private readonly ICompositeFormatterResolver _formatterResolver;
+
         /// <summary>
         /// RabbitMq endpoint - represents RabbitMq connection and provides entry points
         /// to start listening for the messages and publish messages.
@@ -39,8 +46,10 @@ namespace Lykke.Bil2.RabbitMq
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _vhost = vhost;
             _log = logFactory.CreateLog(this);
-
+            _formatterResolver = new CompositeFormatterResolver();
             _subscribers = new List<MessageSubscriber>();
+            
+            _formatterResolver.RegisterResolvers(MoneyResolver.Instance);
         }
 
         /// <inheritdoc />
@@ -96,7 +105,13 @@ namespace Lykke.Bil2.RabbitMq
                 throw new InvalidOperationException("RabbitMqEndpoint should be started first");
             }
 
-            return new MessagePublisher(_publishingChannel, exchangeName, correlationId);
+            return new MessagePublisher(_publishingChannel, exchangeName, correlationId, _formatterResolver);
+        }
+
+        /// <inheritdoc />
+        public void RegisterMessagePackFormatterResolvers(params IFormatterResolver[] resolvers)
+        {
+            _formatterResolver.RegisterResolvers(resolvers);
         }
 
         /// <inheritdoc />
@@ -104,60 +119,99 @@ namespace Lykke.Bil2.RabbitMq
             string listeningExchangeName,
             string listeningRoute,
             IMessageSubscriptionsRegistry subscriptionsRegistry,
+            TimeSpan? defaultRetryTimeout = null,
+            int internalQueueMaxCapacity = 1000,
+            TimeSpan? maxMessageAgeForRetry = null,
+            int maxMessageRetryCount = 5,
+            int messageConsumersCount = 1,
+            int messageProcessorsCount = 1,
             string replyExchangeName = null)
         {
             if (string.IsNullOrWhiteSpace(listeningExchangeName))
             {
                 throw new ArgumentException("Should be not empty string", nameof(listeningExchangeName));
             }
+            
             if (string.IsNullOrWhiteSpace(listeningRoute))
             {
                 throw new ArgumentException("Should be not empty string", nameof(listeningRoute));
             }
+            
             if (subscriptionsRegistry == null)
             {
                 throw new ArgumentNullException(nameof(subscriptionsRegistry));
             }
+
+            if (internalQueueMaxCapacity <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(internalQueueMaxCapacity), internalQueueMaxCapacity, "Should be a positive number.");
+            }
+            
+            if (maxMessageRetryCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maxMessageRetryCount), maxMessageRetryCount, "Should be a positive number.");
+            }
+            
+            if (messageConsumersCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(messageConsumersCount), messageConsumersCount, "Should be a positive number.");
+            }
+            
+            if (messageProcessorsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(messageProcessorsCount), messageProcessorsCount, "Should be a positive number.");
+            }
+            
+            
             if (_connection == null)
             {
                 throw new InvalidOperationException("RabbitMqEndpoint should be started first");
             }
 
-            var subscriber = new MessageSubscriber
-            (
-                _serviceProvider,
-                _logFactory,
-                _connection,
-                listeningExchangeName,
-                $"{listeningExchangeName}.{listeningRoute}",
-                subscriptionsRegistry
-            );
+            var listeningQueueName = $"{listeningExchangeName}.{listeningRoute}";
 
+            Func<string, IMessagePublisher> repliesPublisher = null;
+            
             if (replyExchangeName != null)
             {
-                subscriber.WithRepliesPublisher(correlationId => CreatePublisher(replyExchangeName, correlationId));
+                repliesPublisher = correlationId => CreatePublisher(replyExchangeName, correlationId);
             }
-
+            
+            var subscriber = MessageSubscriber.Create
+            (
+                _connection,
+                defaultRetryTimeout ?? TimeSpan.FromSeconds(30),
+                listeningExchangeName,
+                _formatterResolver,
+                internalQueueMaxCapacity,
+                _logFactory,
+                maxMessageAgeForRetry ?? TimeSpan.FromMinutes(10),
+                maxMessageRetryCount,
+                messageConsumersCount,
+                messageProcessorsCount,
+                listeningQueueName,
+                repliesPublisher,
+                _serviceProvider,
+                subscriptionsRegistry
+            );
+            
             _subscribers.Add(subscriber);
         }
 
         /// <inheritdoc />
-        public void StartListening(int parallelism = 1)
+        public void StartListening()
         {
             foreach (var subscriber in _subscribers)
             {
-                subscriber.StartListening(parallelism);
+                subscriber.StartListening();
             }
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (var subscriber in _subscribers)
-            {
-                subscriber.Dispose();
-            }
-
+            Parallel.ForEach(_subscribers, x => x.Dispose());
+            
             _publishingChannel?.Close();
             _publishingChannel?.Dispose();
 

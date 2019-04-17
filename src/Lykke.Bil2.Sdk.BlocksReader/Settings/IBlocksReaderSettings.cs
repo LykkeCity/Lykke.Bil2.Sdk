@@ -38,5 +38,10 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
         /// Number of the threads used to listen messages from the RabbitMq.
         /// </summary>
         int MessageListeningParallelism { get; }
+        
+        /// <summary>
+        /// Number of the threads used to process messages from the RabbitMq.
+        /// </summary>
+        int MessageProcessingParallelism { get; }
     }
 }

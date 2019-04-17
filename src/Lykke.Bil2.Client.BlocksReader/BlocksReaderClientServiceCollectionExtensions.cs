@@ -43,10 +43,6 @@ namespace Lykke.Bil2.Client.BlocksReader
             {
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.RabbitMqConnString)} is required.");
             }
-            if (options.MessageListeningParallelism <= 0)
-            {
-                throw new InvalidOperationException($"{nameof(options)}.{nameof(options.MessageListeningParallelism)} should be positive number. Actual: {options.MessageListeningParallelism}");
-            }
             if (!options.IntegrationNames.Any())
             {
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.IntegrationNames)} at least one integration should be registered.");
@@ -72,8 +68,7 @@ namespace Lykke.Bil2.Client.BlocksReader
                 options.IntegrationNames,
                 string
                     .Concat(AppEnvironment.Name.Split(".").Where(x => x != "Lykke" && x != "Service" && x != "Job"))
-                    .CamelToKebab(),
-                options.MessageListeningParallelism
+                    .CamelToKebab()
             ));
 
             services.AddTransient<IBlocksReaderApiFactory, BlocksReaderApiFactory>();

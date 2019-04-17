@@ -49,6 +49,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             {
                 RabbitConnString = _rabbitMqSettings.GetConnectionString(),
                 MessageListeningParallelism = 1,
+                MessageProcessingParallelism = 1,
                 LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(60),
                 Db = new DbSettings
                 {
@@ -483,27 +484,27 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         {
             Mock<IBlockEventsHandler> blockEventsHandler = new Mock<IBlockEventsHandler>();
             blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<BlockHeaderReadEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
-                .Returns(Task.CompletedTask)
+                .ReturnsAsync(MessageHandlingResult.Success())
                 .Callback(callBack)
                 .Verifiable();
             blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<BlockNotFoundEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
-                .Returns(Task.CompletedTask)
+                .ReturnsAsync(MessageHandlingResult.Success())
                 .Callback(callBack)
                 .Verifiable();
             blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferAmountTransactionExecutedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
-                .Returns(Task.CompletedTask)
+                .ReturnsAsync(MessageHandlingResult.Success())
                 .Callback(callBack)
                 .Verifiable();
             blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferCoinsTransactionExecutedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
-                .Returns(Task.CompletedTask)
+                .ReturnsAsync(MessageHandlingResult.Success())
                 .Callback(callBack)
                 .Verifiable();
             blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransactionFailedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
-                .Returns(Task.CompletedTask)
+                .ReturnsAsync(MessageHandlingResult.Success())
                 .Callback(callBack)
                 .Verifiable();
             blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<LastIrreversibleBlockUpdatedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
-                .Returns(Task.CompletedTask)
+                .ReturnsAsync(MessageHandlingResult.Success())
                 .Callback(callBack)
                 .Verifiable();
 

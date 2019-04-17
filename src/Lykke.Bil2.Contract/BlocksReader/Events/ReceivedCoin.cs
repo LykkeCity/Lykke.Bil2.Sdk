@@ -1,64 +1,61 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Lykke.Bil2.SharedDomain;
 using Lykke.Numerics;
-using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
     /// <summary>
     /// Received coin.
     /// </summary>
-    [PublicAPI]
+    [PublicAPI, DataContract]
     public class ReceivedCoin
     {
         /// <summary>
         /// Number of received coin in the transaction.
         /// </summary>
-        [JsonProperty("coinNumber")]
+        [DataMember(Order = 0)]
         public int CoinNumber { get; }
 
         /// <summary>
         /// Asset of the coin.
         /// </summary>
-        [JsonProperty("asset")]
+        [DataMember(Order = 1)]
         public Asset Asset { get; }
 
         /// <summary>
         /// Value of the coin.
         /// </summary>
-        [JsonProperty("value")]
+        [DataMember(Order = 2)]
         public UMoney Value { get; }
 
         /// <summary>
         /// Optional.
         /// Address which received the coin.
         /// </summary>
-        [JsonProperty("address")]
+        [CanBeNull, DataMember(Order = 3)]
         public Address Address { get; }
 
         /// <summary>
         /// Optional.
         /// Tag of the receiving address.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("addressTag")]
+        [CanBeNull, DataMember(Order = 4)]
         public AddressTag AddressTag { get; }
 
         /// <summary>
         /// Optional.
         /// Type of the receiving address tag.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("addressTagType")]
+        [CanBeNull, DataMember(Order = 5)]
         public AddressTagType? AddressTagType { get; }
         
         /// <summary>
         /// Optional.
         /// Nonce number of the transaction for the receiving address.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("addressNonce")]
+        [CanBeNull, DataMember(Order = 6)]
         public long? AddressNonce { get; }
 
         /// <summary>

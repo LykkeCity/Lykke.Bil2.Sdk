@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Lykke.Bil2.SharedDomain;
 using Lykke.Numerics;
@@ -9,7 +10,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
     /// <summary>
     /// Change of the address balance made by a transaction
     /// </summary>
-    [PublicAPI]
+    [PublicAPI, DataContract]
     public class BalanceChange
     {
         /// <summary>
@@ -17,52 +18,48 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Can group several balance changing operations into the single transfer,
         /// or can be just the output number.
         /// </summary>
-        [JsonProperty("transferId")]
+        [DataMember(Order = 0)]
         public string TransferId { get; }
 
         /// <summary>
         /// Asset.
         /// </summary>
-        [JsonProperty("asset")]
+        [DataMember(Order = 1)]
         public Asset Asset { get; }
 
         /// <summary>
         /// Value for which the balance of the address was changed.
         /// Can be positive to increase the balance or negative to decrease the balance.
         /// </summary>
-        [JsonProperty("value")]
+        [DataMember(Order = 2)]
         public Money Value { get; }
 
         /// <summary>
         /// Optional.
         /// Address.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("address")]
+        [DataMember(Order = 3)]
         public Address Address { get; }
 
         /// <summary>
         /// Optional.
         /// Tag of the address.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("tag")]
+        [CanBeNull, DataMember(Order = 4)]
         public AddressTag Tag { get; }
 
         /// <summary>
         /// Optional.
         /// Type of the address tag.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("tagType")]
+        [CanBeNull, DataMember(Order = 5)]
         public AddressTagType? TagType { get; }
 
         /// <summary>
         /// Optional.
         /// Nonce number of the transaction for the address.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("nonce")]
+        [CanBeNull, DataMember(Order = 6)]
         public long? Nonce { get; }
 
         /// <summary>

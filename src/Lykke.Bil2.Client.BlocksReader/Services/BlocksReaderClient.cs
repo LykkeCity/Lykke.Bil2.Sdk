@@ -16,15 +16,13 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly IReadOnlyCollection<string> _integrationNames;
         private readonly string _clientName;
-        private readonly int _listeningParallelism;
 
         public BlocksReaderClient(
             ILogFactory logFactory,
             IRabbitMqEndpoint endpoint,
             IServiceProvider serviceProvider,
             IReadOnlyCollection<string> integrationNames,
-            string clientName,
-            int listeningParallelism)
+            string clientName)
         {
             if (logFactory == null)
             {
@@ -40,13 +38,6 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _integrationNames = integrationNames ?? throw new ArgumentNullException(nameof(integrationNames));
             _clientName = clientName;
-
-            if (listeningParallelism <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(listeningParallelism), listeningParallelism, "Should be positive number");
-            }
-
-            _listeningParallelism = listeningParallelism;
         }
 
         public void Initialize()
@@ -105,7 +96,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
 
         public void StartListening()
         {
-            _endpoint.StartListening(_listeningParallelism);
+            _endpoint.StartListening();
         }
 
         public void Dispose()

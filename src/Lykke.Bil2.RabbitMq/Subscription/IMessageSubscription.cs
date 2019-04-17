@@ -24,6 +24,6 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         /// <summary>
         /// Invokes the message handler
         /// </summary>
-        Task InvokeHandlerAsync(IServiceProvider parentServiceProvider, object message, MessageHeaders headers, IMessagePublisher publisher);
+        Task<MessageHandlingResult> InvokeHandlerAsync(IServiceProvider parentServiceProvider, object message, MessageHeaders headers, IMessagePublisher publisher);
     }
 }

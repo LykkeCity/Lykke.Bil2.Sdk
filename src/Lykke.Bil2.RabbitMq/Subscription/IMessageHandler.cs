@@ -11,7 +11,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
     public interface IMessageHandler<in TMessage>
         where TMessage : class
     {
-        Task HandleAsync(TMessage message, MessageHeaders headers, IMessagePublisher replyPublisher);
+        Task<MessageHandlingResult> HandleAsync(TMessage message, MessageHeaders headers, IMessagePublisher replyPublisher);
     }
 
     /// <summary>
@@ -21,6 +21,6 @@ namespace Lykke.Bil2.RabbitMq.Subscription
     public interface IMessageHandler<in TMessage, in TState>
         where TMessage : class
     {
-        Task HandleAsync(TState state, TMessage message, MessageHeaders headers, IMessagePublisher replyPublisher);
+        Task<MessageHandlingResult> HandleAsync(TState state, TMessage message, MessageHeaders headers, IMessagePublisher replyPublisher);
     }
 }

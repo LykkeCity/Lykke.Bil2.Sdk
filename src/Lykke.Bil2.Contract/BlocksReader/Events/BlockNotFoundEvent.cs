@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
     /// <summary>
     /// Should be published if block requested by ReadBlockCommand is not found.
     /// </summary>
-    [PublicAPI]
+    [PublicAPI, DataContract]
     public class BlockNotFoundEvent
     {
         /// <summary>
         /// Number of the block.
         /// </summary>
-        [JsonProperty("blockNumber")]
+        [DataMember(Order = 0)]
         public long BlockNumber { get; }
 
         /// <summary>

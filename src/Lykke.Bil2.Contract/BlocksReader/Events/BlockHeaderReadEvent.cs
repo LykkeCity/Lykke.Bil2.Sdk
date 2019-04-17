@@ -1,52 +1,51 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Lykke.Bil2.SharedDomain;
-using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
     /// <summary>
     /// Should be published when a block header has been read.
     /// </summary>
-    [PublicAPI]
+    [PublicAPI, DataContract]
     public class BlockHeaderReadEvent
     {
         /// <summary>
         /// Number of the block.
         /// </summary>
-        [JsonProperty("blockNumber")]
+        [DataMember(Order = 0)]
         public long BlockNumber { get; }
 
         /// <summary>
         /// ID of the block.
         /// </summary>
-        [JsonProperty("blockId")]
+        [DataMember(Order = 1)]
         public BlockId BlockId { get; }
 
         /// <summary>
         /// Moment when the block is mined.
         /// </summary>
-        [JsonProperty("blockMiningMoment")]
+        [DataMember(Order = 2)]
         public DateTime BlockMiningMoment { get; }
 
         /// <summary>
         /// Size of the block in bytes.
         /// </summary>
-        [JsonProperty("blockSize")]
+        [DataMember(Order = 3)]
         public int BlockSize { get; }
 
         /// <summary>
         /// Count of the transactions in the block.
         /// </summary>
-        [JsonProperty("blockTransactionsCount")]
+        [DataMember(Order = 4)]
         public int BlockTransactionsCount { get; }
 
         /// <summary>
         /// Optional.
         /// ID of the previous block. Optional only for the first block (blockNumber 0 or 1)
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("previousBlockId")]
+        [CanBeNull, DataMember(Order = 5)]
         public BlockId PreviousBlockId { get; }
 
         /// <summary>
