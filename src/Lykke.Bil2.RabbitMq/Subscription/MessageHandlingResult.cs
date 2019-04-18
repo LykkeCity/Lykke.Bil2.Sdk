@@ -1,7 +1,9 @@
 using System;
+using JetBrains.Annotations;
 
 namespace Lykke.Bil2.RabbitMq.Subscription
 {
+    [PublicAPI]
     public abstract class MessageHandlingResult
     {
         private static readonly NonTransientFailureResult NonTransientFailureResultInstance

@@ -101,7 +101,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                             {
                                 CurrentLog.Warning(CurrentMessage, payload, headers, "Failed to process the message.", e);
                         
-                                _retryManager.ScheduleRetry(CurrentMessage, retryAfter: TimeSpan.FromSeconds(30));
+                                _retryManager.ScheduleRetry(CurrentMessage, retryAfter: _defaultRetryTimeout);
                             }
                         }
                     }
@@ -109,7 +109,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                     {
                         CurrentLog.Error(CurrentMessage, "Failed to handle the message.", e);
 
-                        _retryManager.ScheduleRetry(CurrentMessage, retryAfter: TimeSpan.FromSeconds(30));
+                        _retryManager.ScheduleRetry(CurrentMessage, retryAfter: _defaultRetryTimeout);
                     }
                 }
                 

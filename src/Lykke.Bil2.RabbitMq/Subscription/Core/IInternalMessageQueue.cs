@@ -5,6 +5,9 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
 {
     internal interface IInternalMessageQueue
     {
+        bool IsFull { get; }
+        
+        
         void Enqueue(
             EnvelopedMessage message);
 
