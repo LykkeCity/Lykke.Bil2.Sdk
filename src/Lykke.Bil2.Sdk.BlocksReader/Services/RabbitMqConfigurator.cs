@@ -1,26 +1,24 @@
 ﻿using Lykke.Bil2.Contract.BlocksReader.Commands;
 using Lykke.Bil2.RabbitMq;
 using Lykke.Bil2.RabbitMq.Subscription;
+using Lykke.Bil2.Sdk.BlocksReader.Settings;
 
 namespace Lykke.Bil2.Sdk.BlocksReader.Services
 {
     internal class RabbitMqConfigurator : IRabbitMqConfigurator
     {
         private readonly string _integrationName;
-        private readonly int _listeningParallelism;
-        private readonly int _processingParallelism;
         private readonly IRabbitMqEndpoint _rabbitMqEndpoint;
+        private readonly BaseBlocksReaderRabbitMqSettings _rabbitMqSettings;
 
         public RabbitMqConfigurator(
             IRabbitMqEndpoint rabbitMqEndpoint,
-            int listeningParallelism,
-            int processingParallelism,
+            BaseBlocksReaderRabbitMqSettings rabbitMqSettings,
             string integrationName)
         {
             _integrationName = integrationName;
-            _listeningParallelism = listeningParallelism;
-            _processingParallelism = processingParallelism;
             _rabbitMqEndpoint = rabbitMqEndpoint;
+            _rabbitMqSettings = rabbitMqSettings;
         }
 
         public void Configure()
@@ -40,11 +38,16 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
                 });
 
             _rabbitMqEndpoint.Subscribe(
+                subscriptions,
                 commandsExchangeName,
                 $"bil-v2.bcn-{_integrationName}",
-                subscriptions,
-                messageConsumersCount: _listeningParallelism,
-                messageProcessorsCount: _processingParallelism,
+                messageConsumersCount: _rabbitMqSettings.MessageConsumersCount,
+                messageProcessorsCount: _rabbitMqSettings.MessageProcessorsCount,
+                defaultFirstLevelRetryTimeout: _rabbitMqSettings.DefaultFirstLevelRetryTimeout,
+                maxFirstLevelRetryMessageAge: _rabbitMqSettings.MaxFirstLevelRetryMessageAge,
+                maxFirstLevelRetryCount: _rabbitMqSettings.MaxFirstLevelRetryCount,
+                firstLevelRetryQueueCapacity: _rabbitMqSettings.FirstLevelRetryQueueCapacity,
+                processingQueueCapacity: _rabbitMqSettings.ProcessingQueueCapacity,
                 replyExchangeName: eventsExchangeName);
 
             _rabbitMqEndpoint.StartListening();

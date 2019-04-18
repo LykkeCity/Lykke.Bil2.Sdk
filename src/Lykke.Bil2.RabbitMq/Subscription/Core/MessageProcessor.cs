@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +7,6 @@ using Lykke.Bil2.RabbitMq.MessagePack;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Common.Log;
 using MessagePack;
-using MessagePack.Resolvers;
 
 namespace Lykke.Bil2.RabbitMq.Subscription.Core
 {
@@ -35,7 +34,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             IRejectManager rejectManager,
             IRetryManager retryManager,
             IServiceProvider serviceProvider,
-            IMessageSubscriptionsRegistry subscriptionsRegistry)
+            IMessageSubscriptionsRegistry subscriptionsRegistry) : base(logFactory)
         {
             _defaultRetryTimeout = defaultRetryTimeout;
             _formatterResolver = formatterResolver;
@@ -79,43 +78,40 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         protected override async Task ExecuteAsync(
             CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            CurrentMessage = await _internalQueue.DequeueAsync(stoppingToken);
+
+            if (CurrentMessage != null)
             {
-                CurrentMessage = await _internalQueue.DequeueAsync(stoppingToken);
+                CurrentLog = _logFactory.CreateLog(this, CurrentMessage.Exchange);
 
-                if (CurrentMessage != null)
+                try
                 {
-                    CurrentLog = _logFactory.CreateLog(this, CurrentMessage.Exchange);
-
-                    try
+                    if (ValidateCurrentMessage() && TryGetSubscription(out var subscription) && TryGetPayloadAndHeaders(subscription, out var payload, out var headers))
                     {
-                        if (ValidateCurrentMessage() && TryGetSubscription(out var subscription) && TryGetPayloadAndHeaders(subscription, out var payload, out var headers))
+                        try
                         {
-                            try
-                            {
-                                await ProcessMessageAsync(subscription, payload, headers);
+                            await ProcessMessageAsync(subscription, payload, headers);
 
-                                CurrentLog.Trace(CurrentMessage, payload, headers, "Message has been processed.");
-                            }
-                            catch (Exception e)
-                            {
-                                CurrentLog.Warning(CurrentMessage, payload, headers, "Failed to process the message.", e);
-                        
-                                _retryManager.ScheduleRetry(CurrentMessage, retryAfter: _defaultRetryTimeout);
-                            }
+                            CurrentLog.Trace(CurrentMessage, payload, headers, $"Message has been processed. Processor #{_instanceCounter}.");
+                        }
+                        catch (Exception e)
+                        {
+                            CurrentLog.Warning(CurrentMessage, payload, headers, $"Failed to process the message. Processor #{_instanceCounter}.", e);
+                    
+                            _retryManager.ScheduleRetry(CurrentMessage, retryAfter: _defaultRetryTimeout);
                         }
                     }
-                    catch (Exception e)
-                    {
-                        CurrentLog.Error(CurrentMessage, "Failed to handle the message.", e);
-
-                        _retryManager.ScheduleRetry(CurrentMessage, retryAfter: _defaultRetryTimeout);
-                    }
                 }
-                
-                CurrentMessage = null;
-                CurrentLog = null;
+                catch (Exception e)
+                {
+                    CurrentLog.Error(CurrentMessage, $"Failed to handle the message. Processor #{_instanceCounter}.", e);
+
+                    _retryManager.ScheduleRetry(CurrentMessage, retryAfter: _defaultRetryTimeout);
+                }
             }
+            
+            CurrentMessage = null;
+            CurrentLog = null;
         }
 
         private async Task ProcessMessageAsync(
@@ -162,7 +158,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             }
             catch (Exception e)
             {
-                CurrentLog.Warning(CurrentMessage, "Failed to deserialize the message.", e);
+                CurrentLog.Warning(CurrentMessage, $"Failed to deserialize the message. Processor #{_instanceCounter}.", e);
                 
                 _rejectManager.ScheduleReject(CurrentMessage, rejectAfter: TimeSpan.FromMinutes(10));
 
@@ -181,7 +177,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             }
             else
             {
-                CurrentLog.Warning(CurrentMessage, "Subscription for the message has not been found.");
+                CurrentLog.Warning(CurrentMessage, $"Subscription for the message has not been found. Processor #{_instanceCounter}.");
                 
                 _rejectManager.ScheduleReject(CurrentMessage, rejectAfter: TimeSpan.FromMinutes(10));
 
@@ -197,7 +193,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             }
             else
             {
-                CurrentLog.Error(CurrentMessage, "Message without routing key has been received. Skipping it.");
+                CurrentLog.Error(CurrentMessage, $"Message without routing key has been received. Skipping it. Processor #{_instanceCounter}.");
 
                 CurrentMessage.Ack();
 

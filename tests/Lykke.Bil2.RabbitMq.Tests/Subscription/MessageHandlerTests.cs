@@ -68,7 +68,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                     var subscriptionsRegistry = new MessageSubscriptionsRegistry()
                         .Handle<TestMessage>(o => o.WithHandler<TestMessageHandler>());
 
-                    endpoint.Subscribe(ExchangeName, RouteName, subscriptionsRegistry);
+                    endpoint.Subscribe(subscriptionsRegistry, ExchangeName, RouteName);
                     endpoint.StartListening();
 
                     var publisher = endpoint.CreatePublisher(ExchangeName);
@@ -115,7 +115,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                             o.WithState("123");
                         });
 
-                    endpoint.Subscribe(ExchangeName, RouteName, subscriptionsRegistry);
+                    endpoint.Subscribe(subscriptionsRegistry, ExchangeName, RouteName);
                     endpoint.StartListening();
 
                     var publisher = endpoint.CreatePublisher(ExchangeName);

@@ -6,7 +6,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
 {
     public interface IStartupDependencyFactory
     {
-        Action<BlocksReaderServiceOptions<TAppSettings>> GetOptionsConfiguration<TAppSettings>() where TAppSettings : BaseBlocksReaderSettings<DbSettings>;
+        Action<BlocksReaderServiceOptions<TAppSettings>> GetOptionsConfiguration<TAppSettings>() 
+            where TAppSettings : BaseBlocksReaderSettings<DbSettings, RabbitMqSettings>;
 
         IServiceProvider ServerServiceProvider { get; set; }
     }
@@ -21,7 +22,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
         }
     }
 
-    public class StartupDependencyFactory<TAppSettings> : IStartupDependencyFactory where TAppSettings : BaseBlocksReaderSettings<DbSettings>
+    public class StartupDependencyFactory<TAppSettings> : IStartupDependencyFactory 
+        where TAppSettings : BaseBlocksReaderSettings<DbSettings, RabbitMqSettings>
     {
         private readonly Action<BlocksReaderServiceOptions<TAppSettings>> _registerAction;
 
@@ -30,7 +32,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
             _registerAction = registerAction;
         }
 
-        public Action<BlocksReaderServiceOptions<TSettings>> GetOptionsConfiguration<TSettings>() where TSettings : BaseBlocksReaderSettings<DbSettings>
+        public Action<BlocksReaderServiceOptions<TSettings>> GetOptionsConfiguration<TSettings>() 
+            where TSettings : BaseBlocksReaderSettings<DbSettings, RabbitMqSettings>
         {
             return (Action<BlocksReaderServiceOptions<TSettings>>)_registerAction;
         }

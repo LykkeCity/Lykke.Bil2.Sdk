@@ -16,13 +16,27 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly IReadOnlyCollection<string> _integrationNames;
         private readonly string _clientName;
+        private readonly TimeSpan? _defaultFirstLevelRetryTimeout;
+        private readonly TimeSpan? _maxFirstLevelRetryMessageAge;
+        private readonly int _maxFirstLevelRetryCount;
+        private readonly int _firstLevelRetryQueueCapacity;
+        private readonly int _processingQueueCapacity;
+        private readonly int _messageConsumersCount;
+        private readonly int _messageProcessorsCount;
 
         public BlocksReaderClient(
             ILogFactory logFactory,
             IRabbitMqEndpoint endpoint,
             IServiceProvider serviceProvider,
             IReadOnlyCollection<string> integrationNames,
-            string clientName)
+            string clientName,
+            TimeSpan? defaultFirstLevelRetryTimeout,
+            TimeSpan? maxFirstLevelRetryMessageAge,
+            int maxFirstLevelRetryCount,
+            int firstLevelRetryQueueCapacity,
+            int processingQueueCapacity,
+            int messageConsumersCount,
+            int messageProcessorsCount)
         {
             if (logFactory == null)
             {
@@ -38,6 +52,13 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _integrationNames = integrationNames ?? throw new ArgumentNullException(nameof(integrationNames));
             _clientName = clientName;
+            _defaultFirstLevelRetryTimeout = defaultFirstLevelRetryTimeout;
+            _maxFirstLevelRetryMessageAge = maxFirstLevelRetryMessageAge;
+            _maxFirstLevelRetryCount = maxFirstLevelRetryCount;
+            _firstLevelRetryQueueCapacity = firstLevelRetryQueueCapacity;
+            _processingQueueCapacity = processingQueueCapacity;
+            _messageConsumersCount = messageConsumersCount;
+            _messageProcessorsCount = messageProcessorsCount;
         }
 
         public void Initialize()
@@ -87,10 +108,19 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
                         o.WithState(integrationName);
                     });
 
-                _endpoint.Subscribe(
+                _endpoint.Subscribe
+                (
+                    subscriptions,
                     eventsExchangeName,
                     $"bil-v2.{_clientName}",
-                    subscriptions);
+                    _defaultFirstLevelRetryTimeout,
+                    _maxFirstLevelRetryMessageAge,
+                    _maxFirstLevelRetryCount,
+                    _firstLevelRetryQueueCapacity,
+                    _processingQueueCapacity,
+                    _messageConsumersCount,
+                    _messageProcessorsCount
+                );
             }
         }
 

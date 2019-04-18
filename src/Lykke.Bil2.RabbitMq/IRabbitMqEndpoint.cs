@@ -36,14 +36,14 @@ namespace Lykke.Bil2.RabbitMq
         /// <summary>
         /// Subscribing for the messages. Should be called after <see cref="Initialize"/>.
         /// </summary>
-        void Subscribe(
+        void Subscribe(IMessageSubscriptionsRegistry subscriptionsRegistry,
             string listeningExchangeName,
             string listeningRoute,
-            IMessageSubscriptionsRegistry subscriptionsRegistry,
-            TimeSpan? defaultRetryTimeout = null,
-            int internalQueueMaxCapacity = 1000,
-            TimeSpan? maxMessageAgeForRetry = null,
-            int maxMessageRetryCount = 5,
+            TimeSpan? defaultFirstLevelRetryTimeout = null,
+            TimeSpan? maxFirstLevelRetryMessageAge = null,
+            int maxFirstLevelRetryCount = 5,
+            int firstLevelRetryQueueCapacity = 10000,
+            int processingQueueCapacity = 1000,
             int messageConsumersCount = 1,
             int messageProcessorsCount = 1,
             string replyExchangeName = null);

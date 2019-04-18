@@ -47,15 +47,18 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
             var prepareSettings = new AppSettings
             {
-                RabbitConnString = _rabbitMqSettings.GetConnectionString(),
-                MessageListeningParallelism = 1,
-                MessageProcessingParallelism = 1,
-                LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(60),
                 Db = new DbSettings
                 {
                     AzureDataConnString = "empty",
                     LogsConnString = "empty"
                 },
+                RabbitMq = new RabbitMqSettings
+                {
+                    ConnString = _rabbitMqSettings.GetConnectionString(),
+                    MessageConsumersCount = 1,
+                    MessageProcessorsCount = 1
+                },
+                LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(60),
                 NodeUrl = "http://localhost:7777/api",
                 NodeUser = "user",
                 NodePassword = "password",
@@ -544,7 +547,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 Action<BlocksReaderServiceOptions<TAppSettings>> configureServer,
                 Action<BlocksReaderClientOptions> configureClient)
 
-            where TAppSettings : BaseBlocksReaderSettings<DbSettings>
+            where TAppSettings : BaseBlocksReaderSettings<DbSettings, RabbitMqSettings>
         {
             StartupDependencyFactorySingleton.Instance = new StartupDependencyFactory<TAppSettings>(configureServer);
             var (blocksReaderClient, apiFactory, testServer) = CreateClientApi<StartupTemplate>("TestIntegration", configureClient);

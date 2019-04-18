@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,15 +16,15 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
     {
         private readonly IConnection _connection;
         private readonly string _exchangeName;
-        private readonly ILog _log;
         private readonly IReadOnlyCollection<IMessageConsumer> _messageConsumers;
         private readonly IReadOnlyCollection<IMessageProcessor> _messageProcessors;
         private readonly string _queueName;
         private readonly IRejectManager _rejectManager;
         private readonly IRetryManager _retryManager;
         private readonly IMessageSubscriptionsRegistry _subscriptionsRegistry;
+        private readonly ILog _log;
 
-        internal MessageSubscriber(
+        private MessageSubscriber(
             IConnection connection,
             string exchangeName,
             ILogFactory logFactory,
@@ -95,25 +95,47 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             _messageConsumers.ForEach(x => x.Start());
         }
 
-        public static MessageSubscriber Create(
+        public static MessageSubscriber Create(IServiceProvider serviceProvider,
+            IMessageSubscriptionsRegistry subscriptionsRegistry, 
             IConnection connection,
-            TimeSpan defaultRetryTimeout,
-            string exchangeName,
-            ICompositeFormatterResolver formatterResolver,
-            int internalQueueMaxCapacity,
             ILogFactory logFactory,
-            TimeSpan maxAgeForRetry,
-            int maxRetryCount,
-            int messageConsumersCount,
-            int messageProcessorsCount,
-            string queueName,
+            ICompositeFormatterResolver formatterResolver,
             Func<string, IMessagePublisher> repliesPublisher,
-            IServiceProvider serviceProvider,
-            IMessageSubscriptionsRegistry subscriptionsRegistry)
+            string exchangeName,
+            string queueName,
+            TimeSpan defaultFirstLevelRetryTimeout,
+            TimeSpan maxFirstLevelRetryMessageAge,
+            int maxFirstLevelRetryCount,
+            int firstLevelRetryQueueCapacity,
+            int processingQueueCapacity,
+            int messageConsumersCount,
+            int messageProcessorsCount)
         {
-            var internalQueue = new InternalMessageQueue(internalQueueMaxCapacity);
+            var log = logFactory.CreateLog(typeof(MessageSubscriber));
+
+            log.Info("Creating RabbitMq subscriber...", new
+            {
+                exchangeName,
+                queueName,
+                defaultFirstLevelRetryTimeout,
+                maxFirstLevelRetryMessageAge,
+                maxFirstLevelRetryCount,
+                firstLevelRetryQueueCapacity,
+                processingQueueCapacity,
+                messageConsumersCount,
+                messageProcessorsCount
+            });
+
+            var internalQueue = new InternalMessageQueue(processingQueueCapacity);
             var rejectManager = new RejectManager(logFactory);
-            var retryManager = new RetryManager(logFactory, maxAgeForRetry, maxRetryCount, internalQueue);
+            var retryManager = new RetryManager
+            (
+                logFactory,
+                maxFirstLevelRetryMessageAge,
+                maxFirstLevelRetryCount,
+                firstLevelRetryQueueCapacity,
+                internalQueue
+            );
 
             var messageConsumers = new List<IMessageConsumer>(messageConsumersCount);
             for (var i = 0; i < messageConsumersCount; i++)
@@ -132,7 +154,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             {
                 messageProcessors.Add(new MessageProcessor
                 (
-                    defaultRetryTimeout,
+                    defaultFirstLevelRetryTimeout,
                     formatterResolver,
                     internalQueue,
                     logFactory,

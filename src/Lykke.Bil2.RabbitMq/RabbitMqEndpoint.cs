@@ -115,16 +115,16 @@ namespace Lykke.Bil2.RabbitMq
         }
 
         /// <inheritdoc />
-        public void Subscribe(
+        public void Subscribe(IMessageSubscriptionsRegistry subscriptionsRegistry,
             string listeningExchangeName,
             string listeningRoute,
-            IMessageSubscriptionsRegistry subscriptionsRegistry,
-            TimeSpan? defaultRetryTimeout = null,
-            int internalQueueMaxCapacity = 1000,
-            TimeSpan? maxMessageAgeForRetry = null,
-            int maxMessageRetryCount = 5,
-            int messageConsumersCount = 1,
-            int messageProcessorsCount = 1,
+            TimeSpan? defaultFirstLevelRetryTimeout = null,
+            TimeSpan? maxFirstLevelRetryMessageAge = null,
+            int maxFirstLevelRetryCount = 5,
+            int firstLevelRetryQueueCapacity = 10000,
+            int processingQueueCapacity = 1000,
+            int messageConsumersCount = 4,
+            int messageProcessorsCount = 8,
             string replyExchangeName = null)
         {
             if (string.IsNullOrWhiteSpace(listeningExchangeName))
@@ -142,14 +142,14 @@ namespace Lykke.Bil2.RabbitMq
                 throw new ArgumentNullException(nameof(subscriptionsRegistry));
             }
 
-            if (internalQueueMaxCapacity <= 0)
+            if (processingQueueCapacity <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(internalQueueMaxCapacity), internalQueueMaxCapacity, "Should be a positive number.");
+                throw new ArgumentOutOfRangeException(nameof(processingQueueCapacity), processingQueueCapacity, "Should be a positive number.");
             }
             
-            if (maxMessageRetryCount <= 0)
+            if (maxFirstLevelRetryCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(maxMessageRetryCount), maxMessageRetryCount, "Should be a positive number.");
+                throw new ArgumentOutOfRangeException(nameof(maxFirstLevelRetryCount), maxFirstLevelRetryCount, "Should be a positive number.");
             }
             
             if (messageConsumersCount <= 0)
@@ -161,7 +161,6 @@ namespace Lykke.Bil2.RabbitMq
             {
                 throw new ArgumentOutOfRangeException(nameof(messageProcessorsCount), messageProcessorsCount, "Should be a positive number.");
             }
-            
             
             if (_connection == null)
             {
@@ -179,21 +178,21 @@ namespace Lykke.Bil2.RabbitMq
             
             var subscriber = MessageSubscriber.Create
             (
-                _connection,
-                defaultRetryTimeout ?? TimeSpan.FromSeconds(30),
-                listeningExchangeName,
-                _formatterResolver,
-                internalQueueMaxCapacity,
-                _logFactory,
-                maxMessageAgeForRetry ?? TimeSpan.FromMinutes(10),
-                maxMessageRetryCount,
-                messageConsumersCount,
-                messageProcessorsCount,
-                listeningQueueName,
-                repliesPublisher,
                 _serviceProvider,
-                subscriptionsRegistry
-            );
+                subscriptionsRegistry, 
+                _connection, 
+                _logFactory,
+                _formatterResolver, 
+                repliesPublisher, 
+                listeningExchangeName, 
+                listeningQueueName, 
+                defaultFirstLevelRetryTimeout ?? TimeSpan.FromSeconds(30), 
+                maxFirstLevelRetryMessageAge ?? TimeSpan.FromMinutes(10), 
+                maxFirstLevelRetryCount,
+                firstLevelRetryQueueCapacity,
+                processingQueueCapacity,
+                messageConsumersCount, 
+                messageProcessorsCount);
             
             _subscribers.Add(subscriber);
         }

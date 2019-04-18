@@ -60,15 +60,24 @@ namespace Lykke.Bil2.Client.BlocksReader
                 options.RabbitVhost
             ));
 
+            var clientName = string
+                .Concat(AppEnvironment.Name.Split(".").Where(x => x != "Lykke" && x != "Service" && x != "Job"))
+                .CamelToKebab();
+
             services.AddSingleton<IBlocksReaderClient>(s => new BlocksReaderClient
             (
                 s.GetRequiredService<ILogFactory>(),
                 s.GetRequiredService<IRabbitMqEndpoint>(),
                 s,
                 options.IntegrationNames,
-                string
-                    .Concat(AppEnvironment.Name.Split(".").Where(x => x != "Lykke" && x != "Service" && x != "Job"))
-                    .CamelToKebab()
+                clientName,
+                options.DefaultFirstLevelRetryTimeout,
+                options.MaxFirstLevelRetryMessageAge,
+                options.MaxFirstLevelRetryCount,
+                options.FirstLevelRetryQueueCapacity,
+                options.ProcessingQueueCapacity,
+                options.MessageConsumersCount,
+                options.MessageProcessorsCount
             ));
 
             services.AddTransient<IBlocksReaderApiFactory, BlocksReaderApiFactory>();

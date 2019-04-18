@@ -3,7 +3,7 @@ using Lykke.Bil2.Sdk.Services;
 
 namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
 {
-    public class AppSettings : BaseBlocksReaderSettings<DbSettings>
+    public class AppSettings : BaseBlocksReaderSettings<DbSettings, RabbitMqSettings>
     {
         public string NodeUrl { get; set; }
 

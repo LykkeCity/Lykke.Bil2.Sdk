@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using Common.Log;
 using Lykke.Common.Log;
@@ -74,8 +74,6 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
 
         private void ConsumerOnReceived(object sender, BasicDeliverEventArgs args)
         {
-            _log.Trace($"Message has been received via channel #{_channel.ChannelNumber} by message consumer #{_instanceCounter}.");
-                
             var message = new EnvelopedMessage
             (
                 body: args.Body,
@@ -86,9 +84,9 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                 routingKey: args.RoutingKey
             );
             
+            _log.Trace($"Message has been received. Channel #{_channel.ChannelNumber}. Consumer #{_instanceCounter}.", message);
+
             _internalQueue.Enqueue(message);
-                
-            _log.Trace($"Message has been enqueued to an internal queue by message consumer #{_instanceCounter}.", message);
         }
 
         private void StartMessageConsumption()

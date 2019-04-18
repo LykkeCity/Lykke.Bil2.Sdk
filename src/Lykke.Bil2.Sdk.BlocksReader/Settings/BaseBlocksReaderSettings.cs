@@ -9,27 +9,21 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
     /// Base settings for a blocks reader application.
     /// </summary>
     [PublicAPI]
-    public class BaseBlocksReaderSettings<TDbSettings> : 
+    public class BaseBlocksReaderSettings<TDbSettings, TRabbitMqSettings> : 
         BaseAppSettings,
-        IBlocksReaderSettings<TDbSettings> 
+        IBlocksReaderSettings<TDbSettings, TRabbitMqSettings> 
         
-        where TDbSettings : BaseBlocksReaderDbSettings
+        where TDbSettings : BaseBlocksReaderDbSettings 
+        where TRabbitMqSettings : BaseBlocksReaderRabbitMqSettings
     {
         /// <inheritdoc />
         public TDbSettings Db { get; set; }
 
         /// <inheritdoc />
-        [AmqpCheck]
-        public string RabbitConnString { get; set; }
+        public TRabbitMqSettings RabbitMq { get; set; }
 
         /// <inheritdoc />
         [Optional]
         public TimeSpan LastIrreversibleBlockMonitoringPeriod { get; set; }
-
-        /// <inheritdoc />
-        public int MessageListeningParallelism { get; set; }
-
-        /// <inheritdoc />
-        public int MessageProcessingParallelism { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,7 +20,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
 
         public RejectManager(
             ILogFactory logFactory,
-            Func<DateTime> utcNowProvider = null)
+            Func<DateTime> utcNowProvider = null) : base(logFactory)
         {
             _log = logFactory.CreateLog(this);
             _mutex = new AsyncLock();
@@ -53,31 +53,28 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         protected override async Task ExecuteAsync(
             CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            while (!stoppingToken.IsCancellationRequested && !_rejectionQueue.IsEmpty)
             {
-                while (!stoppingToken.IsCancellationRequested && !_rejectionQueue.IsEmpty)
+                using (await _mutex.LockAsync())
                 {
-                    using (await _mutex.LockAsync())
+                    var (timeToReject, message) = _rejectionQueue.FindMin();
+                    
+                    if (_utcNowProvider.Invoke() >= timeToReject)
                     {
-                        var (timeToReject, message) = _rejectionQueue.FindMin();
-                        
-                        if (_utcNowProvider.Invoke() >= timeToReject)
-                        {
-                            message.Reject();
+                        message.Reject();
 
-                            _rejectionQueue.DeleteMin();
-                            
-                            _log.Trace("Message has been rejected.", message);
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        _rejectionQueue.DeleteMin();
+                        
+                        _log.Trace("Message has been rejected.", message);
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
-
-                await SilentlyDelayAsync(100, stoppingToken);
             }
+
+            await SilentlyDelayAsync(100, stoppingToken);
         }
 
         public void ScheduleReject(

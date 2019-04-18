@@ -1,7 +1,10 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Lykke.Bil2.RabbitMq.Subscription.Core;
+using Lykke.Logs;
+using Lykke.Logs.Loggers.LykkeConsole;
 using Moq;
 using NUnit.Framework;
 
@@ -10,10 +13,24 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Core
     [TestFixture]
     public class BackgroundServiceTests
     {
+        [UsedImplicitly]
+        internal class BackgroundServiceImpl : BackgroundService
+        {
+            public BackgroundServiceImpl() : 
+                base(LogFactory.Create().AddUnbufferedConsole())
+            {
+            }
+
+            protected override Task ExecuteAsync(CancellationToken stoppingToken)
+            {
+                return Task.CompletedTask;
+            }
+        }
+
         [Test]
         public async Task Test_that_parameterless_StopAsync_call_uses_an_empty_cancellation_token()
         {
-            var mock = new Mock<BackgroundService> { CallBase = true };
+            var mock = new Mock<BackgroundServiceImpl> {CallBase = true};
 
             await mock.Object.StopAsync();
             
@@ -23,7 +40,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Core
         [Test]
         public async Task Test_that_StopAsync_call_prior_to_StartAsync_call_does_not_throw_an_exception()
         {
-            var mock = new Mock<BackgroundService> { CallBase = true };
+            var mock = new Mock<BackgroundServiceImpl> {CallBase = true};
 
             try
             {
@@ -75,7 +92,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Core
         {
             private readonly TaskCompletionSource<bool> _executeAsyncCompletionSource;
             
-            public BackgroundServiceProbe()
+            public BackgroundServiceProbe() : base(LogFactory.Create().AddUnbufferedConsole())
             {
                 _executeAsyncCompletionSource = new TaskCompletionSource<bool>();
             }

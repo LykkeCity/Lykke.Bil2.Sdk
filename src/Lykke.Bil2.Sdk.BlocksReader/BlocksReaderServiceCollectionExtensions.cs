@@ -22,7 +22,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             this IServiceCollection services,
             Action<BlocksReaderServiceOptions<TAppSettings>> configureOptions)
 
-            where TAppSettings : class, IBlocksReaderSettings<BaseBlocksReaderDbSettings>
+            where TAppSettings : class, IBlocksReaderSettings<BaseBlocksReaderDbSettings, BaseBlocksReaderRabbitMqSettings>
         {
             if (services == null)
             {
@@ -65,7 +65,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             BlocksReaderServiceOptions<TAppSettings> options, 
             IReloadingManager<TAppSettings> settings) 
             
-            where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
+            where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings, BaseBlocksReaderRabbitMqSettings>
         {
             services.AddTransient<IIrreversibleBlockListener, IrreversibleBlockListener>();
             services.AddTransient<ReadBlockCommandsHandler>();
@@ -80,7 +80,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                 (
                     s,
                     s.GetRequiredService<ILogFactory>(),
-                    new Uri(settings.CurrentValue.RabbitConnString),
+                    new Uri(settings.CurrentValue.RabbitMq.ConnString),
                     options.RabbitVhost
                 ));
 
@@ -88,8 +88,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                 new RabbitMqConfigurator
                 (
                     s.GetRequiredService<IRabbitMqEndpoint>(),
-                    settings.CurrentValue.MessageListeningParallelism,
-                    settings.CurrentValue.MessageProcessingParallelism,
+                    settings.CurrentValue.RabbitMq,
                     options.IntegrationName.CamelToKebab()
                 ));
         }
@@ -99,7 +98,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             BlocksReaderServiceOptions<TAppSettings> options, 
             IReloadingManager<TAppSettings> settings)
             
-            where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
+            where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings, BaseBlocksReaderRabbitMqSettings>
         {
             services.AddTransient(s => options.BlockReaderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
         }
@@ -109,7 +108,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             BlocksReaderServiceOptions<TAppSettings> options,
             IReloadingManager<TAppSettings> settings)
 
-            where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
+            where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings, BaseBlocksReaderRabbitMqSettings>
         {
             var kebabIntegrationName = options.IntegrationName.CamelToKebab();
             var eventsExchangeName = RabbitMqExchangeNamesFactory.GetIntegrationEventsExchangeName(kebabIntegrationName);
@@ -147,7 +146,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
         private static BlocksReaderServiceOptions<TAppSettings> GetOptions<TAppSettings>(
             Action<BlocksReaderServiceOptions<TAppSettings>> configureOptions)
 
-            where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
+            where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings, BaseBlocksReaderRabbitMqSettings>
         {
             var options = new BlocksReaderServiceOptions<TAppSettings>();
 
