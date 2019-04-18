@@ -85,7 +85,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                 {
                     messageToRetry.Reject();
 
-                    _log.Trace("Message has been rejected due to full internal queue.", messageToRetry);
+                    _log.Warning("Message has been rejected due to full internal queue.", context: messageToRetry);
                 }
                 else
                 {
@@ -117,8 +117,8 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                     else
                     {
                         message.Reject();
-                
-                        _log.Trace("First level retry queue is full. Message has been rejected,", message);
+
+                        _log.Warning("First level retry queue is full. Message has been rejected,", context: message);
                     }
                 }
             }
