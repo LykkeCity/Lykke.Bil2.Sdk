@@ -37,8 +37,12 @@
   </ItemGroup>
   
   <ItemGroup Label="RabbitMq dependencies">
+    <PackageReference Include="C5" Version="2.5.3" />
     <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
     <PackageReference Include="Lykke.Common" Version="7.3.1" />
+    <PackageReference Include="Lykke.Numerics.MessagePack" Version="1.0.0-beta.1" />
+    <PackageReference Include="MessagePack" Version="1.7.3.4" />
+    <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
   </ItemGroup>
   
