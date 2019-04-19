@@ -81,7 +81,9 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                     s,
                     s.GetRequiredService<ILogFactory>(),
                     new Uri(settings.CurrentValue.RabbitMq.ConnString),
-                    options.RabbitVhost
+                    settings.CurrentValue.RabbitVhost == "/" 
+                        ? null 
+                        : settings.CurrentValue.RabbitVhost ?? options.RabbitVhost
                 ));
 
             services.AddTransient<IRabbitMqConfigurator>(s =>

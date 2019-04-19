@@ -24,6 +24,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         private readonly IRetryManager _retryManager;
         private readonly IServiceProvider _serviceProvider;
         private readonly IMessageSubscriptionsRegistry _subscriptionsRegistry;
+        private readonly int _id;
 
         public MessageProcessor(
             TimeSpan defaultRetryTimeout,
@@ -47,7 +48,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             _serviceProvider = serviceProvider;
             _subscriptionsRegistry = subscriptionsRegistry;
             
-            Interlocked.Increment(ref _instanceCounter);
+            _id = Interlocked.Increment(ref _instanceCounter);
         }
         
         ~MessageProcessor()
@@ -65,14 +66,14 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         {
             base.Start();
             
-            _log.Info($"Message processor #{_instanceCounter} has been started.");
+            _log.Info($"Message processor #{_id} has been started.");
         }
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             await base.StopAsync(cancellationToken);
             
-            _log.Info($"Message processor #{_instanceCounter} has been stopped.");
+            _log.Info($"Message processor #{_id} has been stopped.");
         }
 
         protected override async Task ExecuteAsync(
@@ -92,11 +93,11 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                         {
                             await ProcessMessageAsync(subscription, payload, headers);
 
-                            CurrentLog.Trace(CurrentMessage, payload, headers, $"Message has been processed. Processor #{_instanceCounter}.");
+                            CurrentLog.Trace(CurrentMessage, payload, headers, $"Message has been processed. Processor #{_id}.");
                         }
                         catch (Exception e)
                         {
-                            CurrentLog.Warning(CurrentMessage, payload, headers, $"Failed to process the message. Processor #{_instanceCounter}.", e);
+                            CurrentLog.Warning(CurrentMessage, payload, headers, $"Failed to process the message. Processor #{_id}.", e);
                     
                             _retryManager.ScheduleRetry(CurrentMessage, retryAfter: _defaultRetryTimeout);
                         }
@@ -104,7 +105,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                 }
                 catch (Exception e)
                 {
-                    CurrentLog.Error(CurrentMessage, $"Failed to handle the message. Processor #{_instanceCounter}.", e);
+                    CurrentLog.Error(CurrentMessage, $"Failed to handle the message. Processor #{_id}.", e);
 
                     _retryManager.ScheduleRetry(CurrentMessage, retryAfter: _defaultRetryTimeout);
                 }
@@ -158,7 +159,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             }
             catch (Exception e)
             {
-                CurrentLog.Warning(CurrentMessage, $"Failed to deserialize the message. Processor #{_instanceCounter}.", e);
+                CurrentLog.Warning(CurrentMessage, $"Failed to deserialize the message. Processor #{_id}.", e);
                 
                 _rejectManager.ScheduleReject(CurrentMessage, rejectAfter: TimeSpan.FromMinutes(10));
 
@@ -177,7 +178,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             }
             else
             {
-                CurrentLog.Warning(CurrentMessage, $"Subscription for the message has not been found. Processor #{_instanceCounter}.");
+                CurrentLog.Warning(CurrentMessage, $"Subscription for the message has not been found. Processor #{_id}.");
                 
                 _rejectManager.ScheduleReject(CurrentMessage, rejectAfter: TimeSpan.FromMinutes(10));
 
@@ -193,7 +194,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             }
             else
             {
-                CurrentLog.Error(CurrentMessage, $"Message without routing key has been received. Skipping it. Processor #{_instanceCounter}.");
+                CurrentLog.Error(CurrentMessage, $"Message without routing key has been received. Skipping it. Processor #{_id}.");
 
                 CurrentMessage.Ack();
 

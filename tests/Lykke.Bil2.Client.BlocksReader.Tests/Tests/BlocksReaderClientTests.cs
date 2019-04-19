@@ -58,7 +58,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     MessageConsumersCount = 1,
                     MessageProcessorsCount = 1
                 },
-                LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(60),
+                LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(5),
                 NodeUrl = "http://localhost:7777/api",
                 NodeUser = "user",
                 NodePassword = "password",
@@ -83,7 +83,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             //ARRANGE
             var countdown = new CountdownEvent(2);
             Mock<IBlockReader> blockReader = null;
-            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, messagePublisher) =>
+            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, headers, messagePublisher) =>
             {
             });
 
@@ -141,7 +141,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         {
             //ARRANGE
             var irreversibleEvent = new ManualResetEventSlim();
-            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, messagePublisher) =>
+            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, headers, messagePublisher) =>
             {
                 if (evt is LastIrreversibleBlockUpdatedEvent)
                 {
@@ -189,7 +189,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
         {
             //ARRANGE
             var irreversibleEvent = new ManualResetEventSlim();
-            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, messagePublisher) =>
+            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, headers, messagePublisher) =>
             {
                 if (evt is LastIrreversibleBlockUpdatedEvent)
                 {
@@ -251,7 +251,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 { typeof(TransferAmountTransactionExecutedEvent), new ManualResetEventSlim()},
                 { typeof(TransferCoinsTransactionExecutedEvent), new ManualResetEventSlim()},
             };
-            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, messagePublisher) =>
+            var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, headers, messagePublisher) =>
             {
                 if (typeWaitHandles.TryGetValue(evt.GetType(), out var eventWaitHandle))
                 {
@@ -483,7 +483,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     Times.AtLeastOnce);
         }
 
-        private static Mock<IBlockEventsHandler> BlockEventsHandlerCreateMock(Action<string, object, IMessagePublisher> callBack)
+        private static Mock<IBlockEventsHandler> BlockEventsHandlerCreateMock(Action<string, object, MessageHeaders, IMessagePublisher> callBack)
         {
             Mock<IBlockEventsHandler> blockEventsHandler = new Mock<IBlockEventsHandler>();
             blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<BlockHeaderReadEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))

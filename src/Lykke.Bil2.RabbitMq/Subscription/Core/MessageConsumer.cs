@@ -17,8 +17,9 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         private readonly string _sourceQueueName;
         
         private IModel _channel;
+        private readonly int _id;
 
-        
+
         public MessageConsumer(
             IConnection connection,
             IInternalMessageQueue internalQueue,
@@ -30,7 +31,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             _log = logFactory.CreateLog(this);
             _sourceQueueName = sourceQueueName;
 
-            Interlocked.Increment(ref _instanceCounter);
+            _id = Interlocked.Increment(ref _instanceCounter);
         }
 
         ~MessageConsumer()
@@ -54,16 +55,16 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         {
             if (_channel != null)
             {
-                throw new InvalidOperationException($"Message consumer #{_instanceCounter} has already been started.");
+                throw new InvalidOperationException($"Message consumer #{_id} has already been started.");
             }
             
             _channel = _connection.CreateModel();
             
-            _log.Debug($"Channel #{_channel.ChannelNumber} has been created by message consumer #{_instanceCounter}.");
+            _log.Debug($"Channel #{_channel.ChannelNumber} has been created by message consumer #{_id}.");
             
             StartMessageConsumption();
             
-            _log.Info($"Message consumer #{_instanceCounter} has been started.");
+            _log.Info($"Message consumer #{_id} has been started.");
         }
 
         public void Stop()
@@ -84,7 +85,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                 routingKey: args.RoutingKey
             );
             
-            _log.Trace($"Message has been received. Channel #{_channel.ChannelNumber}. Consumer #{_instanceCounter}.", message);
+            _log.Trace($"Message has been received. Channel #{_channel.ChannelNumber}. Consumer #{_id}.", message);
 
             _internalQueue.Enqueue(message);
         }
