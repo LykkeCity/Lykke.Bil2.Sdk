@@ -908,8 +908,8 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             options.AddressFormatsProviderFactory = c => aggregator.AddressFormatsProvider.Object;
             options.AddressValidatorFactory = c => aggregator.AddressValidator.Object;
             options.HealthProviderFactory = c => aggregator.HealthProvider.Object;
-            options.BlockchainInfoServiceFactory = c => aggregator.BlockchainInfoProvider.Object;
-            options.DependenciesInfoProvider = c => aggregator.DependenciesInfoProvider.Object;
+            options.BlockchainInfoProviderFactory = c => aggregator.BlockchainInfoProvider.Object;
+            options.DependenciesInfoProviderFactory = c => aggregator.DependenciesInfoProvider.Object;
             options.TransferAmountTransactionsEstimatorFactory = c => aggregator.TransactionEstimator.Object;
             options.TransactionBroadcasterFactory = c => aggregator.TransactionBroadcaster.Object;
             options.TransferAmountTransactionsBuilderFactory = c => aggregator.TransferAmountTransactionBuilder.Object;
