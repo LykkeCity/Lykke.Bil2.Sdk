@@ -27,12 +27,6 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
         TRabbitMqSettings RabbitMq { get; }
 
         /// <summary>
-        /// RabbitMq Vhost name.
-        /// </summary>
-        [Optional]
-        string RabbitVhost { get; }
-
-        /// <summary>
         /// Monitoring period of the last irreversible block.
         /// </summary>
         /// <remarks>
