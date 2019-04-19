@@ -9,10 +9,12 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
     /// Settings abstraction for a blocks reader application.
     /// </summary>
     /// <typeparam name="TDbSettings">Database settings type.</typeparam>
+    /// <typeparam name="TRabbitMqSettings">RabbitMq settings type.</typeparam>
     [PublicAPI]
-    public interface IBlocksReaderSettings<out TDbSettings> : IAppSettings
+    public interface IBlocksReaderSettings<out TDbSettings, out TRabbitMqSettings> : IAppSettings
 
         where TDbSettings : BaseBlocksReaderDbSettings
+        where TRabbitMqSettings : BaseBlocksReaderRabbitMqSettings
     {
         /// <summary>
         /// Database settings.
@@ -20,10 +22,9 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
         TDbSettings Db { get; }
 
         /// <summary>
-        /// RabbitMq connection string.
+        /// RabbitMq settings.
         /// </summary>
-        [AmqpCheck]
-        string RabbitConnString { get; }
+        TRabbitMqSettings RabbitMq { get; }
 
         /// <summary>
         /// Monitoring period of the last irreversible block.
@@ -33,10 +34,5 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
         /// </remarks>
         [Optional]
         TimeSpan LastIrreversibleBlockMonitoringPeriod { get; }
-
-        /// <summary>
-        /// Number of the threads used to listen messages from the RabbitMq.
-        /// </summary>
-        int MessageListeningParallelism { get; }
     }
 }

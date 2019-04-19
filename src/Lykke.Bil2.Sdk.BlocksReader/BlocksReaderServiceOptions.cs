@@ -13,7 +13,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
     [PublicAPI]
     public class BlocksReaderServiceOptions<TAppSettings>
 
-        where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
+        where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings, BaseBlocksReaderRabbitMqSettings>
     {
         /// <summary>
         /// Required.

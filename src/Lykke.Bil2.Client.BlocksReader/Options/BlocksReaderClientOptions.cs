@@ -18,10 +18,53 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
         public string RabbitMqConnString { get; set; }
 
         /// <summary>
-        /// Required.
-        /// Parallelism of the RabbitMq message listening for each blockchain integration.
+        /// Optional.
+        /// Default value is 30 seconds.
+        /// Default first level retry timeout.
         /// </summary>
-        public int MessageListeningParallelism { get; set; }
+        public TimeSpan DefaultFirstLevelRetryTimeout { get; set; }
+        
+        /// <summary>
+        /// Optional.
+        /// Default value is 10 minutes.
+        /// Max age of the message to retry it at the first level (includes all attempts).
+        /// </summary>
+        public TimeSpan MaxFirstLevelRetryMessageAge { get; set; }
+        
+        /// <summary>
+        /// Optional.
+        /// Default value is 50.
+        /// Max count of the first level retries for a message.
+        /// </summary>
+        public int MaxFirstLevelRetryCount { get; set; }
+        
+        /// <summary>
+        /// Optional.
+        /// Default value is 10000.
+        /// Max messages which can be retried at the first level retries at the moment.
+        /// </summary>
+        public int FirstLevelRetryQueueCapacity { get; set; }
+        
+        /// <summary>
+        /// Optional.
+        /// Default value is 1000.
+        /// Max message which can wait for the free processor right after the read by a consumer.
+        /// </summary>
+        public int ProcessingQueueCapacity { get; set; }
+        
+        /// <summary>
+        /// Optional.
+        /// Default value is 4.
+        /// Number of the threads used to listen messages from the RabbitMq.
+        /// </summary>
+        public int MessageConsumersCount { get; set; }
+        
+        /// <summary>
+        /// Optional.
+        /// Default value is 8.
+        /// Number of the threads used to process messages from the RabbitMq.
+        /// </summary>
+        public int MessageProcessorsCount { get; set; }
 
         /// <summary>
         /// Required.
@@ -36,7 +79,13 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
         internal BlocksReaderClientOptions()
         {
             _integrationNames = new List<string>();
-            MessageListeningParallelism = 8;
+            DefaultFirstLevelRetryTimeout = TimeSpan.FromSeconds(30);
+            MaxFirstLevelRetryMessageAge = TimeSpan.FromMinutes(10);
+            MaxFirstLevelRetryCount = 50;
+            FirstLevelRetryQueueCapacity = 10000;
+            ProcessingQueueCapacity = 1000;
+            MessageConsumersCount = 4;
+            MessageProcessorsCount = 8;
         }
 
         /// <summary>

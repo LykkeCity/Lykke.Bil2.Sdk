@@ -19,11 +19,13 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             _rawObjectRepository = rawObjectRepository;
         }
 
-        public async Task HandleAsync(ReadBlockCommand command, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public async Task<MessageHandlingResult> HandleAsync(ReadBlockCommand command, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
             var blockListener = new BlockListener(replyPublisher, _rawObjectRepository);
 
             await _blockReader.ReadBlockAsync(command.BlockNumber, blockListener);
+
+            return MessageHandlingResult.Success();
         }
     }
 }

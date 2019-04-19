@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.SharedDomain;
-using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
@@ -13,45 +13,44 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
     /// integration uses “transfer amount” transactions model. Integration should either
     /// support “transfer coins” or “transfer amount” transactions model.
     /// </summary>
-    [PublicAPI]
+    [PublicAPI, DataContract]
     public class TransferAmountTransactionExecutedEvent
     {
         /// <summary>
         /// ID of the block.
         /// </summary>
-        [JsonProperty("blockId")]
+        [DataMember(Order = 0)]
         public BlockId BlockId { get; }
 
         /// <summary>
         /// Number of the transaction in the block.
         /// </summary>
-        [JsonProperty("transactionNumber")]
+        [DataMember(Order = 1)]
         public int TransactionNumber { get; }
 
         /// <summary>
         /// ID of the transaction.
         /// </summary>
-        [JsonProperty("transactionId")]
+        [DataMember(Order = 2)]
         public TransactionId TransactionId { get; }
 
         /// <summary>
         /// Balance changing operations.
         /// </summary>
-        [JsonProperty("balanceChanges")]
+        [DataMember(Order = 3)]
         public IReadOnlyCollection<BalanceChange> BalanceChanges { get; }
 
         /// <summary>
         /// Fees in the particular asset, that was spent for the transaction.
         /// </summary>
-        [JsonProperty("fees")]
+        [DataMember(Order = 4)]
         public IReadOnlyCollection<Fee> Fees { get; }
 
         /// <summary>
         /// Optional.
         /// Flag which indicates, if transaction is irreversible.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("isIrreversible")]
+        [CanBeNull, DataMember(Order = 5)]
         public bool? IsIrreversible { get; }
 
         /// <summary>

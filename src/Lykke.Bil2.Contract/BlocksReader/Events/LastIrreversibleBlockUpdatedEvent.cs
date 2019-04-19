@@ -1,24 +1,26 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using JetBrains.Annotations;
 using Lykke.Bil2.SharedDomain;
-using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
     /// <summary>
     /// Should be published when last irreversible block number is updated.
     /// </summary>
+    [PublicAPI, DataContract]
     public class LastIrreversibleBlockUpdatedEvent
     {
         /// <summary>
         /// Number of the last irreversible block.
         /// </summary>
-        [JsonProperty("blockNumber")]
+        [DataMember(Order = 0)]
         public long BlockNumber { get; }
 
         /// <summary>
         /// ID of the last irreversible block.
         /// </summary>
-        [JsonProperty("blockId")]
+        [DataMember(Order = 1)]
         public BlockId BlockId { get; }
 
         /// <summary>

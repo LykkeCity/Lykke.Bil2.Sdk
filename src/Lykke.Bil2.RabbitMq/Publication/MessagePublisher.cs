@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using Lykke.Bil2.RabbitMq.MessagePack;
+using MessagePack;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing;
@@ -11,11 +13,13 @@ namespace Lykke.Bil2.RabbitMq.Publication
         private readonly string _exchangeName;
         private readonly string _correlationId;
         private readonly IModel _channel;
+        private readonly ICompositeFormatterResolver _formatterResolver;
 
         public MessagePublisher(
             IModel channel,
             string exchangeName,
-            string correlationId)
+            string correlationId,
+            ICompositeFormatterResolver formatterResolver)
         {
             if (string.IsNullOrWhiteSpace(exchangeName))
             {
@@ -25,6 +29,7 @@ namespace Lykke.Bil2.RabbitMq.Publication
             _channel = channel ?? throw new ArgumentNullException(nameof(channel));
             _exchangeName = exchangeName;
             _correlationId = correlationId;
+            _formatterResolver = formatterResolver ?? throw new ArgumentNullException(nameof(formatterResolver));
         }
 
         public void Publish<TMessage>(TMessage message, string correlationId = null)
@@ -35,13 +40,12 @@ namespace Lykke.Bil2.RabbitMq.Publication
                 CorrelationId = _correlationId ?? correlationId ?? Guid.NewGuid().ToString("N")
             };
 
-            var serializedMessage = JsonConvert.SerializeObject(message);
-            var messageBytes = Encoding.UTF8.GetBytes(serializedMessage);
+            var serializedMessageBytes = MessagePackSerializer.Serialize(message, _formatterResolver);
             var routingKey = message.GetType().Name;
 
             lock (_channel)
             {
-                _channel.BasicPublish(_exchangeName, routingKey, true, properties, messageBytes);
+                _channel.BasicPublish(_exchangeName, routingKey, true, properties, serializedMessageBytes);
             }
         }
     }

@@ -11,7 +11,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
     [PublicAPI]
     public class ServiceFactoryContext<TAppSettings>
 
-        where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings>
+        where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings, BaseBlocksReaderRabbitMqSettings>
     {
         /// <summary>
         /// Service provider

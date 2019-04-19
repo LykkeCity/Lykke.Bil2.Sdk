@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Lykke.Bil2.Contract\Lykke.Bil2.Contract.csproj" />
+    <ProjectReference Include="..\Lykke.Bil2.BaseTests\Lykke.Bil2.BaseTests.csproj" />
   </ItemGroup>
 
 </Project>

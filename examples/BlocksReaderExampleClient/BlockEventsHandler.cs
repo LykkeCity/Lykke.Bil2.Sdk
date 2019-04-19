@@ -8,34 +8,34 @@ namespace BlocksReaderExampleClient
 {
     public class BlockEventsHandler : IBlockEventsHandler
     {
-        public Task HandleAsync(string integrationName, BlockHeaderReadEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(string integrationName, BlockHeaderReadEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(MessageHandlingResult.Success());
         }
 
-        public Task HandleAsync(string integrationName, BlockNotFoundEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(string integrationName, BlockNotFoundEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(MessageHandlingResult.Success());
         }
 
-        public Task HandleAsync(string integrationName, TransferAmountTransactionExecutedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(string integrationName, TransferAmountTransactionExecutedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(MessageHandlingResult.Success());
         }
 
-        public Task HandleAsync(string integrationName, TransferCoinsTransactionExecutedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(string integrationName, TransferCoinsTransactionExecutedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(MessageHandlingResult.Success());
         }
 
-        public Task HandleAsync(string integrationName, TransactionFailedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(string integrationName, TransactionFailedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(MessageHandlingResult.Success());
         }
 
-        public Task HandleAsync(string integrationName, LastIrreversibleBlockUpdatedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(string integrationName, LastIrreversibleBlockUpdatedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(MessageHandlingResult.Success());
         }
     }
 }

@@ -1,46 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.SharedDomain;
-using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
     /// <summary>
     /// Should be published for each failed transaction in the block being read.
     /// </summary>
-    [PublicAPI]
+    [PublicAPI, DataContract]
     public class TransactionFailedEvent
     {
         /// <summary>
         /// ID of the block.
         /// </summary>
-        [JsonProperty("blockId")]
+        [DataMember(Order = 0)]
         public BlockId BlockId { get; }
 
         /// <summary>
         /// One-based number of the transaction in the block.
         /// </summary>
-        [JsonProperty("transactionNumber")]
+        [DataMember(Order = 1)]
         public int TransactionNumber { get; }
 
         /// <summary>
         /// ID of the transaction.
         /// </summary>
-        [JsonProperty("transactionId")]
+        [DataMember(Order = 2)]
         public TransactionId TransactionId { get; }
 
         /// <summary>
         /// Code of the error.
         /// </summary>
-        [JsonProperty("errorCode")]
+        [DataMember(Order = 3)]
         public TransactionBroadcastingError ErrorCode { get; }
 
         /// <summary>
         /// Clean error description.
         /// </summary>
-        [JsonProperty("errorMessage")]
+        [DataMember(Order = 4)]
         public string ErrorMessage { get; }
 
         /// <summary>
@@ -48,8 +48,7 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         /// Fees in the particular asset, that was spent for the transaction.
         /// Can be omitted, if there was no fee spent for the transaction.
         /// </summary>
-        [CanBeNull]
-        [JsonProperty("fees")]
+        [CanBeNull, DataMember(Order = 5)]
         public IReadOnlyCollection<Fee> Fees { get; }
 
         /// <summary>

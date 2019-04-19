@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.RabbitMq.Subscription;
+using MessagePack;
 
 namespace Lykke.Bil2.RabbitMq
 {
@@ -26,19 +27,30 @@ namespace Lykke.Bil2.RabbitMq
         /// Creates message publisher. Should be called after <see cref="Initialize"/>.
         /// </summary>
         IMessagePublisher CreatePublisher(string exchangeName, string correlationId = null);
+
+        /// <summary>
+        /// Registers custom formatter resolvers for this endpoint.
+        /// </summary>
+        void RegisterMessagePackFormatterResolvers(params IFormatterResolver[] resolvers);
         
         /// <summary>
         /// Subscribing for the messages. Should be called after <see cref="Initialize"/>.
         /// </summary>
-        void Subscribe(
+        void Subscribe(IMessageSubscriptionsRegistry subscriptionsRegistry,
             string listeningExchangeName,
             string listeningRoute,
-            IMessageSubscriptionsRegistry subscriptionsRegistry,
+            TimeSpan? defaultFirstLevelRetryTimeout = null,
+            TimeSpan? maxFirstLevelRetryMessageAge = null,
+            int maxFirstLevelRetryCount = 5,
+            int firstLevelRetryQueueCapacity = 10000,
+            int processingQueueCapacity = 1000,
+            int messageConsumersCount = 1,
+            int messageProcessorsCount = 1,
             string replyExchangeName = null);
 
         /// <summary>
         /// Start listening for the subscribed message. Should be called after <see cref="Subscribe"/>.
         /// </summary>
-        void StartListening(int parallelism = 1);
+        void StartListening();
     }
 }

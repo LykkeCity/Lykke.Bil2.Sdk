@@ -1,8 +1,10 @@
 ﻿using System;
+using MessagePack;
 
 namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Mocks
 {
-    internal class TestMessage
+    [MessagePackObject(keyAsPropertyName: true)]
+    public class TestMessage
     {
         public Guid Id { get; set; }
     }

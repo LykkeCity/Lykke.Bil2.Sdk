@@ -43,10 +43,6 @@ namespace Lykke.Bil2.Client.BlocksReader
             {
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.RabbitMqConnString)} is required.");
             }
-            if (options.MessageListeningParallelism <= 0)
-            {
-                throw new InvalidOperationException($"{nameof(options)}.{nameof(options.MessageListeningParallelism)} should be positive number. Actual: {options.MessageListeningParallelism}");
-            }
             if (!options.IntegrationNames.Any())
             {
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.IntegrationNames)} at least one integration should be registered.");
@@ -64,16 +60,24 @@ namespace Lykke.Bil2.Client.BlocksReader
                 options.RabbitVhost
             ));
 
+            var clientName = string
+                .Concat(AppEnvironment.Name.Split(".").Where(x => x != "Lykke" && x != "Service" && x != "Job"))
+                .CamelToKebab();
+
             services.AddSingleton<IBlocksReaderClient>(s => new BlocksReaderClient
             (
                 s.GetRequiredService<ILogFactory>(),
                 s.GetRequiredService<IRabbitMqEndpoint>(),
                 s,
                 options.IntegrationNames,
-                string
-                    .Concat(AppEnvironment.Name.Split(".").Where(x => x != "Lykke" && x != "Service" && x != "Job"))
-                    .CamelToKebab(),
-                options.MessageListeningParallelism
+                clientName,
+                options.DefaultFirstLevelRetryTimeout,
+                options.MaxFirstLevelRetryMessageAge,
+                options.MaxFirstLevelRetryCount,
+                options.FirstLevelRetryQueueCapacity,
+                options.ProcessingQueueCapacity,
+                options.MessageConsumersCount,
+                options.MessageProcessorsCount
             ));
 
             services.AddTransient<IBlocksReaderApiFactory, BlocksReaderApiFactory>();
