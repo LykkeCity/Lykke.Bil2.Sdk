@@ -25,8 +25,8 @@ namespace TransactionsExecutorExample
                 (
                     c.Services.GetRequiredService<INodeClient>()
                 );
-                options.BlockchainInfoServiceFactory = c => new BlockchainInfoProvider();
-                options.DependenciesInfoProvider = c => new DependenciesInfoProvider();
+                options.BlockchainInfoProviderFactory = c => new BlockchainInfoProvider();
+                options.DependenciesInfoProviderFactory = c => new DependenciesInfoProvider();
                 options.TransferAmountTransactionsEstimatorFactory = c => new TransactionsEstimator();
                 options.TransferAmountTransactionsBuilderFactory = c => new TransferTransactionsBuilder();
                 options.TransactionBroadcasterFactory = c => new TransactionsBroadcaster();

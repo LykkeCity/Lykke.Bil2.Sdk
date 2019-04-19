@@ -92,10 +92,10 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
         {
             services.AddTransient(s => options.AddressValidatorFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient(s => options.HealthProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
-            services.AddTransient(s => options.BlockchainInfoServiceFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
+            services.AddTransient(s => options.BlockchainInfoProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings)));
             services.AddTransient<IDependenciesInfoProvider>(s =>
             {
-                var impl = options.DependenciesInfoProvider(new ServiceFactoryContext<TAppSettings>(s, settings));
+                var impl = options.DependenciesInfoProviderFactory(new ServiceFactoryContext<TAppSettings>(s, settings));
 
                 return new CachedDependenciesInfoProviderDecorator
                 (
@@ -138,16 +138,16 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.HealthProviderFactory)} is required.");
             }
 
-            if (options.BlockchainInfoServiceFactory == null)
+            if (options.BlockchainInfoProviderFactory == null)
             {
                 throw new InvalidOperationException(
-                    $"{nameof(options)}.{nameof(options.BlockchainInfoServiceFactory)} is required.");
+                    $"{nameof(options)}.{nameof(options.BlockchainInfoProviderFactory)} is required.");
             }
 
-            if (options.DependenciesInfoProvider == null)
+            if (options.DependenciesInfoProviderFactory == null)
             {
                 throw new InvalidOperationException(
-                    $"{nameof(options)}.{nameof(options.DependenciesInfoProvider)} is required.");
+                    $"{nameof(options)}.{nameof(options.DependenciesInfoProviderFactory)} is required.");
             }
 
             if (options.TransferAmountTransactionsEstimatorFactory == null)
