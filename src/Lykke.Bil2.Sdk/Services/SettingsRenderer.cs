@@ -177,6 +177,11 @@ namespace Lykke.Bil2.Sdk.Services
 
         private static string SanitizeValue(bool isSecure, Type type, string value)
         {
+            if (value == null)
+            {
+                return "<null>";
+            }
+
             if (isSecure)
             {
                 return "*";
