@@ -6,7 +6,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
 {
     public interface IStartupDependencyFactory
     {
-        Action<BlocksReaderServiceOptions<TAppSettings>> GetOptionsConfiguration<TAppSettings>() 
+        Action<BlocksReaderServiceOptions<TAppSettings>> GetOptionsConfiguration<TAppSettings>()
             where TAppSettings : BaseBlocksReaderSettings<DbSettings, RabbitMqSettings>;
 
         IServiceProvider ServerServiceProvider { get; set; }
