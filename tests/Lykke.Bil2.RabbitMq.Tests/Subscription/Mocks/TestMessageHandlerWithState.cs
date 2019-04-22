@@ -8,18 +8,16 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Mocks
     [UsedImplicitly]
     internal class TestMessageHandlerWithState : IMessageHandler<TestMessage, string>
     {
-        private readonly DisposableDependency _dependency;
+        private readonly ITestMessageHandlerWithStateImplementation _impl;
 
-        public TestMessageHandlerWithState(DisposableDependency dependency)
+        public TestMessageHandlerWithState(ITestMessageHandlerWithStateImplementation impl)
         {
-            _dependency = dependency;
+            _impl = impl;
         }
 
-        public async Task<MessageHandlingResult> HandleAsync(string state, TestMessage message, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(string state, TestMessage message, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
-            await _dependency.FooWithStateAsync(message.Id, state);
-            
-            return MessageHandlingResult.Success();
+            return _impl.HandleAsync(state, message, headers, replyPublisher);
         }
     }
 }

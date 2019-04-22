@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Common.Log;
 using Lykke.Common.Log;
 
@@ -16,19 +16,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             
             log.Error(process, exception, message, context);
         }
-
-        public static void Trace(
-            this ILog log,
-            EnvelopedMessage context,
-            object payload,
-            MessageHeaders headers,
-            string message)
-        {
-            var process = context.RoutingKey; 
-            
-            log.Trace(process, message, new { Headers = headers, Message = payload });
-        }
-        
+       
         public static void Warning(
             this ILog log,
             EnvelopedMessage context,
