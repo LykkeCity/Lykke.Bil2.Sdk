@@ -115,7 +115,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
         /// Adds client-wide message filter
         /// </summary>
         /// <param name="factory"></param>
-        public void AddFiler(Func<IServiceProvider, IMessageFilter> factory)
+        public void AddMessageFilter(Func<IServiceProvider, IMessageFilter> factory)
         {
             MessageFilters.Add(factory);
         }
