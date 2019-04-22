@@ -23,7 +23,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
         private readonly int _processingQueueCapacity;
         private readonly int _messageConsumersCount;
         private readonly int _messageProcessorsCount;
-        private readonly ICollection<IMessageFilter> _messageFilters;
+        private readonly IReadOnlyCollection<IMessageFilter> _messageFilters;
 
         public BlocksReaderClient(
             ILogFactory logFactory,
@@ -38,7 +38,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
             int processingQueueCapacity,
             int messageConsumersCount,
             int messageProcessorsCount,
-            ICollection<IMessageFilter> messageFilters)
+            IReadOnlyCollection<IMessageFilter> messageFilters)
         {
             if (logFactory == null)
             {
