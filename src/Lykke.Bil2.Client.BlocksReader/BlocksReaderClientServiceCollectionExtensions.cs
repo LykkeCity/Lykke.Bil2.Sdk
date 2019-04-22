@@ -77,7 +77,8 @@ namespace Lykke.Bil2.Client.BlocksReader
                 options.FirstLevelRetryQueueCapacity,
                 options.ProcessingQueueCapacity,
                 options.MessageConsumersCount,
-                options.MessageProcessorsCount
+                options.MessageProcessorsCount,
+                options.MessageFilters
             ));
 
             services.AddTransient<IBlocksReaderApiFactory, BlocksReaderApiFactory>();

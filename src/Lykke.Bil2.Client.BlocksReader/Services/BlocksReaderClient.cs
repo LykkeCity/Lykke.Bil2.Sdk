@@ -23,6 +23,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
         private readonly int _processingQueueCapacity;
         private readonly int _messageConsumersCount;
         private readonly int _messageProcessorsCount;
+        private readonly ICollection<IMessageFilter> _messageFilters;
 
         public BlocksReaderClient(
             ILogFactory logFactory,
@@ -36,7 +37,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
             int firstLevelRetryQueueCapacity,
             int processingQueueCapacity,
             int messageConsumersCount,
-            int messageProcessorsCount)
+            int messageProcessorsCount,
+            ICollection<IMessageFilter> messageFilters)
         {
             if (logFactory == null)
             {
@@ -59,6 +61,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
             _processingQueueCapacity = processingQueueCapacity;
             _messageConsumersCount = messageConsumersCount;
             _messageProcessorsCount = messageProcessorsCount;
+            _messageFilters = messageFilters ?? throw new ArgumentNullException(nameof(messageFilters));
         }
 
         public void Initialize()
@@ -107,6 +110,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
                         o.WithHandler<IBlockEventsHandler>();
                         o.WithState(integrationName);
                     });
+
+                foreach (var filter in _messageFilters)
+                {
+                    subscriptions.AddFilter(filter);
+                }
 
                 _endpoint.Subscribe
                 (
