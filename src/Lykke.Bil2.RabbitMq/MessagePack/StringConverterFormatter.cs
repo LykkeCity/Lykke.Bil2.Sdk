@@ -23,7 +23,7 @@ namespace Lykke.Bil2.RabbitMq.MessagePack
             T value,
             IFormatterResolver formatterResolver)
         {
-            var convertedValue = (string) _converter.ConvertTo(/*default, CultureInfo.InvariantCulture,*/ value, typeof(string));
+            var convertedValue = (string) _converter.ConvertTo(default, CultureInfo.InvariantCulture, value, typeof(string));
 
             return NullableStringFormatter.Instance.Serialize(ref bytes, offset, convertedValue, formatterResolver);
         }
@@ -37,7 +37,7 @@ namespace Lykke.Bil2.RabbitMq.MessagePack
             var convertedValue = NullableStringFormatter.Instance.Deserialize(bytes, offset, formatterResolver, out readSize);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            return (T) _converter.ConvertFrom(/*default, CultureInfo.InvariantCulture, */convertedValue);
+            return (T) _converter.ConvertFrom(default, CultureInfo.InvariantCulture, convertedValue);
         }
     }
 }
