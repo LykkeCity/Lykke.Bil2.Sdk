@@ -22,6 +22,11 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         IMessageSubscription GetSubscriptionOrDefault(string messageType);
 
         /// <summary>
+        /// Adds a filter for all received messages.
+        /// </summary>
+        MessageSubscriptionsRegistry AddFilter(IMessageFilter filter);
+
+        /// <summary>
         /// Configures handling of the <typeparamref name="TMessage"/> message.
         /// </summary>
         MessageSubscriptionsRegistry Handle<TMessage>(Action<IMessageSubscriptionOptions<TMessage>> configureSubscription)

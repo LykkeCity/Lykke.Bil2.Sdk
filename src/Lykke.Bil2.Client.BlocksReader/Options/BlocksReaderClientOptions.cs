@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Lykke.Bil2.Client.BlocksReader.Services;
+using Lykke.Bil2.RabbitMq.Subscription;
 
 namespace Lykke.Bil2.Client.BlocksReader.Options
 {
@@ -77,6 +78,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
         /// </summary>
         public string RabbitVhost { get; set; }
 
+        internal ICollection<Func<IServiceProvider, IMessageFilter>> MessageFilters { get; }
+        
         internal IReadOnlyCollection<string> IntegrationNames => _integrationNames;
         
         private List<string> _integrationNames;
@@ -91,6 +94,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
             ProcessingQueueCapacity = 1000;
             MessageConsumersCount = 4;
             MessageProcessorsCount = 8;
+            MessageFilters = new List<Func<IServiceProvider, IMessageFilter>>();
         }
 
         /// <summary>
@@ -105,6 +109,15 @@ namespace Lykke.Bil2.Client.BlocksReader.Options
             }
 
             _integrationNames.Add(integrationName);
+        }
+
+        /// <summary>
+        /// Adds client-wide message filter
+        /// </summary>
+        /// <param name="factory"></param>
+        public void AddMessageFilter(Func<IServiceProvider, IMessageFilter> factory)
+        {
+            MessageFilters.Add(factory);
         }
     }
 }

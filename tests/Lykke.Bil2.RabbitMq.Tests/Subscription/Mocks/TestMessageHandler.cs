@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.RabbitMq.Subscription;
@@ -8,18 +9,16 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Mocks
     [UsedImplicitly]
     internal class TestMessageHandler : IMessageHandler<TestMessage>
     {
-        private readonly DisposableDependency _dependency;
+        private readonly ITestMessageHandlerImplementation _impl;
 
-        public TestMessageHandler(DisposableDependency dependency)
+        public TestMessageHandler(ITestMessageHandlerImplementation impl)
         {
-            _dependency = dependency;
+            _impl = impl;
         }
 
-        public async Task<MessageHandlingResult> HandleAsync(TestMessage message, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(TestMessage message, MessageHeaders headers, IMessagePublisher replyPublisher)
         {
-            await _dependency.FooAsync(message.Id);
-            
-            return MessageHandlingResult.Success();
+            return _impl.HandleAsync(message, headers, replyPublisher);
         }
     }
 }

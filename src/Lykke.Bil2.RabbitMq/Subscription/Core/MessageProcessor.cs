@@ -91,9 +91,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                     {
                         try
                         {
-                            await ProcessMessageAsync(subscription, payload, headers);
-
-                            CurrentLog.Trace(CurrentMessage, payload, headers, $"Message has been processed. Processor #{_id}.");
+                            await ProcessMessageAsync(subscription, CurrentMessage, payload, headers);
                         }
                         catch (Exception e)
                         {
@@ -117,13 +115,25 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
 
         private async Task ProcessMessageAsync(
             IMessageSubscription subscription,
+            EnvelopedMessage envelopedMessage,
             object payload,
             MessageHeaders headers)
         {
             var publisher = _repliesPublisher?.Invoke(headers.CorrelationId) 
                          ?? ProhibitedRepliesMessagePublisher.Instance;
-                        
-            var result = await subscription.InvokeHandlerAsync(_serviceProvider, payload, headers, publisher);
+
+            var handlingContext = new MessageHandlingContext
+            (
+                envelopedMessage.Exchange,
+                envelopedMessage.RetryCount,
+                envelopedMessage.RoutingKey
+            );
+            var result = await subscription.InvokeHandlerAsync(_serviceProvider, payload, headers, handlingContext, publisher);
+
+            if (result == null)
+            {
+                throw new InvalidOperationException("Result should be not null");
+            }
 
             switch (result)
             {

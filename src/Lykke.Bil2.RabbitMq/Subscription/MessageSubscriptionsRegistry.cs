@@ -11,6 +11,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
     public class MessageSubscriptionsRegistry : IMessageSubscriptionsRegistry
     {
         private IImmutableDictionary<string, IMessageSubscription> _subscriptions;
+        private List<IMessageFilter> _globalFilters;
 
         /// <summary>
         /// Registry of the message subscriptions
@@ -18,6 +19,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
         public MessageSubscriptionsRegistry()
         {
             _subscriptions = new Dictionary<string, IMessageSubscription>().ToImmutableDictionary();
+            _globalFilters = new List<IMessageFilter>();
         }
 
         /// <inheritdoc />
@@ -39,6 +41,13 @@ namespace Lykke.Bil2.RabbitMq.Subscription
             return subscription;
         }
 
+        public MessageSubscriptionsRegistry AddFilter(IMessageFilter filter)
+        {
+            _globalFilters.Add(filter);
+
+            return this;
+        }
+
         /// <inheritdoc />
         public MessageSubscriptionsRegistry Handle<TMessage>(Action<IMessageSubscriptionOptions<TMessage>> configureSubscription)
             where TMessage : class
@@ -58,7 +67,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                 throw new InvalidOperationException($"Handler is not registered for the message {messageType.Name}.");
             }
             
-            _subscriptions = _subscriptions.Add(messageType.Name, new MessageSubscription<TMessage>(subscriptionOptions));
+            _subscriptions = _subscriptions.Add(messageType.Name, new MessageSubscription<TMessage>(subscriptionOptions, _globalFilters));
 
             return this;
         }
@@ -82,7 +91,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription
                 throw new InvalidOperationException($"Handler is not registered for the message {messageType.Name}.");
             }
            
-            _subscriptions = _subscriptions.Add(messageType.Name, new MessageSubscription<TMessage, TState>(subscriptionOptions));
+            _subscriptions = _subscriptions.Add(messageType.Name, new MessageSubscription<TMessage, TState>(subscriptionOptions, _globalFilters));
 
             return this;
         }
