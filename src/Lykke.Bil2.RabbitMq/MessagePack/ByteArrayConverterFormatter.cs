@@ -1,4 +1,5 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Globalization;
 using MessagePack;
 using MessagePack.Formatters;
 
@@ -22,7 +23,7 @@ namespace Lykke.Bil2.RabbitMq.MessagePack
             T value,
             IFormatterResolver formatterResolver)
         {
-            var convertedValue = (byte[]) _converter.ConvertTo(value, typeof(byte[]));
+            var convertedValue = (byte[]) _converter.ConvertTo(default,  CultureInfo.InvariantCulture, value, typeof(byte[]));
 
             return ByteArrayFormatter.Instance
                 .Serialize(ref bytes, offset, convertedValue, formatterResolver);
@@ -37,7 +38,8 @@ namespace Lykke.Bil2.RabbitMq.MessagePack
             var convertedValue = ByteArrayFormatter.Instance
                 .Deserialize(bytes, offset, formatterResolver, out readSize);
 
-            return (T) _converter.ConvertFrom(convertedValue);
+            // ReSharper disable once AssignNullToNotNullAttribute
+            return (T) _converter.ConvertFrom(default, CultureInfo.InvariantCulture, convertedValue);
         }
     }
 }

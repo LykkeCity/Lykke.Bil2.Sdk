@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,9 +28,9 @@ namespace Lykke.Bil2.RabbitMq.MessagePack
                     yield return resolver;
                 }
 
-                yield return TypeConverterFormatterResolver.Instance;
-
                 yield return StandardResolver.Instance;
+
+                yield return TypeConverterFormatterResolver.Instance;
             }
         }
 
