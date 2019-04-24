@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Common.Log;
 using Lykke.Bil2.RabbitMq.MessagePack;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Common.Log;
@@ -14,36 +13,21 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
 {
     internal class MessageSubscriber : IDisposable
     {
-        private readonly IConnection _connection;
-        private readonly string _exchangeName;
         private readonly IReadOnlyCollection<IMessageConsumer> _messageConsumers;
         private readonly IReadOnlyCollection<IMessageProcessor> _messageProcessors;
-        private readonly string _queueName;
         private readonly IRejectManager _rejectManager;
         private readonly IRetryManager _retryManager;
-        private readonly IMessageSubscriptionsRegistry _subscriptionsRegistry;
-        private readonly ILog _log;
 
         private MessageSubscriber(
-            IConnection connection,
-            string exchangeName,
-            ILogFactory logFactory,
             IReadOnlyCollection<IMessageConsumer> messageConsumers,
             IReadOnlyCollection<IMessageProcessor> messageProcessors,
-            string queueName,
             IRejectManager rejectManager,
-            IRetryManager retryManager,
-            IMessageSubscriptionsRegistry subscriptionsRegistry)
+            IRetryManager retryManager)
         {
-            _connection = connection;
-            _exchangeName = exchangeName;
-            _log = logFactory.CreateLog(this);
             _messageConsumers = messageConsumers;
             _messageProcessors = messageProcessors;
-            _queueName = queueName;
             _rejectManager = rejectManager;
             _retryManager = retryManager;
-            _subscriptionsRegistry = subscriptionsRegistry;
         }
 
         public void Dispose()
@@ -73,21 +57,6 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
 
         public void StartListening()
         {
-            using (var channel = _connection.CreateModel())
-            {
-                channel.BasicQos(0, 100, false);
-                channel.QueueDeclare(_queueName, true, false, false, null);
-
-                _log.Info($"Start receiving messages from the exchange {_exchangeName} via the queue {_queueName}:");
-
-                foreach (var subscription in _subscriptionsRegistry.GetAllSubscriptions())
-                {
-                    _log.Info($"Binding message {subscription.RoutingKey}...");
-
-                    channel.QueueBind(_queueName, _exchangeName, subscription.RoutingKey, null);
-                }
-            }
-
             _rejectManager.Start();
             _retryManager.Start();
 
@@ -166,17 +135,27 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                 ));
             }
             
+            using (var channel = connection.CreateModel())
+            {
+                channel.BasicQos(0, 100, false);
+                channel.QueueDeclare(queueName, true, false, false, null);
+
+                log.Info($"Start receiving messages from the exchange {exchangeName} via the queue {queueName}:");
+
+                foreach (var subscription in subscriptionsRegistry.GetAllSubscriptions())
+                {
+                    log.Info($"Binding message {subscription.RoutingKey}...");
+
+                    channel.QueueBind(queueName, exchangeName, subscription.RoutingKey, null);
+                }
+            }
+
             return new MessageSubscriber
             (
-                connection,
-                exchangeName,
-                logFactory,
                 messageConsumers,
                 messageProcessors,
-                queueName,
                 rejectManager,
-                retryManager,
-                subscriptionsRegistry
+                retryManager
             );
         }
     }
