@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Text;
 using Lykke.Bil2.RabbitMq.MessagePack;
 using MessagePack;
-using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing;
 
@@ -37,7 +35,7 @@ namespace Lykke.Bil2.RabbitMq.Publication
             var properties = new BasicProperties
             {
                 Persistent = true,
-                CorrelationId = _correlationId ?? correlationId ?? Guid.NewGuid().ToString("N")
+                CorrelationId = correlationId ?? _correlationId ?? Guid.NewGuid().ToString("N")
             };
 
             var serializedMessageBytes = MessagePackSerializer.Serialize(message, _formatterResolver);
@@ -47,6 +45,12 @@ namespace Lykke.Bil2.RabbitMq.Publication
             {
                 _channel.BasicPublish(_exchangeName, routingKey, true, properties, serializedMessageBytes);
             }
+        }
+
+        public IMessagePublisher ChangeCorrelationId(string correlationId)
+        {
+            // ReSharper disable once InconsistentlySynchronizedField
+            return new MessagePublisher(_channel, _exchangeName, correlationId, _formatterResolver);
         }
     }
 }
