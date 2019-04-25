@@ -20,7 +20,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
         /// RabbitMq Vhost name.
         /// </summary>
         [Optional]
-        public string Vhost { get; }
+        public string Vhost { get; set; }
 
         /// <summary>
         /// Number of the threads used to listen messages from the RabbitMq.
