@@ -14,5 +14,10 @@ namespace Lykke.Bil2.RabbitMq.Publication
         {
             throw new InvalidOperationException($"Replies are prohibited for this subscription. Specify replyExchangeName when subscribing using {nameof(RabbitMqEndpoint.Subscribe)}");
         }
+
+        public IMessagePublisher ChangeCorrelationId(string correlationId)
+        {
+            return this;
+        }
     }
 }

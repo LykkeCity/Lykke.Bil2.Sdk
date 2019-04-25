@@ -12,5 +12,10 @@ namespace Lykke.Bil2.RabbitMq.Publication
         /// Publishes messages to the RabbitMq.
         /// </summary>
         void Publish<TMessage>(TMessage message, string correlationId = null);
+
+        /// <summary>
+        /// Creates new message publisher with specified correlation id
+        /// </summary>
+        IMessagePublisher ChangeCorrelationId(string correlationId);
     }
 }
