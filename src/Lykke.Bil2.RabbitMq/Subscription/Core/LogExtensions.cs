@@ -32,13 +32,12 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             this ILog log,
             EnvelopedMessage context,
             object payload,
-            MessageHeaders headers,
             string message,
             Exception exception = null)
         {
             var process = context.RoutingKey; 
             
-            log.Warning(process, message, exception, new { Headers = headers, Message = payload });
+            log.Warning(process, message, exception, new { Headers = context.Headers, Message = payload });
         }
     }
 }

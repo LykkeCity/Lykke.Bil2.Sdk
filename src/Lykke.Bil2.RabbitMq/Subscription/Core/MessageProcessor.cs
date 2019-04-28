@@ -87,15 +87,15 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
 
                 try
                 {
-                    if (ValidateCurrentMessage() && TryGetSubscription(out var subscription) && TryGetPayloadAndHeaders(subscription, out var payload, out var headers))
+                    if (ValidateCurrentMessage() && TryGetSubscription(out var subscription) && TryGetPayloadAndHeaders(subscription, out var payload))
                     {
                         try
                         {
-                            await ProcessMessageAsync(subscription, CurrentMessage, payload, headers);
+                            await ProcessMessageAsync(subscription, CurrentMessage, payload);
                         }
                         catch (Exception e)
                         {
-                            CurrentLog.Warning(CurrentMessage, payload, headers, $"Failed to process the message. Processor #{_id}.", e);
+                            CurrentLog.Warning(CurrentMessage, payload, $"Failed to process the message. Processor #{_id}.", e);
                     
                             _retryManager.ScheduleRetry(CurrentMessage, retryAfter: _defaultRetryTimeout);
                         }
@@ -116,10 +116,9 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         private async Task ProcessMessageAsync(
             IMessageSubscription subscription,
             EnvelopedMessage envelopedMessage,
-            object payload,
-            MessageHeaders headers)
+            object payload)
         {
-            var publisher = _repliesPublisher?.Invoke(headers.CorrelationId) 
+            var publisher = _repliesPublisher?.Invoke(envelopedMessage.Headers.CorrelationId) 
                          ?? ProhibitedRepliesMessagePublisher.Instance;
 
             var handlingContext = new MessageHandlingContext
@@ -128,7 +127,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                 envelopedMessage.RetryCount,
                 envelopedMessage.RoutingKey
             );
-            var result = await subscription.InvokeHandlerAsync(_serviceProvider, payload, headers, handlingContext, publisher);
+            var result = await subscription.InvokeHandlerAsync(_serviceProvider, payload, envelopedMessage.Headers, handlingContext, publisher);
 
             if (result == null)
             {
@@ -151,11 +150,9 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         
         private bool TryGetPayloadAndHeaders(
             IMessageSubscription subscription,
-            out object payload,
-            out MessageHeaders headers)
+            out object payload)
         {
             payload = null;
-            headers = null;
             
             try
             {
@@ -163,7 +160,6 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                 var payloadBytes = CurrentMessage.Body.ToArray();
                         
                 payload = MessagePackSerializer.NonGeneric.Deserialize(payloadType, payloadBytes, _formatterResolver);
-                headers = new MessageHeaders(CurrentMessage.CorrelationId);
 
                 return true;
             }

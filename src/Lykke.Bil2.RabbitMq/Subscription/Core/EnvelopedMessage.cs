@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using JetBrains.Annotations;
@@ -14,12 +14,12 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         public EnvelopedMessage(
             IEnumerable<byte> body,
             IMessageConsumer consumer,
-            string correlationId,
+            MessageHeaders headers,
             string exchange,
             ulong deliveryTag,
             string routingKey)
         
-            : this(body, consumer, DateTime.UtcNow, correlationId, deliveryTag, exchange, Guid.NewGuid(),0, routingKey)
+            : this(body, consumer, DateTime.UtcNow, headers, deliveryTag, exchange, Guid.NewGuid(),0, routingKey)
         {
             
         }
@@ -28,7 +28,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             IEnumerable<byte> body,
             IMessageConsumer consumer,
             DateTime createdOn,
-            string correlationId,
+            MessageHeaders headers,
             ulong deliveryTag,
             string exchange,
             Guid id,
@@ -40,7 +40,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             _deliveryTag = deliveryTag;
 
             Body = body.ToImmutableArray();
-            CorrelationId = correlationId;
+            Headers = headers;
             Exchange = exchange;
             Id = id;
             RetryCount = retryCount;
@@ -53,7 +53,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         
         public ImmutableArray<byte> Body { get; }
         
-        public string CorrelationId { get; }
+        public MessageHeaders Headers { get; }
         
         public string Exchange { get; }
         
@@ -84,7 +84,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                 Body,
                 _consumer,
                 _createdOn,
-                CorrelationId,
+                Headers,
                 _deliveryTag,
                 Exchange,
                 Id,

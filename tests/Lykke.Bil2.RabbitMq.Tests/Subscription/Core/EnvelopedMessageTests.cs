@@ -1,4 +1,6 @@
+﻿using System;
 using System.Linq;
+using Lykke.Bil2.RabbitMq.Subscription;
 using Lykke.Bil2.RabbitMq.Subscription.Core;
 using Moq;
 using NUnit.Framework;
@@ -19,7 +21,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Core
             (
                 Enumerable.Empty<byte>(),
                 consumerMock.Object,
-                string.Empty,
+                new MessageHeaders(string.Empty, DateTime.UtcNow), 
                 string.Empty,
                 deliveryTag,
                 string.Empty
@@ -41,7 +43,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Core
             (
                 Enumerable.Empty<byte>(),
                 consumerMock.Object,
-                string.Empty,
+                new MessageHeaders(string.Empty, DateTime.UtcNow), 
                 string.Empty,
                 deliveryTag,
                 string.Empty
@@ -61,7 +63,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Core
             (
                 Enumerable.Empty<byte>(),
                 consumerMock.Object,
-                string.Empty,
+                new MessageHeaders(string.Empty, DateTime.UtcNow), 
                 string.Empty,
                 42,
                 string.Empty

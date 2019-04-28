@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Lykke.Bil2.RabbitMq.Subscription;
 using Lykke.Bil2.RabbitMq.Subscription.Core;
 using Lykke.Logs;
 using Moq;
@@ -72,7 +73,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription.Core
             (
                 Enumerable.Empty<byte>(),
                 messageConsumer,
-                string.Empty,
+                new MessageHeaders(string.Empty, DateTime.UtcNow), 
                 string.Empty,
                 deliveryTag,
                 string.Empty

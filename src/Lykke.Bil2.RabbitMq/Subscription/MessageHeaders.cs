@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace Lykke.Bil2.RabbitMq.Subscription
 {
@@ -9,10 +10,12 @@ namespace Lykke.Bil2.RabbitMq.Subscription
     public class MessageHeaders
     {
         public string CorrelationId { get; }
+        public DateTime PublishedAt { get; }
 
-        public MessageHeaders(string correlationId)
+        public MessageHeaders(string correlationId, DateTime publishedAt)
         {
             CorrelationId = correlationId;
+            PublishedAt = publishedAt;
         }
     }
 }

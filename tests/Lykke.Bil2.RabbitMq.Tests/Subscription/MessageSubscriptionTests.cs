@@ -82,7 +82,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 {
                     Id = messageId
                 },
-                new MessageHeaders(correlationId),
+                new MessageHeaders(correlationId, DateTime.UtcNow),
                 new MessageHandlingContext(exchange, retryCount, routingKey),
                 _messagePublisherMock.Object
             );
@@ -141,7 +141,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 {
                     Id = messageId
                 },
-                new MessageHeaders(correlationId),
+                new MessageHeaders(correlationId, DateTime.UtcNow),
                 new MessageHandlingContext(exchange, retryCount, routingKey),
                 _messagePublisherMock.Object
             );
@@ -214,7 +214,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 {
                     Id = messageId
                 },
-                new MessageHeaders(correlationId),
+                new MessageHeaders(correlationId, DateTime.UtcNow),
                 new MessageHandlingContext(exchange, retryCount, routingKey),
                 _messagePublisherMock.Object
             );
@@ -285,7 +285,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 {
                     Id = messageId
                 },
-                new MessageHeaders(correlationId),
+                new MessageHeaders(correlationId, DateTime.UtcNow),
                 new MessageHandlingContext(exchange, retryCount, routingKey),
                 _messagePublisherMock.Object
             );
@@ -360,7 +360,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 {
                     Id = messageId
                 },
-                new MessageHeaders(correlationId),
+                new MessageHeaders(correlationId, DateTime.UtcNow),
                 new MessageHandlingContext(exchange, retryCount, routingKey),
                 _messagePublisherMock.Object
             );
@@ -432,7 +432,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 {
                     Id = messageId
                 },
-                new MessageHeaders(correlationId),
+                new MessageHeaders(correlationId, DateTime.UtcNow),
                 new MessageHandlingContext(exchange, retryCount, routingKey),
                 _messagePublisherMock.Object
             );
@@ -497,7 +497,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 {
                     Id = messageId
                 },
-                new MessageHeaders(correlationId),
+                new MessageHeaders(correlationId, DateTime.UtcNow),
                 new MessageHandlingContext(exchange, retryCount, routingKey),
                 _messagePublisherMock.Object
             );
@@ -558,7 +558,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                 {
                     Id = messageId
                 },
-                new MessageHeaders(correlationId),
+                new MessageHeaders(correlationId, DateTime.UtcNow),
                 new MessageHandlingContext(exchange, retryCount, routingKey),
                 _messagePublisherMock.Object
             );
@@ -646,7 +646,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                     {
                         Id = messageId
                     },
-                    new MessageHeaders(correlationId),
+                    new MessageHeaders(correlationId, DateTime.UtcNow),
                     new MessageHandlingContext(exchange, retryCount, routingKey),
                     _messagePublisherMock.Object
                 );
@@ -732,7 +732,7 @@ namespace Lykke.Bil2.RabbitMq.Tests.Subscription
                     {
                         Id = messageId
                     },
-                    new MessageHeaders(correlationId),
+                    new MessageHeaders(correlationId, DateTime.UtcNow),
                     new MessageHandlingContext(exchange, retryCount, routingKey),
                     _messagePublisherMock.Object
                 );

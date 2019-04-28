@@ -75,11 +75,16 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
 
         private void ConsumerOnReceived(object sender, BasicDeliverEventArgs args)
         {
+            var headers = new MessageHeaders
+            (
+                args.BasicProperties.CorrelationId,
+                DateTimeOffset.FromUnixTimeMilliseconds(args.BasicProperties.Timestamp.UnixTime).UtcDateTime
+            );
             var message = new EnvelopedMessage
             (
                 body: args.Body,
                 consumer: this,
-                correlationId: args.BasicProperties.CorrelationId,
+                headers: headers,
                 exchange: args.Exchange,
                 deliveryTag: args.DeliveryTag,
                 routingKey: args.RoutingKey
