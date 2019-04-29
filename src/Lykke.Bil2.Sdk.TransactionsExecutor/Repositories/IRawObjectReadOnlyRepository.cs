@@ -6,6 +6,6 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Repositories
 {
     internal interface IRawObjectReadOnlyRepository
     {
-        Task<Base58String> GetOrDefaultAsync(RawObjectType objectType, string objectId);
+        Task<Base64String> GetOrDefaultAsync(RawObjectType objectType, string objectId);
     }
 }

@@ -28,7 +28,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Repositories
             _blob = blob;
         }
 
-        public async Task<Base58String> GetOrDefaultAsync(RawObjectType objectType, string objectId)
+        public async Task<Base64String> GetOrDefaultAsync(RawObjectType objectType, string objectId)
         {
             var containerName = RawObjectRepositoryTools.GetContainerName(_integrationName, objectType);
             var blobName = RawObjectRepositoryTools.GetBlobName(objectId);
@@ -43,7 +43,7 @@ namespace Lykke.Bil2.Sdk.TransactionsExecutor.Repositories
             {
                 stream.Position = 0;
 
-                return new Base58String(await textReader.ReadToEndAsync());
+                return new Base64String(await textReader.ReadToEndAsync());
             }
         }
     }

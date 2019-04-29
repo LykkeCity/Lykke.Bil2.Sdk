@@ -30,7 +30,7 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public Base58String AddressContext { get; }
+        public Base64String AddressContext { get; }
 
         /// <summary>
         /// Endpoint: [POST] /api/addresses
@@ -41,7 +41,7 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// Optional.
         /// Any non security sensitive, implementation specific information associated with the address. 
         /// </param>
-        public CreateAddressResponse(EncryptedString privateKey, Address address, Base58String addressContext = null)
+        public CreateAddressResponse(EncryptedString privateKey, Address address, Base64String addressContext = null)
         {
             PrivateKey = privateKey ?? throw new ArgumentNullException(nameof(privateKey));
             Address = address ?? throw new ArgumentNullException(nameof(address));

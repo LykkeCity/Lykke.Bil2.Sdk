@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Lykke.Bil2.Contract.Common.Exceptions;
-using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.TransactionsExecutor.Requests;
 using Lykke.Bil2.Contract.TransactionsExecutor.Responses;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Exceptions;
 using Lykke.Bil2.Sdk.TransactionsExecutor.Services;
 using Lykke.Bil2.SharedDomain;
+using Lykke.Bil2.SharedDomain.Extensions;
 using Newtonsoft.Json;
 
 namespace TransactionsExecutorExample.Services
@@ -34,7 +34,7 @@ namespace TransactionsExecutorExample.Services
                 throw new RequestValidationException("Only single input is supported", request.Transfers.Count, nameof(request.Transfers.Count));
             }
 
-            var context = JsonConvert.SerializeObject(request).ToBase58();
+            var context = JsonConvert.SerializeObject(request).ToBase64();
 
             return Task.FromResult(new BuildTransactionResponse(context));
         }

@@ -16,14 +16,14 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// Raw transaction.
         /// </summary>
         [JsonProperty("raw")]
-        public Base58String Raw { get; }
+        public Base64String Raw { get; }
 
         /// <summary>
         /// Endpoint: [GET] /api/transactions/{transactionId}/raw
         /// Endpoint: [GET] /api/blocks/{blockId}/raw
         /// </summary>
         /// <param name="raw">Raw transaction.</param>
-        public RawObjectResponse(Base58String raw)
+        public RawObjectResponse(Base64String raw)
         {
             if (string.IsNullOrWhiteSpace(raw?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(raw));

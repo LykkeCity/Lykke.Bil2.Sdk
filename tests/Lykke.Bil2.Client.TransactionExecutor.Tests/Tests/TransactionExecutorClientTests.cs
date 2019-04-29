@@ -153,7 +153,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 options.IntegrationName = $"{nameof(TransactionExecutorClientTests)}+{nameof(Build_transfer_amount_transaction)}";
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransferAmountTransactionBuilder.Setup(x => x.BuildTransferAmountAsync(It.IsAny<BuildTransferAmountTransactionRequest>()))
-                    .ReturnsAsync(new BuildTransactionResponse(Base58String.Encode(transactionResponse)));
+                    .ReturnsAsync(new BuildTransactionResponse(Base64String.Encode(transactionResponse)));
             });
 
             //ACT
@@ -327,7 +327,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             });
 
             //ACT && ASSERT
-            var request = new BroadcastTransactionRequest(Base58String.Encode(signedTransaction));
+            var request = new BroadcastTransactionRequest(Base64String.Encode(signedTransaction));
             await client.BroadcastTransactionAsync(request);
 
             //Assume everything is ok if no exceptions here
@@ -352,7 +352,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT && ASSERT
             Assert.ThrowsAsync<TransactionBroadcastingWebApiException>(async () =>
             {
-                var request = new BroadcastTransactionRequest(Base58String.Encode(signedTransaction));
+                var request = new BroadcastTransactionRequest(Base64String.Encode(signedTransaction));
                 await client.BroadcastTransactionAsync(request);
             });
         }
@@ -376,7 +376,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
             //ACT && ASSERT
             Assert.ThrowsAsync<InternalServerErrorWebApiException>(async () =>
             {
-                var request = new BroadcastTransactionRequest(Base58String.Encode(signedTransaction));
+                var request = new BroadcastTransactionRequest(Base64String.Encode(signedTransaction));
                 await client.BroadcastTransactionAsync(request);
             });
         }
@@ -386,7 +386,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         {
             //ARRANGE
             const string transactionId = "transactionId";
-            var rawTransaction = Base58String.Encode("raw-transaction");
+            var rawTransaction = Base64String.Encode("raw-transaction");
 
             var client = PrepareClient<AppSettings>((options) =>
             {
@@ -414,7 +414,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
         {
             //ARRANGE
             var blockId = new BlockId("blockId");
-            var rawBlock = Base58String.Encode("raw-block");
+            var rawBlock = Base64String.Encode("raw-block");
 
             var client = PrepareClient<AppSettings>((options) =>
             {
@@ -456,7 +456,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     .ReturnsAsync(() =>
                     {
                         Task.Delay(timeout.Add(TimeSpan.FromMilliseconds(10))).Wait();
-                        return Base58String.Encode(transactionResult);
+                        return Base64String.Encode(transactionResult);
                     });
 
                 options.RawObjectsReadOnlyRepositoryFactory = (name, context) => rawTransactionReadOnlyRepository.Object;
@@ -522,7 +522,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                 aggregator.HealthProvider.Setup(x => x.GetDiseaseAsync()).ReturnsAsync(Disease);
                 aggregator.TransferCoinsTransactionsBuilder
                     .Setup(x => x.BuildTransferCoinsAsync(It.IsAny<BuildTransferCoinsTransactionRequest>()))
-                    .ReturnsAsync(new BuildTransactionResponse(Base58String.Encode(transactionResponse)));
+                    .ReturnsAsync(new BuildTransactionResponse(Base64String.Encode(transactionResponse)));
             });
 
             //ACT
@@ -532,7 +532,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
-                    Base58String.Encode("context"),
+                    Base64String.Encode("context"),
                     1),
             };
             var coinsToReceive = new[]
@@ -577,7 +577,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
-                    Base58String.Encode("context"),
+                    Base64String.Encode("context"),
                     1),
             };
             var coinsToReceive = new[]
@@ -622,7 +622,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
-                    Base58String.Encode("context"),
+                    Base64String.Encode("context"),
                     1),
             };
             var coinsToReceive = new[]
@@ -666,7 +666,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
-                    Base58String.Encode("context"),
+                    Base64String.Encode("context"),
                     1),
             };
             var coinsToReceive = new[]
@@ -715,7 +715,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
-                    Base58String.Encode("context"),
+                    Base64String.Encode("context"),
                     1),
             };
             var coinsToReceive = new[]
@@ -765,7 +765,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
-                    Base58String.Encode("context"),
+                    Base64String.Encode("context"),
                     1),
             };
             var coinsToReceive = new[]
@@ -809,7 +809,7 @@ namespace Lykke.Bil2.Client.TransactionExecutor.Tests.Tests
                     new Asset("assetId"),
                     UMoney.Create(1000, 4),
                     new Address("0x1"),
-                    Base58String.Encode("context"),
+                    Base64String.Encode("context"),
                     1),
             };
             var coinsToReceive = new[]

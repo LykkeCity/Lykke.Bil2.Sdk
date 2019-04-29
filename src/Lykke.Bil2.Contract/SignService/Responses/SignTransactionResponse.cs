@@ -15,7 +15,7 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// Implementation specific signed transaction.
         /// </summary>
         [JsonProperty("signedTransaction")]
-        public Base58String SignedTransaction { get; }
+        public Base64String SignedTransaction { get; }
 
         /// <summary>
         /// ID of the signed transaction in the blockchain.
@@ -28,7 +28,7 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// </summary>
         /// <param name="signedTransaction">Implementation specific signed transaction.</param>
         /// <param name="transactionId">ID of the signed transaction in the blockchain.</param>
-        public SignTransactionResponse(Base58String signedTransaction, TransactionId transactionId)
+        public SignTransactionResponse(Base64String signedTransaction, TransactionId transactionId)
         {
             if (string.IsNullOrWhiteSpace(signedTransaction?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(signedTransaction));

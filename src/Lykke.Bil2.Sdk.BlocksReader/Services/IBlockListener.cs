@@ -19,7 +19,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
         /// <summary>
         /// Should be called when raw block is read.
         /// </summary>
-        Task HandleRawBlockAsync(Base58String rawBlock, BlockId blockId);
+        Task HandleRawBlockAsync(Base64String rawBlock, BlockId blockId);
 
         /// <summary>
         /// Should be called when requested block is not found.
@@ -30,17 +30,17 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
         /// "Transfer amount" transactions model.
         /// Should be called when executed transaction is read from the block.
         /// </summary>
-        Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransferAmountTransactionExecutedEvent evt);
+        Task HandleExecutedTransactionAsync(Base64String rawTransaction, TransferAmountTransactionExecutedEvent evt);
 
         /// <summary>
         /// "Transfer coins" transactions model.
         /// Should be called when executed transaction is read from the block.
         /// </summary>
-        Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransferCoinsTransactionExecutedEvent evt);
+        Task HandleExecutedTransactionAsync(Base64String rawTransaction, TransferCoinsTransactionExecutedEvent evt);
 
         /// <summary>
         /// Should be called when failed transaction is read from the block.
         /// </summary>
-        Task HandleFailedTransactionAsync(Base58String rawTransaction, TransactionFailedEvent evt);
+        Task HandleFailedTransactionAsync(Base64String rawTransaction, TransactionFailedEvent evt);
     }
 }

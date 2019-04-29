@@ -7,12 +7,12 @@ namespace Lykke.Bil2.Contract.Common.Cryptography
     internal class EncryptedMessage
     {
         [JsonProperty("encryptedAesKeys")]
-        public Base58String EncryptedAesKeys { get; }
+        public Base64String EncryptedAesKeys { get; }
 
         [JsonProperty("encryptedBody")]
-        public Base58String EncryptedBody { get; }
+        public Base64String EncryptedBody { get; }
 
-        public EncryptedMessage(Base58String encryptedAesKeys, Base58String encryptedBody)
+        public EncryptedMessage(Base64String encryptedAesKeys, Base64String encryptedBody)
         {
             EncryptedAesKeys = encryptedAesKeys ?? throw new ArgumentNullException(nameof(encryptedAesKeys));
             EncryptedBody = encryptedBody ?? throw new ArgumentNullException(nameof(encryptedBody));

@@ -43,7 +43,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("sourceAddressContext")]
-        public Base58String SourceAddressContext { get; }
+        public Base64String SourceAddressContext { get; }
         
         /// <summary>
         /// Optional.
@@ -97,7 +97,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             UMoney amount,
             Address sourceAddress,
             Address destinationAddress,
-            Base58String sourceAddressContext = null,
+            Base64String sourceAddressContext = null,
             long? sourceAddressNonce = null,
             AddressTag destinationAddressTag = null,
             AddressTagType? destinationAddressTagType = null)

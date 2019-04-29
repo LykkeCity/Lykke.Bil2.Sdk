@@ -4,9 +4,9 @@ using System.Security.Cryptography;
 using System.Text;
 using JetBrains.Annotations;
 using Lykke.Bil2.Contract.Common.Cryptography;
-using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.Common.JsonConverters;
 using Lykke.Bil2.SharedDomain;
+using Lykke.Bil2.SharedDomain.Extensions;
 using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.Common
@@ -21,14 +21,14 @@ namespace Lykke.Bil2.Contract.Common
         /// <summary>
         /// Encrypted value
         /// </summary>
-        public Base58String EncryptedValue { get; }
+        public Base64String EncryptedValue { get; }
 
-        public EncryptedString(Base58String encryptedValue)
+        public EncryptedString(Base64String encryptedValue)
         {
             EncryptedValue = encryptedValue ?? throw new ArgumentNullException(nameof(encryptedValue));
         }
 
-        public static EncryptedString Encrypt(Base58String publicKey, string stringToEncrypt)
+        public static EncryptedString Encrypt(Base64String publicKey, string stringToEncrypt)
         {
             if (stringToEncrypt == null)
             {
@@ -40,7 +40,7 @@ namespace Lykke.Bil2.Contract.Common
             return Encrypt(publicKey, bytes);
         }
 
-        public static EncryptedString Encrypt(Base58String publicKey, byte[] bytesToEncrypt)
+        public static EncryptedString Encrypt(Base64String publicKey, byte[] bytesToEncrypt)
         {
             if(string.IsNullOrWhiteSpace(publicKey?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(publicKey));
@@ -55,8 +55,8 @@ namespace Lykke.Bil2.Contract.Common
                 aes.GenerateKey();
                 aes.GenerateIV();
 
-                var aesKeys = new AesKeysEnvelope(aes.Key.EncodeToBase58(), aes.IV.EncodeToBase58());
-                var serializedAesKeys = JsonConvert.SerializeObject(aesKeys).ToBase58();
+                var aesKeys = new AesKeysEnvelope(aes.Key.EncodeToBase64(), aes.IV.EncodeToBase64());
+                var serializedAesKeys = JsonConvert.SerializeObject(aesKeys).ToBase64();
 
                 var encryptedAesKeys = RsaEncryption.Encrypt(serializedAesKeys.DecodeToBytes(), publicKey.DecodeToBytes());
                 
@@ -70,25 +70,25 @@ namespace Lykke.Bil2.Contract.Common
                     cryptoStream.Close();
 
                     var encryptedBody = encryptedStream.ToArray();
-                    var encryptedMessage = new EncryptedMessage(encryptedAesKeys.EncodeToBase58(), encryptedBody.EncodeToBase58());
-                    var serializedEncryptedMessage = JsonConvert.SerializeObject(encryptedMessage).ToBase58();
+                    var encryptedMessage = new EncryptedMessage(encryptedAesKeys.EncodeToBase64(), encryptedBody.EncodeToBase64());
+                    var serializedEncryptedMessage = JsonConvert.SerializeObject(encryptedMessage).ToBase64();
 
                     return new EncryptedString(serializedEncryptedMessage);
                 }
             }
         }
 
-        public string DecryptToString(Base58String privateKey)
+        public string DecryptToString(Base64String privateKey)
         {
             var bytes = DecryptToBytes(privateKey);
 
             return Encoding.UTF8.GetString(bytes);
         }
 
-        public byte[] DecryptToBytes(Base58String privateKey)
+        public byte[] DecryptToBytes(Base64String privateKey)
         {
             var encryptedMessage = JsonConvert.DeserializeObject<EncryptedMessage>(EncryptedValue.DecodeToString());
-            var decryptedAesKey = Base58String.Encode
+            var decryptedAesKey = Base64String.Encode
             (
                 RsaEncryption.Decrypt
                 (
