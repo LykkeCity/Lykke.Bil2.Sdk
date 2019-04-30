@@ -28,7 +28,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Repositories
             _blob = blob;
         }
 
-        public async Task SaveAsync(RawObjectType objectType, string objectId, Base58String rawObject)
+        public async Task SaveAsync(RawObjectType objectType, string objectId, Base64String rawObject)
         {
             var containerName = RawObjectRepositoryTools.GetContainerName(_integrationName, objectType);
             var blobName = RawObjectRepositoryTools.GetBlobName(objectId);

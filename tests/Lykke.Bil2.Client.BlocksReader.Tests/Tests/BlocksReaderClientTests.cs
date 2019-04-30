@@ -267,7 +267,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                         out var blockProvider);
                     rawObjectsRepository = new Mock<IRawObjectWriteOnlyRepository>();
                     rawObjectsRepository
-                        .Setup(x => x.SaveAsync(RawObjectType.Transaction, It.IsNotNull<string>(), It.IsNotNull<Base58String>()))
+                        .Setup(x => x.SaveAsync(RawObjectType.Transaction, It.IsNotNull<string>(), It.IsNotNull<Base64String>()))
                         .Returns(Task.CompletedTask)
                         .Verifiable();
 
@@ -293,11 +293,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                             )
                         );
 
-                        await blockListener.HandleRawBlockAsync(Base58String.Encode("raw-block"), "1");
+                        await blockListener.HandleRawBlockAsync(Base64String.Encode("raw-block"), "1");
 
                         await blockListener.HandleExecutedTransactionAsync
                         (
-                            Base58String.Encode("transaction.raw"),
+                            Base64String.Encode("transaction.raw"),
                             new TransferAmountTransactionExecutedEvent
                             (
                                 "1",
@@ -325,7 +325,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
                         await blockListener.HandleExecutedTransactionAsync
                         (
-                            Base58String.Encode("transaction.raw"),
+                            Base64String.Encode("transaction.raw"),
                             new TransferCoinsTransactionExecutedEvent
                             (
                                 "1",
@@ -357,7 +357,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
                         await blockListener.HandleFailedTransactionAsync
                         (
-                            Base58String.Encode("transaction.raw"),
+                            Base64String.Encode("transaction.raw"),
                             new TransactionFailedEvent
                             (
                                 "1",
@@ -421,10 +421,10 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
 
             //ASSERT
             rawObjectsRepository
-                .Verify(x => x.SaveAsync(RawObjectType.Transaction, It.IsNotNull<string>(), It.IsNotNull<Base58String>()), Times.AtLeast(3));
+                .Verify(x => x.SaveAsync(RawObjectType.Transaction, It.IsNotNull<string>(), It.IsNotNull<Base64String>()), Times.AtLeast(3));
 
             rawObjectsRepository
-                .Verify(x => x.SaveAsync(RawObjectType.Block, It.IsNotNull<string>(), It.IsNotNull<Base58String>()), Times.AtLeast(1));
+                .Verify(x => x.SaveAsync(RawObjectType.Block, It.IsNotNull<string>(), It.IsNotNull<Base64String>()), Times.AtLeast(1));
 
             blockEventsHandlerMock
                 .Verify(x => 

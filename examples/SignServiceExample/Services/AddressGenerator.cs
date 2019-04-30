@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.SignService.Requests;
 using Lykke.Bil2.Contract.SignService.Responses;
 using Lykke.Bil2.Sdk.Exceptions;
 using Lykke.Bil2.Sdk.SignService.Models;
 using Lykke.Bil2.Sdk.SignService.Services;
+using Lykke.Bil2.SharedDomain.Extensions;
 using SignServiceExample.Settings;
 
 namespace SignServiceExample.Services
@@ -27,7 +27,7 @@ namespace SignServiceExample.Services
 
             Console.WriteLine($"Generated address: {address}, privateKey: {privateKey}");
 
-            return Task.FromResult(new AddressCreationResult(address, privateKey, context.ToBase58()));
+            return Task.FromResult(new AddressCreationResult(address, privateKey, context.ToBase64()));
         }
 
         public Task<CreateAddressTagResponse> CreateAddressTagAsync(string address, CreateAddressTagRequest request)

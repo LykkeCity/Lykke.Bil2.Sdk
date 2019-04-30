@@ -17,7 +17,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// Implementation specific transaction context. 
         /// </summary>
         [JsonProperty("transactionContext")]
-        public Base58String TransactionContext { get; }
+        public Base64String TransactionContext { get; }
 
         /// <summary>
         /// Endpoints:
@@ -25,7 +25,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Responses
         /// - [POST] /api/transactions/built/transfers/coins
         /// </summary>
         /// <param name="transactionContext">Implementation specific transaction context.</param>
-        public BuildTransactionResponse(Base58String transactionContext)
+        public BuildTransactionResponse(Base64String transactionContext)
         {
             if (string.IsNullOrWhiteSpace(transactionContext?.ToString()))
                 throw new ArgumentException("Should be not empty string", nameof(transactionContext));

@@ -6,12 +6,7 @@ namespace Lykke.Bil2.Contract.Common.Extensions
     [PublicAPI]
     public static class BytesExtensions
     {
-        public static Base58String EncodeToBase58(this byte[] value)
-        {
-            return Base58String.Encode(value);
-        }
-
-        public static EncryptedString Encrypt(this byte[] value, Base58String publicKey)
+        public static EncryptedString Encrypt(this byte[] value, Base64String publicKey)
         {
             return EncryptedString.Encrypt(publicKey, value);
         }

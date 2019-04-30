@@ -42,7 +42,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public Base58String AddressContext { get; }
+        public Base64String AddressContext { get; }
 
         /// <summary>
         /// Optional.
@@ -72,7 +72,7 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
             Asset asset,
             UMoney value,
             Address address,
-            Base58String addressContext = null,
+            Base64String addressContext = null,
             long? addressNonce = null)
         {
             Coin = coinId ?? throw RequestValidationException.ShouldBeNotNull(nameof(coinId));

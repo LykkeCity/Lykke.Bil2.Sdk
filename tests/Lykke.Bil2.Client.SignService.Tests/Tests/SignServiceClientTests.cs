@@ -24,11 +24,11 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
     [TestFixture]
     public class SignServiceClientTests : SignServiceClientBase
     {
-        private static readonly Base58String MyPublicKey = new Base58String("Vj75CuZgqYqhewfDfF9KQEdejjqbnoDiRjuXUnwCo2jkLo8AJpqBF6jFovufKrvwqUaubTRrAwr3wBBHtFVWhxhrxwFMoeB3mrBXnreVkfRdL1L9NUpyn4qDTB1Hwm3kBjmnhdVm2ZxmZ696FKj6yeBMnPB7Lkoa4XxKg6a9TwPCfgUbNV9b8dCPXm1YdYMdFK9Hf8sestxpp6FphTxbrjnicpeiU");
-        private static readonly Base58String MyPrivateKey = new Base58String("hLLPYvqqGdBtPBMGWp98NbAHtDHuoj4vnrQqNPuMBMZpRFCX2kVtbC9HgrMQthM6NzEDjQw6c88PfiRCqzegb2KpTnBN1hqLyQKfT8FuGVDGRBJEYFZbgUbbb5e5PZZVnRwabyy4Rup8c5Yb5fWJ1Lw73yUtcxvmx52ymwm8m9j3NtVRTkcb5NsXGbMdanUpa9MdAMHReFDDh1qWx8N6zTb4st4WbaTuTamhcTEueuPKosaum5TLv2udcUDj2JtaZYUhDJ6EvotsHScwLQnwcW4ZkEydSCJgqefYp4n7qgNpzNKU2ffsDmPuQDfVBLNiFkqv99TMYsvrYbemcLLRoEUiqvGTaGZBpHErd5quYq1G9187nbySGy3aJCMVqVWzApuYKewUQDRND1fx6kybQpuDy6CjBp4i5sdAub4eFNHjRwVVUUsYQjjhy8PQpES5AWszv2DgMyrqEaAGYxr3akK6HmbYyBquWriAdYjp9v8NW29yhpSBXwyGpCT5j54KA2F5yaxv6MfUiucGHxYdgNFdkhSZYRB3FgZJQzTAy6utSZTapjcBmu25nzQcdaevnSW4rMd9kuhMGJL6PtyG6niHn48bsmwxSukGZsMvfRb8UDf3ZnGnNFHXChADzywM7ghZBtohBRgbnAyduUQ7GbLv6vhuyXV7qxAkvAwuz4mipe8MbTem6cjhKJrV1Sa4Ya6pUnWR7BhqNjWEKuVbCt8D9Et2no6u8hXxyxV6kD5tKEJ932PVHYBmnLQV9jCfS2RRv2BhBjhA6bUp8zCSuW2CyVYPCgmqQCa4EahA6iiHhymdaPQ8YGChbH8san");
+        private static readonly Base64String MyPublicKey = new Base64String("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYK+LcJ2ws2l4OXA3X5LlmKfVIrbcGADjYwAt/SmR/vDUHbWyoL28PswcVXEqw4fO3sq1Ck5c3k677ruHcpmmhaDYc3G8vROYwgobsD+FgZqjyBAsxB3+tJcKlUtDzjOaaq0FxSm2cOEgQK7D0ldmdqceybDfigDRod756xJdUFwIDAQAB");
+        private static readonly Base64String MyPrivateKey = new Base64String("MIICXAIBAAKBgQCYK+LcJ2ws2l4OXA3X5LlmKfVIrbcGADjYwAt/SmR/vDUHbWyoL28PswcVXEqw4fO3sq1Ck5c3k677ruHcpmmhaDYc3G8vROYwgobsD+FgZqjyBAsxB3+tJcKlUtDzjOaaq0FxSm2cOEgQK7D0ldmdqceybDfigDRod756xJdUFwIDAQABAoGAFMbJLq3jQyx9cxB2g2ejOKO57bZqKtOU72MpLrQFjLsxslXqY/w1+brD2NLFD+mJ0ScAKPrlxpzPY2W5SNsfyMbpvPXMlxZTQVbd1Xg8oITM2M5R71T+7S4oyzdzEsOkRkXcboFsVQvRTAod9I74fonFNgsEyH584+OK7md7P0ECQQDxNM4/b+4iVv3xSMp5j0EQhAiMWaIuD9cizanWQJNWNTS3pjCfoysq2vHzAGgldhU6VptaCvutJTt8WSl1U8FPAkEAoYEjmPKGvrOZRdnffyTlu5zMTzfcss5qLdCqdPILG5kyZJhERrCfSBD/rtkZDttOsXrv7SF4wUgZK/Ofvui+uQJBAIJhWc7+kMktHq0q/I9CuRfVVs2OsdSWKWMdql0uoLWrouhWQ9g2meHbYYdJxAHj10umfujoIOyRwJrRk1BhSo8CQEvtBCkxSzt3/4ShKrsBQ6dxzXMole7Rr4UeZiRYbfRpjxFPrDl3a0pcA3fVxDwByfsSCp12cOic1oidHeqITLECQFc405EIoK7ksU5rB7+SOIP9NZQfaBzWbwk2xRHC4uUtz7x3hZJQmIOECWXQ9DsldkOrYXGvQWVq+AC1jGRk9oc=");
 
-        private static readonly Base58String MyPublicKey2 = new Base58String("HHhSTuePBZCYtqDNEPCSy3UJnH77zm4u9sSDX3EZXuCFuHAjFYxbAHJvK1VEyRRnBqSog71ek64MtzC9WvQoojzS1qRSFwEBFcvjx5JDecTQo8MDXUW4LufoxG9teN572QtmQPeahYThUDvTxhVHRxTNN5Em7gvd5SYMLgThREzTXV1Sn7ZUiJ8Fs3j7DbpwDhUaJEpcqdzB4Hd8YmoncUqAFYM6Hnpf7ZEfUaHfBf6L4bvjjQa4fx7KCNH1W6aP622UWemzHu1E1r6poDzqiyVZcKN1nbfHHHz75F7");
-        private static readonly Base58String MyPrivateKey2 = new Base58String("DNfv4gHkDhJHoTo2F653XjAScBXXw5qyvyqKK41AkcfVLpcgURa8KLoF9FSxUfvt7jxUUuv2yFhV1ede8LANCzdFMSPLV6pNBm5EpU4tY6sTKzhJeLQCw7KBhA1us58yZRXFAeakozo8fjA32v94wefe6eSzmiZv6tukTzie1vdKRNakuxbGodzmMmQocpC3wyp26aheCLHkbny5vCGwpUHAmWPMc4LpMkyCoE5cVdvgSdc8a9bpJ4RgHMEtKfBkqY1pjCzrrdhrtcKve9CMuuS2tftRZGMPpZZwqj25th9b9P1K3jRbzt8Z3fvjDYNYGuq2165yRpgNzihs9XAYwL9DdXWtFS1K8pAKJoVBqMZfdXqvcVtAAMyTH7JxMtDmUFZgJZfg3SGGQrvMYZCRTJq7CjxsynsPagVzJoEhEqGzdbXwbX91b9uNaAP1zzeoXpnXZWHpYXmKqb3yUAKe7ymf4ibnM3JA7UYVNW9bkUbNmcMfMbi9rtCvTb5c9D2tss56JYsbuYnXoPBnwiwSZzhJuccBDa5KPVqzApRf4ZsmgjqTxEYWWGZV8jWzp1qsdR7kuxCQKjQ8ubS24uWMi28Ppxho6NSuppAQzPiFk4owfAzqnzbtDA5W9oCQoBXyxa7Cv1w9m9GPn4dqMVGchmbjLnTHiekkmaiXSG7HtjZUPEBJxsguiRPFEVCMywkcau7hnoFv9acn2fL3pxdYwvE6Q5ZxPnQfZKFaZurF2427L3QoBuoJsVa1oesysYb8tWT9r21gRpddT2yMnPFQeDhje9yQZxQqpGYLr6jAmATtovZ4p9ncRS5fFH3iYr49fT93pSYHdD4hXe9bkY34QZnTMMYrurHSr9L91iAaQm7WBFEUHymBgddMfUcBakfJiifgHf8GBf2cC9PH146HJ5AwkooTUNZzrZUP2Pu8S3WgJk7byRajDty8H1qANSaXRqbXCfNmnLsvXKPA47GepfywQBhcFtQns8mzrBuvvSTry166n2porcEodMkhAb5pvN11BET2ebMSLUKWKZes1Qj4ezoZmudA9pLCoNSkrUWk4GTfn9A37TLSjxQuiw6uBUMB2uepVJ81Dy4VCNsqW");
+        private static readonly Base64String MyPublicKey2 = new Base64String("TUlHZk1BMEdDU3FHU0liM0RRRUJBUVVBQTRHTkFEQ0JpUUtCZ1FDbDg1L3puOVpnaGEwZXJEbVRHZnhMb29WY2toWVp5dW1yTnpNMXB6RjZkZmNFZ2NwOWswUGhRcGoxajNmZGNUZGVrYUZZVjRTUlBhZUIwMG9wZ2VFKy9GbkV1TkVrYyttM1NpS0xhYmlSK3JxR3U1QWloei81Z053R0hpbS9HY2pvWkJPTFVBYlJ5czhNVnRycWx1Q3JaNVB2VWUyRno1VGhaT2hMeWlVLzV3SURBUUFC");
+        private static readonly Base64String MyPrivateKey2 = new Base64String("TUlJQ1d3SUJBQUtCZ1FDbDg1L3puOVpnaGEwZXJEbVRHZnhMb29WY2toWVp5dW1yTnpNMXB6RjZkZmNFZ2NwOWswUGhRcGoxajNmZGNUZGVrYUZZVjRTUlBhZUIwMG9wZ2VFKy9GbkV1TkVrYyttM1NpS0xhYmlSK3JxR3U1QWloei81Z053R0hpbS9HY2pvWkJPTFVBYlJ5czhNVnRycWx1Q3JaNVB2VWUyRno1VGhaT2hMeWlVLzV3SURBUUFCQW9HQWFZdmpoWDE1U1haN3Z2Qm14ZXBYRG52Vk9pVW5yVXZqQmlSYmk1cEUyOUEvUlR5UFh3TFV2Mll1QnJBeTJrSnhwdElVdmkwYmdZeW5CdWt0Vit6bEpyTzYyR3Z6a2cwemQ1T3YzaThkaVg1Z1dtSEkrc2hJSGJTbGtlL0pxMSs5WmFnOTdESDZXVjQ0ZmE1OHNFQ3VLTkJaeldua1J4NHdmbUphNFZzdWZhRUNRUURyT24zOUNFdTVveFFrdEdpYXF3WVdnK1Vud3hhMWRvMkQzUVZ4dkQwNGhDN3dGbURhTW9nSHpoUURPOXNKM0lmMU0xN1dKU2JTY0s4YlpqKzdGd1haQWtFQXRKc1VuOVBRMHhxU1dQekZ4SWNXZGtDc3BOZVIweEl3Y2cvbXI0YU8razlLdTJVM2JxY0F3ZXg0TVJETkhRWndSdDJHa3BoUy9Dazl6Y2Z4SHVvYnZ3SkFMajlZeCtmYW80dlppUUhqVXcxdTYveFFrSW05ckQyN3d3SXdjTlVXb0ViMHg0Vk8wM2Q5NFRMMklsQ2hWd1lCd1FheGpaN09UQytWYmVpamZSQWd1UUpBZmpuVkZFK0tKOER1Zjl0S3JheHNlb0dCS0VTeDJuOWY5SmhBZG5UcEFQRGlIazhEaXdhVmRQTzhuUzVNN1BoUENIaFRVYW04ZGhpczVXSFVsL0t2S1FKQVNtVVpCTXZDWWdNdHJTSm41amtoT1N5T1lZMDBGUDhUT2xKR2tMTDF2RnpDazNib3lMbmZudEVwQ0xBSUFocnlubWVDWVc5TzdiOUJPcko3U2hMTE5RPT0=");
 
         private static readonly string _pathToSettings = "appsettings.tests.json";
 
@@ -68,7 +68,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
                     .ReturnsAsync(new AddressCreationResult(
                         address,
                         privateKey,
-                        Base58String.Encode(addressContext)));
+                        Base64String.Encode(addressContext)));
 
                 options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_create_private_key)}";
                 options.AddressGeneratorFactory = (context) => addressGenerator.Object;
@@ -76,8 +76,8 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
             });
 
             //ACT
-            var base58EncryptionKey = MyPublicKey;
-            var request = new CreateAddressRequest(base58EncryptionKey);
+            var base64EncryptionKey = MyPublicKey;
+            var request = new CreateAddressRequest(base64EncryptionKey);
             CreateAddressResponse result = await client.CreateAddressAsync(request);
             var decryptedPk = result?.PrivateKey?.DecryptToString(MyPrivateKey);
 
@@ -104,7 +104,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
 
                 addressGenerator.Setup(x => x.CreateAddressTagAsync(It.IsAny<string>(), It.IsAny<CreateAddressTagRequest>()))
                     .ReturnsAsync(new CreateAddressTagResponse(new AddressTag(tag), 
-                        Base58String.Encode(addressContext)));
+                        Base64String.Encode(addressContext)));
 
                 options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_create_address_tag)}";
                 options.AddressGeneratorFactory = (context) => addressGenerator.Object;
@@ -112,7 +112,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
             });
 
             //ACT
-            var request = new CreateAddressTagRequest(Base58String.Encode(addressContext), AddressTagType.Text);
+            var request = new CreateAddressTagRequest(Base64String.Encode(addressContext), AddressTagType.Text);
             CreateAddressTagResponse result = await client.CreateAddressTagAsync(address, request);
 
             //ASSERT
@@ -139,8 +139,8 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
                 Mock<IAddressGenerator> addressGenerator = new Mock<IAddressGenerator>();
                 Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
 
-                transactionSigner.Setup(x => x.SignAsync(It.IsAny<IReadOnlyCollection<string>>(), It.IsAny<Base58String>()))
-                    .ReturnsAsync(new SignTransactionResponse(Base58String.Encode(signedTransaction), transactionId));
+                transactionSigner.Setup(x => x.SignAsync(It.IsAny<IReadOnlyCollection<string>>(), It.IsAny<Base64String>()))
+                    .ReturnsAsync(new SignTransactionResponse(Base64String.Encode(signedTransaction), transactionId));
 
                 options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_sign_transaction)}";
                 options.AddressGeneratorFactory = (context) => addressGenerator.Object;
@@ -148,7 +148,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
             });
 
             //ACT
-            var request = new SignTransactionRequest(privateKeys, Base58String.Encode(signedTransaction));
+            var request = new SignTransactionRequest(privateKeys, Base64String.Encode(signedTransaction));
             SignTransactionResponse result = await client.SignTransactionAsync(request);
 
             //ASSERT
@@ -184,8 +184,8 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
             //ARRANGE
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressGenerator> addressGenerator = new Mock<IAddressGenerator>();
-                Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
+                var addressGenerator = new Mock<IAddressGenerator>();
+                var transactionSigner = new Mock<ITransactionSigner>();
 
                 addressGenerator.Setup(x => x.CreateAddressAsync())
                     .ThrowsAsync(new OperationNotSupportedException("Address creation is not supported"));
@@ -196,13 +196,13 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
             });
 
             //ACT && ASSERT
-            var base58EncryptionKey = MyPublicKey;
-            var request = new CreateAddressRequest(base58EncryptionKey);
+            var base64EncryptionKey = MyPublicKey;
+            var request = new CreateAddressRequest(base64EncryptionKey);
 
             Assert.ThrowsAsync<NotImplementedWebApiException>(async () =>
             {
                 CreateAddressResponse result = await client.CreateAddressAsync(request);
-                var decryptedPk = result?.PrivateKey?.DecryptToString(MyPrivateKey);
+                result?.PrivateKey?.DecryptToString(MyPrivateKey);
             });
         }
 
@@ -215,8 +215,8 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressGenerator> addressGenerator = new Mock<IAddressGenerator>();
-                Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
+                var addressGenerator = new Mock<IAddressGenerator>();
+                var transactionSigner = new Mock<ITransactionSigner>();
 
                 addressGenerator.Setup(x => x.CreateAddressTagAsync(It.IsAny<string>(), It.IsAny<CreateAddressTagRequest>()))
                     .ThrowsAsync(new OperationNotSupportedException("Tag creation operation is not supported."));
@@ -230,8 +230,8 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
 
             Assert.ThrowsAsync<NotImplementedWebApiException>(async () =>
             {
-                var request = new CreateAddressTagRequest(Base58String.Encode(addressContext), AddressTagType.Text);
-                CreateAddressTagResponse result = await client.CreateAddressTagAsync(address, request);
+                var request = new CreateAddressTagRequest(Base64String.Encode(addressContext), AddressTagType.Text);
+                await client.CreateAddressTagAsync(address, request);
             });
             
         }
@@ -247,8 +247,8 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
 
             var client = PrepareClient<AppSettings>((options) =>
             {
-                Mock<IAddressGenerator> addressGenerator = new Mock<IAddressGenerator>();
-                Mock<ITransactionSigner> transactionSigner = new Mock<ITransactionSigner>();
+                var addressGenerator = new Mock<IAddressGenerator>();
+                var transactionSigner = new Mock<ITransactionSigner>();
 
                 addressGenerator.Setup(x =>
                         x.CreateAddressTagAsync(It.IsAny<string>(), It.IsAny<CreateAddressTagRequest>()))
@@ -256,7 +256,7 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
                     {
                         Thread.Sleep(timeout);
                         return new CreateAddressTagResponse(new AddressTag(tag),
-                            Base58String.Encode(addressContext));
+                            Base64String.Encode(addressContext));
                     });
 
                 options.IntegrationName = $"{nameof(SignServiceClientTests)}+{nameof(Can_create_address_tag)}";
@@ -267,8 +267,8 @@ namespace Lykke.Bil2.Client.SignService.Tests.Tests
             //ACT && ASSERT
             Assert.ThrowsAsync<TimeoutException>(async () =>
             {
-                var request = new CreateAddressTagRequest(Base58String.Encode(addressContext), AddressTagType.Text);
-                var result = await client.CreateAddressTagAsync(address, request);
+                var request = new CreateAddressTagRequest(Base64String.Encode(addressContext), AddressTagType.Text);
+                await client.CreateAddressTagAsync(address, request);
             });
         }
 

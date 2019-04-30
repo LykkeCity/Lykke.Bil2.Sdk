@@ -60,7 +60,7 @@ namespace Lykke.Bil2.Sdk.SignService
             where TAppSettings : BaseSignServiceSettings
         {
             services.AddTransient<IStartupManager, StartupManager>();
-            services.AddSingleton(new EncryptionConfiguration(new Base58String(settings.CurrentValue.EncryptionPrivateKey)));
+            services.AddSingleton(new EncryptionConfiguration(new Base64String(settings.CurrentValue.EncryptionPrivateKey)));
         }
 
         private static void RegisterImplementationServices<TAppSettings>(

@@ -83,7 +83,7 @@ namespace Lykke.Bil2.Sdk
                     swaggerOptions.MapType<BlockId>(() => new Schema{ Type = "string", Format = "blockId"});
                     swaggerOptions.MapType<TransactionId>(() => new Schema{ Type = "string", Format = "transactionId"});
                     swaggerOptions.MapType<DependencyName>(() => new Schema{ Type = "string", Format = "dependencyName"});
-                    swaggerOptions.MapType<Base58String>(() => new Schema{ Type = "string", Format = "byte"});
+                    swaggerOptions.MapType<Base64String>(() => new Schema{ Type = "string", Format = "byte"});
                     swaggerOptions.MapType<EncryptedString>(() => new Schema{ Type = "string", Format = "byte"});
                     swaggerOptions.MapType<UMoney>(() => new Schema{ Type = "string", Format = "coinsAmount"});
                     swaggerOptions.MapType<Money>(() => new Schema{ Type = "string", Format = "coinsChange"});

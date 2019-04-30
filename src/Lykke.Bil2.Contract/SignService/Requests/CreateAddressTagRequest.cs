@@ -16,7 +16,7 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// </summary>
         [CanBeNull]
         [JsonProperty("addressContext")]
-        public Base58String AddressContext { get; set; }
+        public Base64String AddressContext { get; set; }
 
         /// <summary>
         /// Optional.
@@ -37,7 +37,7 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// Optional.
         /// Type of the address tag being created. Actual value depends on implementation.
         /// </param>
-        public CreateAddressTagRequest(Base58String addressContext = null, AddressTagType? type = null)
+        public CreateAddressTagRequest(Base64String addressContext = null, AddressTagType? type = null)
         {
             AddressContext = addressContext;
             Type = type;

@@ -19,6 +19,6 @@ namespace Lykke.Bil2.Sdk.SignService.Services
         /// <param name="requestTransactionContext">
         /// Implementation specific transaction context.
         /// </param>
-        Task<SignTransactionResponse> SignAsync(IReadOnlyCollection<string> privateKeys, Base58String requestTransactionContext);
+        Task<SignTransactionResponse> SignAsync(IReadOnlyCollection<string> privateKeys, Base64String requestTransactionContext);
     }
 }

@@ -4,9 +4,9 @@ namespace Lykke.Bil2.Sdk.SignService.Models
 {
     internal class EncryptionConfiguration
     {
-        public Base58String PrivateKey { get; }
+        public Base64String PrivateKey { get; }
 
-        public EncryptionConfiguration(Base58String privateKey)
+        public EncryptionConfiguration(Base64String privateKey)
         {
             PrivateKey = privateKey;
         }

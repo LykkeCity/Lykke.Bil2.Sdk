@@ -32,7 +32,7 @@ namespace TransactionsExecutorExample.Services
                 throw new RequestValidationException("Failed to deserialize signed transaction", request.SignedTransaction, ex, nameof(request.SignedTransaction));
             }
 
-            var serializedContext = new Base58String((string)signed.Context).DecodeToString();
+            var serializedContext = new Base64String((string)signed.Context).DecodeToString();
 
             if (string.IsNullOrWhiteSpace(serializedContext))
             {

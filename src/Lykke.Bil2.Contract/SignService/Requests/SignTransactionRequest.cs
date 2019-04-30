@@ -25,7 +25,7 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// Implementation specific transaction context.
         /// </summary>
         [JsonProperty("transactionContext")]
-        public Base58String TransactionContext { get; }
+        public Base64String TransactionContext { get; }
 
         /// <summary>
         /// Endpoint: [POST] /api/transactions/signed
@@ -37,7 +37,7 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// <param name="transactionContext">
         /// Implementation specific transaction context.
         /// </param>
-        public SignTransactionRequest(IReadOnlyCollection<EncryptedString> privateKeys, Base58String transactionContext)
+        public SignTransactionRequest(IReadOnlyCollection<EncryptedString> privateKeys, Base64String transactionContext)
         {
             if (privateKeys == null || !privateKeys.Any() || privateKeys.Any(x => x == null))
                 throw RequestValidationException.ShouldBeNotEmptyCollection(nameof(privateKeys));

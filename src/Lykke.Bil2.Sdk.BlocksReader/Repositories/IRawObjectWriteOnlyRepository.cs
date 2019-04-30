@@ -6,6 +6,6 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Repositories
 {
     internal interface IRawObjectWriteOnlyRepository
     {
-        Task SaveAsync(RawObjectType objectType, string objectId, Base58String rawObject);
+        Task SaveAsync(RawObjectType objectType, string objectId, Base64String rawObject);
     }
 }

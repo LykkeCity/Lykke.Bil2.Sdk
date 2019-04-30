@@ -9,17 +9,9 @@ namespace Lykke.Bil2.Contract.Common.Extensions
     public static class StringExtensions
     {
         /// <summary>
-        /// Encodes the string as Base58 string
+        /// Encrypts the string with RSA/AES
         /// </summary>
-        public static Base58String ToBase58(this string value)
-        {
-            return Base58String.Encode(value);
-        }
-
-        /// <summary>
-        /// Encryptes the string with RSA/AES
-        /// </summary>
-        public static EncryptedString Encrypt(this string value, Base58String publicKey)
+        public static EncryptedString Encrypt(this string value, Base64String publicKey)
         {
             return EncryptedString.Encrypt(publicKey, value);
         }

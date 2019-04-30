@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Contract.SignService.Responses;
 using Lykke.Bil2.Sdk.SignService.Services;
 using Lykke.Bil2.SharedDomain;
+using Lykke.Bil2.SharedDomain.Extensions;
 using Newtonsoft.Json;
 using SignServiceExample.Settings;
 
@@ -20,7 +20,7 @@ namespace SignServiceExample.Services
             _network = network;
         }
 
-        public Task<SignTransactionResponse> SignAsync(IReadOnlyCollection<string> privateKeys, Base58String requestTransactionContext)
+        public Task<SignTransactionResponse> SignAsync(IReadOnlyCollection<string> privateKeys, Base64String requestTransactionContext)
         {
             var id = requestTransactionContext.Value.GetHashCode().ToString("X8");
             var signed = new
@@ -32,7 +32,7 @@ namespace SignServiceExample.Services
 
             Console.WriteLine($"Signed with private keys: [{string.Join(", ", privateKeys)}]");
 
-            var serializedSigned = JsonConvert.SerializeObject(signed).ToBase58();
+            var serializedSigned = JsonConvert.SerializeObject(signed).ToBase64();
 
             return Task.FromResult(new SignTransactionResponse(serializedSigned, id));
         }

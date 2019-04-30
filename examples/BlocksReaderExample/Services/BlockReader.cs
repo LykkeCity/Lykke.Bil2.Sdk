@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Lykke.Bil2.Contract.BlocksReader.Events;
-using Lykke.Bil2.Contract.Common.Extensions;
 using Lykke.Bil2.Sdk.BlocksReader.Services;
 using Lykke.Bil2.SharedDomain;
+using Lykke.Bil2.SharedDomain.Extensions;
 using Lykke.Numerics;
 
 namespace BlocksReaderExample.Services
@@ -28,11 +28,11 @@ namespace BlocksReaderExample.Services
                 )
             );
 
-            await listener.HandleRawBlockAsync("raw-block".ToBase58(), blockId);
+            await listener.HandleRawBlockAsync("raw-block".ToBase64(), blockId);
 
             await listener.HandleExecutedTransactionAsync
             (
-                "raw-transaction".ToBase58(),
+                "raw-transaction".ToBase64(),
                 new TransferAmountTransactionExecutedEvent
                 (
                     blockId,

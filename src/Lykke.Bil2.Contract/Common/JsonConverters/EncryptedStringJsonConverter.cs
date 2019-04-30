@@ -37,12 +37,12 @@ namespace Lykke.Bil2.Contract.Common.JsonConverters
             {
                 try
                 {
-                    var value = new EncryptedString(new Base58String((string) reader.Value));
+                    var value = new EncryptedString(new Base64String((string) reader.Value));
                     return value;
                 }
-                catch (Base58StringConversionException ex)
+                catch (Base64StringConversionException ex)
                 {
-                    throw new RequestValidationException("Failed to parse Encryptedstring as Base58String", reader.Value, ex, reader.Path);
+                    throw new RequestValidationException("Failed to parse Encrypted string as Base64String", reader.Value, ex, reader.Path);
                 }
                 catch (Exception ex)
                 {

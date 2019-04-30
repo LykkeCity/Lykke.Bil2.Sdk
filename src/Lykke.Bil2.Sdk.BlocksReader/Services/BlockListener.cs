@@ -27,7 +27,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             return Task.CompletedTask;
         }
 
-        public Task HandleRawBlockAsync(Base58String rawBlock, BlockId blockId)
+        public Task HandleRawBlockAsync(Base64String rawBlock, BlockId blockId)
         {
             return _rawObjectsRepository.SaveAsync(RawObjectType.Block, blockId, rawBlock);
         }
@@ -39,7 +39,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             return Task.CompletedTask;
         }
 
-        public async Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransferAmountTransactionExecutedEvent evt)
+        public async Task HandleExecutedTransactionAsync(Base64String rawTransaction, TransferAmountTransactionExecutedEvent evt)
         {
             var rawTransactionSavingTask = _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, evt.TransactionId, rawTransaction);
 
@@ -48,7 +48,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             await rawTransactionSavingTask;
         }
 
-        public async Task HandleExecutedTransactionAsync(Base58String rawTransaction, TransferCoinsTransactionExecutedEvent evt)
+        public async Task HandleExecutedTransactionAsync(Base64String rawTransaction, TransferCoinsTransactionExecutedEvent evt)
         {
             var rawTransactionSavingTask = _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, evt.TransactionId, rawTransaction);
 
@@ -57,7 +57,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             await rawTransactionSavingTask;
         }
 
-        public async Task HandleFailedTransactionAsync(Base58String rawTransaction, TransactionFailedEvent evt)
+        public async Task HandleFailedTransactionAsync(Base64String rawTransaction, TransactionFailedEvent evt)
         {
             var rawTransactionSavingTask = _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, evt.TransactionId, rawTransaction);
 

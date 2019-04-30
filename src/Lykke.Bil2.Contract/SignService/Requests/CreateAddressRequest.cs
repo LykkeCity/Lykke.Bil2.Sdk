@@ -18,7 +18,7 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// response. 
         /// </summary>
         [JsonProperty("encryptionPublicKey")]
-        public Base58String EncryptionPublicKey { get; }
+        public Base64String EncryptionPublicKey { get; }
 
         /// <summary>
         /// Endpoint: [POST] /api/addresses
@@ -29,7 +29,7 @@ namespace Lykke.Bil2.Contract.SignService.Requests
         /// return it in the encryptedPrivateKey field of the
         /// response.
         /// </param>
-        public CreateAddressRequest(Base58String encryptionPublicKey)
+        public CreateAddressRequest(Base64String encryptionPublicKey)
         {
             if (string.IsNullOrWhiteSpace(encryptionPublicKey?.ToString()))
                 throw RequestValidationException.ShouldBeNotEmptyString(nameof(encryptionPublicKey));

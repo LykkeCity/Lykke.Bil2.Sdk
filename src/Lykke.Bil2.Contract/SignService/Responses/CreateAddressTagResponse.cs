@@ -23,7 +23,7 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// </summary>
         [CanBeNull]
         [JsonProperty("tagContext")]
-        public Base58String TagContext { get; }
+        public Base64String TagContext { get; }
 
         /// <summary>
         /// Endpoint: [POST] /api/addresses/{address}/tags
@@ -33,7 +33,7 @@ namespace Lykke.Bil2.Contract.SignService.Responses
         /// Optional.
         /// Any non security sensitive, implementation specific information associated with the address tag.
         /// </param>
-        public CreateAddressTagResponse(AddressTag tag, Base58String tagContext = null)
+        public CreateAddressTagResponse(AddressTag tag, Base64String tagContext = null)
         {
             Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             TagContext = tagContext;

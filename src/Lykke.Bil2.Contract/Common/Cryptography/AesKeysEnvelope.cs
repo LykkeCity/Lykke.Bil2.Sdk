@@ -7,12 +7,12 @@ namespace Lykke.Bil2.Contract.Common.Cryptography
     internal class AesKeysEnvelope
     {
         [JsonProperty("key")]
-        public Base58String Key { get; }
+        public Base64String Key { get; }
         
         [JsonProperty("iv")]
-        public Base58String Iv { get; }
+        public Base64String Iv { get; }
 
-        public AesKeysEnvelope(Base58String key, Base58String iv)
+        public AesKeysEnvelope(Base64String key, Base64String iv)
         {
             Key = key ?? throw new ArgumentNullException(nameof(key));
             Iv = iv ?? throw new ArgumentNullException(nameof(iv));
