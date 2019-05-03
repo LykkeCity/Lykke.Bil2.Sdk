@@ -75,7 +75,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             _saveRawBlockTask = _rawObjectsRepository.SaveAsync(RawObjectType.Block, blockId, rawBlock);
         }
 
-        public void HandleBlockNotFound(BlockNotFoundEvent evt)
+        public void HandleNotFoundBlock(BlockNotFoundEvent evt)
         {           
             if (_blockHeader != null)
             {

@@ -277,7 +277,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     {
                         if(blockNumber == 2)
                         {
-                            blockListener.HandleBlockNotFound(new BlockNotFoundEvent(blockNumber));
+                            blockListener.HandleNotFoundBlock(new BlockNotFoundEvent(blockNumber));
                             return;
                         }
 

@@ -23,6 +23,6 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
         /// <summary>
         /// Should be called when requested block is not found.
         /// </summary>
-        void HandleBlockNotFound(BlockNotFoundEvent evt);
+        void HandleNotFoundBlock(BlockNotFoundEvent evt);
     }
 }
