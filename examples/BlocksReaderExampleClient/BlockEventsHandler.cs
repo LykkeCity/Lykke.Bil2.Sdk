@@ -18,17 +18,14 @@ namespace BlocksReaderExampleClient
             return Task.FromResult(MessageHandlingResult.Success());
         }
 
-        public Task<MessageHandlingResult> HandleAsync(string integrationName, TransferAmountTransactionExecutedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(string state, TransferAmountTransactionsBatchEvent message, MessageHeaders headers,
+            IMessagePublisher replyPublisher)
         {
             return Task.FromResult(MessageHandlingResult.Success());
         }
 
-        public Task<MessageHandlingResult> HandleAsync(string integrationName, TransferCoinsTransactionExecutedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
-        {
-            return Task.FromResult(MessageHandlingResult.Success());
-        }
-
-        public Task<MessageHandlingResult> HandleAsync(string integrationName, TransactionFailedEvent evt, MessageHeaders headers, IMessagePublisher replyPublisher)
+        public Task<MessageHandlingResult> HandleAsync(string state, TransferCoinsTransactionsBatchEvent message, MessageHeaders headers,
+            IMessagePublisher replyPublisher)
         {
             return Task.FromResult(MessageHandlingResult.Success());
         }

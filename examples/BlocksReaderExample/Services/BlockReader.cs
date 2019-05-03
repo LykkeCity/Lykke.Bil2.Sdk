@@ -15,7 +15,9 @@ namespace BlocksReaderExample.Services
             var blockId = Guid.NewGuid().ToString("N");
             var previousBlockId = Guid.NewGuid().ToString("N");
 
-            await listener.HandleHeaderAsync
+            listener.HandleRawBlock("raw-block".ToBase64(), blockId);
+
+            var transactionsListener = listener.StartBlockTransactionsHandling
             (
                 new BlockHeaderReadEvent
                 (
@@ -28,23 +30,23 @@ namespace BlocksReaderExample.Services
                 )
             );
 
-            await listener.HandleRawBlockAsync("raw-block".ToBase64(), blockId);
+            var transactionId = new TransactionId(Guid.NewGuid().ToString("N"));
 
-            await listener.HandleExecutedTransactionAsync
+            await transactionsListener.HandleRawTransactionAsync("raw-transaction".ToBase64(), transactionId);
+            
+            transactionsListener.HandleExecutedTransaction
             (
-                "raw-transaction".ToBase64(),
-                new TransferAmountTransactionExecutedEvent
+                new TransferAmountExecutedTransaction
                 (
-                    blockId,
-                    1,
-                    Guid.NewGuid().ToString("N"),
-                    new []
+                    transactionNumber: 1,
+                    transactionId: transactionId,
+                    balanceChanges: new[]
                     {
                         new BalanceChange("1", new Asset("STEEM"), Money.Create(123, 4), "abc")
                     },
-                    new []
+                    fees: new[]
                     {
-                        new Fee(new Asset( "STEEM"), UMoney.Create(0.0001m, 4)), 
+                        new Fee(new Asset("STEEM"), UMoney.Create(0.0001m, 4)),
                     },
                     isIrreversible: true
                 )

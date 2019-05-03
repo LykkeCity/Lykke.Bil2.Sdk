@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Lykke.Bil2.Contract.Common;
 using Lykke.Sdk.Settings;
 using Lykke.SettingsReader.Attributes;
 
@@ -25,6 +26,11 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
         /// RabbitMq settings.
         /// </summary>
         TRabbitMqSettings RabbitMq { get; }
+
+        /// <summary>
+        /// Transfer model of the blockchain.
+        /// </summary>
+        BlockchainTransferModel TransferModel { get; }
 
         /// <summary>
         /// Monitoring period of the last irreversible block.

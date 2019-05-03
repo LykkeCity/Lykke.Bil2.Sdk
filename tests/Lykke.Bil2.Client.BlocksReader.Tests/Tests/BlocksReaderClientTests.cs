@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Lykke.Bil2.Client.BlocksReader.Options;
+using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.Sdk.Repositories;
 using Lykke.Bil2.RabbitMq.Subscription;
@@ -50,14 +51,17 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 Db = new DbSettings
                 {
                     AzureDataConnString = "empty",
-                    LogsConnString = "empty"
+                    LogsConnString = "empty",
+                    MaxTransactionsSavingParallelism = 4
                 },
                 RabbitMq = new RabbitMqSettings
                 {
                     ConnString = _rabbitMqSettings.GetConnectionString(),
                     MessageConsumersCount = 1,
-                    MessageProcessorsCount = 1
+                    MessageProcessorsCount = 1,
+                    TransactionsBatchSize = 2
                 },
+                TransferModel = BlockchainTransferModel.Amount,
                 LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(5),
                 NodeUrl = "http://localhost:7777/api",
                 NodeUser = "user",
@@ -245,11 +249,9 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
             Mock<IRawObjectWriteOnlyRepository> rawObjectsRepository = null;
             var typeWaitHandles = new Dictionary<Type, ManualResetEventSlim>()
             {
-                { typeof(TransactionFailedEvent), new ManualResetEventSlim()},
                 { typeof(BlockHeaderReadEvent), new ManualResetEventSlim()},
                 { typeof(BlockNotFoundEvent), new ManualResetEventSlim()},
-                { typeof(TransferAmountTransactionExecutedEvent), new ManualResetEventSlim()},
-                { typeof(TransferCoinsTransactionExecutedEvent), new ManualResetEventSlim()},
+                { typeof(TransferAmountTransactionsBatchEvent), new ManualResetEventSlim()},
             };
             var blockEventsHandlerMock = BlockEventsHandlerCreateMock((intName, evt, headers, messagePublisher) =>
             {
@@ -275,13 +277,15 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     {
                         if(blockNumber == 2)
                         {
-                            await blockListener.HandleBlockNotFoundAsync(new BlockNotFoundEvent(blockNumber));
+                            blockListener.HandleBlockNotFound(new BlockNotFoundEvent(blockNumber));
                             return;
                         }
 
                         var asset = new Asset("assetId");
 
-                        await blockListener.HandleHeaderAsync
+                        blockListener.HandleRawBlock(Base64String.Encode("raw-block"), "1");
+
+                        var transactionsListener = blockListener.StartBlockTransactionsHandling
                         (
                             new BlockHeaderReadEvent
                             (
@@ -289,18 +293,16 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                                 "1",
                                 DateTime.UtcNow,
                                 256,
-                                1
+                                5
                             )
                         );
 
-                        await blockListener.HandleRawBlockAsync(Base64String.Encode("raw-block"), "1");
+                        await transactionsListener.HandleRawTransactionAsync(Base64String.Encode("transaction.raw"), "tr1");
 
-                        await blockListener.HandleExecutedTransactionAsync
+                        transactionsListener.HandleExecutedTransaction
                         (
-                            Base64String.Encode("transaction.raw"),
-                            new TransferAmountTransactionExecutedEvent
+                            new TransferAmountExecutedTransaction
                             (
-                                "1",
                                 1,
                                 "tr1",
                                 new[]
@@ -323,29 +325,25 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                             )
                         );
 
-                        await blockListener.HandleExecutedTransactionAsync
+                        await transactionsListener.HandleRawTransactionAsync(Base64String.Encode("transaction.raw"), "tr2");
+
+                        transactionsListener.HandleExecutedTransaction
                         (
-                            Base64String.Encode("transaction.raw"),
-                            new TransferCoinsTransactionExecutedEvent
+                            new TransferAmountExecutedTransaction
                             (
-                                "1",
-                                1,
-                                "2",
+                                2,
+                                "tr2",
                                 new[]
                                 {
-                                    new ReceivedCoin
+                                    new BalanceChange
                                     (
-                                        1,
+                                        "1",
                                         asset,
-                                        UMoney.Create(1000, 4),
-                                        new Address("0x1"),
+                                        Money.Create(100, 4),
+                                        new Address("0x3"),
                                         new AddressTag("tag"),
-                                        AddressTagType.Text, 1
-                                    )
-                                },
-                                new[]
-                                {
-                                    new CoinId("tr1", 0),
+                                        AddressTagType.Text,
+                                        2)
                                 },
                                 new[]
                                 {
@@ -355,14 +353,59 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                             )
                         );
 
-                        await blockListener.HandleFailedTransactionAsync
+                        await transactionsListener.HandleRawTransactionAsync(Base64String.Encode("transaction.raw"), "tr3");
+
+                        transactionsListener.HandleExecutedTransaction
                         (
-                            Base64String.Encode("transaction.raw"),
-                            new TransactionFailedEvent
+                            new TransferAmountExecutedTransaction
                             (
-                                "1",
-                                1,
-                                "tr1",
+                                3,
+                                "tr3",
+                                new[]
+                                {
+                                    new BalanceChange
+                                    (
+                                        "1",
+                                        asset,
+                                        Money.Create(500, 4),
+                                        new Address("0x4"),
+                                        new AddressTag("tag"),
+                                        AddressTagType.Text,
+                                        3)
+                                },
+                                new[]
+                                {
+                                    new Fee(asset, UMoney.Create(10, 4))
+                                },
+                                true
+                            )
+                        );
+
+                        await transactionsListener.HandleRawTransactionAsync(Base64String.Encode("transaction.raw"), "tr4");
+
+                        transactionsListener.HandleFailedTransaction
+                        (
+                            new FailedTransaction
+                            (
+                                4,
+                                "tr4",
+                                TransactionBroadcastingError.TransientFailure,
+                                "some error message",
+                                new[]
+                                {
+                                    new Fee(asset, UMoney.Create(10, 4))
+                                }
+                            )
+                        );
+
+                        await transactionsListener.HandleRawTransactionAsync(Base64String.Encode("transaction.raw"), "tr5");
+
+                        transactionsListener.HandleFailedTransaction
+                        (
+                            new FailedTransaction
+                            (
+                                5,
+                                "tr5",
                                 TransactionBroadcastingError.TransientFailure,
                                 "some error message",
                                 new[]
@@ -460,26 +503,40 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                         It.IsNotNull<IMessagePublisher>()), 
                     Times.Never);
 
+            // Batch 1
+
             blockEventsHandlerMock
                 .Verify(x => x.HandleAsync(
                     _integrationName, 
-                    It.Is<TransferAmountTransactionExecutedEvent>(t => t.BlockId == "1"),
+                    It.Is<TransferAmountTransactionsBatchEvent>(b => b.BlockId == "1" && 
+                                                                     b.FailedTransactions.Count == 0 && 
+                                                                     b.TransferAmountExecutedTransactions.Count == 2),
                     It.Is<MessageHeaders>(h => h.CorrelationId == block1CorrelationId),
                     It.IsNotNull<IMessagePublisher>()), 
                     Times.AtLeastOnce);
+
+            // Batch 2
+
             blockEventsHandlerMock
                 .Verify(x => x.HandleAsync(
-                    _integrationName, 
-                    It.Is<TransferAmountTransactionExecutedEvent>(t => t.BlockId == "1"),
-                    It.Is<MessageHeaders>(h => h.CorrelationId == block1CorrelationId),
-                    It.IsNotNull<IMessagePublisher>()), 
+                        _integrationName, 
+                        It.Is<TransferAmountTransactionsBatchEvent>(b => b.BlockId == "1" && 
+                                                                         b.FailedTransactions.Count == 1 && 
+                                                                         b.TransferAmountExecutedTransactions.Count == 1),
+                        It.Is<MessageHeaders>(h => h.CorrelationId == block1CorrelationId),
+                        It.IsNotNull<IMessagePublisher>()), 
                     Times.AtLeastOnce);
+
+            // Batch 3
+
             blockEventsHandlerMock
                 .Verify(x => x.HandleAsync(
-                    _integrationName, 
-                    It.Is<TransferAmountTransactionExecutedEvent>(t => t.BlockId == "1"),
-                    It.Is<MessageHeaders>(h => h.CorrelationId == block1CorrelationId),
-                    It.IsNotNull<IMessagePublisher>()),
+                        _integrationName, 
+                        It.Is<TransferAmountTransactionsBatchEvent>(b => b.BlockId == "1" && 
+                                                                         b.FailedTransactions.Count == 1 && 
+                                                                         b.TransferAmountExecutedTransactions.Count == 0),
+                        It.Is<MessageHeaders>(h => h.CorrelationId == block1CorrelationId),
+                        It.IsNotNull<IMessagePublisher>()), 
                     Times.AtLeastOnce);
         }
 
@@ -494,15 +551,11 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                 .ReturnsAsync(MessageHandlingResult.Success())
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferAmountTransactionExecutedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferAmountTransactionsBatchEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
                 .ReturnsAsync(MessageHandlingResult.Success())
                 .Callback(callBack)
                 .Verifiable();
-            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferCoinsTransactionExecutedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
-                .ReturnsAsync(MessageHandlingResult.Success())
-                .Callback(callBack)
-                .Verifiable();
-            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransactionFailedEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
+            blockEventsHandler.Setup(x => x.HandleAsync(It.IsAny<string>(), It.IsAny<TransferCoinsTransactionsBatchEvent>(), It.IsAny<MessageHeaders>(), It.IsAny<IMessagePublisher>()))
                 .ReturnsAsync(MessageHandlingResult.Success())
                 .Callback(callBack)
                 .Verifiable();

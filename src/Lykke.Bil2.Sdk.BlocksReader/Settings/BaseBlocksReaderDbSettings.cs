@@ -14,5 +14,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
 
         [AzureTableCheck]
         public string LogsConnString { get; set; }
+
+        public int MaxTransactionsSavingParallelism { get; set; }
     }
 }

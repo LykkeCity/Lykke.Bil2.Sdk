@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Lykke.Bil2.Contract.BlocksReader.Events;
+using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.Sdk.BlocksReader.Repositories;
 using Lykke.Bil2.Sdk.Repositories;
@@ -7,63 +9,111 @@ using Lykke.Bil2.SharedDomain;
 
 namespace Lykke.Bil2.Sdk.BlocksReader.Services
 {
-    internal class BlockListener : IBlockListener
+    internal class BlockListener : 
+        IBlockListener,
+        IDisposable
     {
         private readonly IMessagePublisher _messagePublisher;
         private readonly IRawObjectWriteOnlyRepository _rawObjectsRepository;
+        private readonly int _transactionsBatchSize;
+        private readonly int _maxTransactionsSavingParallelism;
+        private readonly BlockchainTransferModel _transferModel;
 
+        private BlockHeaderReadEvent _blockHeader;
+        private bool _isBlockNotFound;
+        private BlockTransactionsListener _transactionsListener;
+        private Task _saveRawBlockTask;
+        
         public BlockListener(
             IMessagePublisher messagePublisher,
-            IRawObjectWriteOnlyRepository rawObjectsRepository)
+            IRawObjectWriteOnlyRepository rawObjectsRepository,
+            int transactionsBatchSize,
+            int maxTransactionsSavingParallelism,
+            BlockchainTransferModel transferModel)
         {
             _messagePublisher = messagePublisher;
             _rawObjectsRepository = rawObjectsRepository;
+            _transactionsBatchSize = transactionsBatchSize;
+            _maxTransactionsSavingParallelism = maxTransactionsSavingParallelism;
+            _transferModel = transferModel;
         }
 
-        public Task HandleHeaderAsync(BlockHeaderReadEvent evt)
+        public IBlockTransactionsListener StartBlockTransactionsHandling(BlockHeaderReadEvent evt)
         {
+            if (_blockHeader != null)
+            {
+                throw new InvalidOperationException($"Block header already was handled: {_blockHeader}");
+            }
+
+            if (_isBlockNotFound)
+            {
+                throw new InvalidOperationException("Block already handled as not found");
+            }
+            
+            _blockHeader = evt ?? throw new ArgumentNullException(nameof(evt));
+
+            _transactionsListener = new BlockTransactionsListener
+            (
+                _blockHeader,
+                _messagePublisher,
+                _rawObjectsRepository,
+                _transactionsBatchSize,
+                _maxTransactionsSavingParallelism,
+                _transferModel
+            );
+
+            return _transactionsListener;
+        }
+
+        public void HandleRawBlock(Base64String rawBlock, BlockId blockId)
+        {
+            if (_blockHeader != null)
+            {
+                throw new InvalidOperationException("Invoke HandleRawBlock before StartBlockTransactionsHandling");
+            }
+
+            _saveRawBlockTask = _rawObjectsRepository.SaveAsync(RawObjectType.Block, blockId, rawBlock);
+        }
+
+        public void HandleBlockNotFound(BlockNotFoundEvent evt)
+        {           
+            if (_blockHeader != null)
+            {
+                throw new InvalidOperationException($"Block header already was handled: {_blockHeader}");
+            }
+
+            if (_isBlockNotFound)
+            {
+                throw new InvalidOperationException("Block already handled as not found");
+            }
+            
+            _isBlockNotFound = true;
+
             _messagePublisher.Publish(evt);
-
-            return Task.CompletedTask;
         }
 
-        public Task HandleRawBlockAsync(Base64String rawBlock, BlockId blockId)
+        public async Task FlushAsync()
         {
-            return _rawObjectsRepository.SaveAsync(RawObjectType.Block, blockId, rawBlock);
+            if (_transactionsListener != null)
+            {
+                await _transactionsListener.FlushAsync();
+            }
+
+            if (_blockHeader != null)
+            {
+                _messagePublisher.Publish(_blockHeader);
+            }
+
+            if (_saveRawBlockTask != null)
+            {
+                await _saveRawBlockTask;
+            }
         }
 
-        public Task HandleBlockNotFoundAsync(BlockNotFoundEvent evt)
+        public void Dispose()
         {
-            _messagePublisher.Publish(evt);
-
-            return Task.CompletedTask;
-        }
-
-        public async Task HandleExecutedTransactionAsync(Base64String rawTransaction, TransferAmountTransactionExecutedEvent evt)
-        {
-            var rawTransactionSavingTask = _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, evt.TransactionId, rawTransaction);
-
-            _messagePublisher.Publish(evt);
-
-            await rawTransactionSavingTask;
-        }
-
-        public async Task HandleExecutedTransactionAsync(Base64String rawTransaction, TransferCoinsTransactionExecutedEvent evt)
-        {
-            var rawTransactionSavingTask = _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, evt.TransactionId, rawTransaction);
-
-            _messagePublisher.Publish(evt);
-
-            await rawTransactionSavingTask;
-        }
-
-        public async Task HandleFailedTransactionAsync(Base64String rawTransaction, TransactionFailedEvent evt)
-        {
-            var rawTransactionSavingTask = _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, evt.TransactionId, rawTransaction);
-
-            _messagePublisher.Publish(evt);
-
-            await rawTransactionSavingTask;
+            _transactionsListener?.Dispose();
+            _saveRawBlockTask?.Dispose();
         }
     }
 }
