@@ -78,7 +78,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
                     s.GetRequiredService<IRawObjectWriteOnlyRepository>(),
                     currentSettings.RabbitMq.TransactionsBatchSize,
                     currentSettings.Db.MaxTransactionsSavingParallelism,
-                    currentSettings.TransferModel
+                    options.TransferModel
                 )
             );
             services.AddTransient<IStartupManager, StartupManager>();
@@ -183,6 +183,11 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             if (options.BlockReaderFactory == null)
             {
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.BlockReaderFactory)} is required.");
+            }
+
+            if (!options.IsTransferModelSet)
+            {
+                throw new InvalidOperationException($"Transfer model should be set. Invoke either {nameof(BlocksReaderServiceOptions<TAppSettings>.UseTransferAmountTransactionsModel)} or {nameof(BlocksReaderServiceOptions<TAppSettings>.UseTransferCoinsTransactionsModel)}.");
             }
 
             return options;

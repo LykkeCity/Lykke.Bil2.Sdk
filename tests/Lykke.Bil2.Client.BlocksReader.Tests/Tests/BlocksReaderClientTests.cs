@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Lykke.Bil2.Client.BlocksReader.Options;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.RabbitMq.Publication;
 using Lykke.Bil2.Sdk.Repositories;
 using Lykke.Bil2.RabbitMq.Subscription;
@@ -61,7 +60,6 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     MessageProcessorsCount = 1,
                     TransactionsBatchSize = 2
                 },
-                TransferModel = BlockchainTransferModel.Amount,
                 LastIrreversibleBlockMonitoringPeriod = TimeSpan.FromSeconds(5),
                 NodeUrl = "http://localhost:7777/api",
                 NodeUser = "user",
@@ -99,6 +97,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                         out var blockProvider);
 
                     serverOptions.IntegrationName = _integrationName;
+                    serverOptions.UseTransferAmountTransactionsModel();
                     blockReader
                         .Setup(x => x.ReadBlockAsync(2, It.IsAny<IBlockListener>()))
                         .Returns(Task.CompletedTask)
@@ -161,6 +160,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                         out var blockProvider);
 
                     serverOptions.IntegrationName = _integrationName;
+                    serverOptions.UseTransferAmountTransactionsModel();
                     blockProvider.Setup(x => x.GetLastAsync()).ReturnsAsync(new LastIrreversibleBlockUpdatedEvent(1, "1"));
                     ConfigureFactories(serverOptions, blockReader, blockProvider);
                 },
@@ -209,6 +209,7 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                         out var blockProvider);
 
                     serverOptions.IntegrationName = _integrationName;
+                    serverOptions.UseTransferAmountTransactionsModel();
 
                     ConfigureFactories(serverOptions,
                         blockReader,
@@ -417,6 +418,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Tests
                     }
 
                     serverOptions.IntegrationName = _integrationName;
+                    serverOptions.UseTransferAmountTransactionsModel();
+
                     blockReader
                         .Setup(x => x.ReadBlockAsync(It.IsAny<long>(), It.IsAny<IBlockListener>()))
                         .Returns(Task.CompletedTask)

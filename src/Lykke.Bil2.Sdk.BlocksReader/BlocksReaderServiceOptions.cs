@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Lykke.Bil2.Contract.Common;
 using Lykke.Bil2.Sdk.BlocksReader.Services;
 using Lykke.Bil2.Sdk.BlocksReader.Settings;
 using Lykke.SettingsReader;
@@ -22,6 +23,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader
         public string IntegrationName { get; set; }
 
         /// <summary>
+        /// Optional.
         /// RabbitMq Vhost
         /// </summary>
         public string RabbitVhost { get; set; }
@@ -39,9 +41,31 @@ namespace Lykke.Bil2.Sdk.BlocksReader
         /// </summary>
         public Func<ServiceFactoryContext<TAppSettings>, IBlockReader> BlockReaderFactory { get; set; }
 
+        internal BlockchainTransferModel TransferModel { get; private set; }
+
+        internal bool IsTransferModelSet { get; private set; }
+
         internal IrreversibleBlockRetrievingStrategy IrreversibleBlockRetrievingStrategy { get; private set; }
 
         internal Func<ServiceFactoryContext<TAppSettings>, IIrreversibleBlockProvider> IrreversibleBlockProviderFactory { get; private set; }
+
+        /// <summary>
+        /// Sets "transfer coins" transactions model.
+        /// </summary>
+        public void UseTransferCoinsTransactionsModel()
+        {
+            TransferModel = BlockchainTransferModel.Coins;
+            IsTransferModelSet = true;
+        }
+
+        /// <summary>
+        /// Sets "transfer amount" transactions model.
+        /// </summary>
+        public void UseTransferAmountTransactionsModel()
+        {
+            TransferModel = BlockchainTransferModel.Amount;
+            IsTransferModelSet = true;
+        }
 
         /// <summary>
         /// Adds irreversible blocks support with pulling strategy.

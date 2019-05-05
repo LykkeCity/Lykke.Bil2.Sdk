@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Lykke.Bil2.Contract.Common;
 using Lykke.Sdk.Settings;
 using Lykke.SettingsReader.Attributes;
 
@@ -22,9 +21,6 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
 
         /// <inheritdoc />
         public TRabbitMqSettings RabbitMq { get; set; }
-
-        /// <inheritdoc />
-        public BlockchainTransferModel TransferModel { get; set; }
 
         /// <inheritdoc />
         [Optional]
