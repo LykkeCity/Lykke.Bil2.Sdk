@@ -1,6 +1,7 @@
 ﻿using Lykke.Bil2.Contract.BlocksReader.Commands;
 using Lykke.Bil2.RabbitMq;
 using Lykke.Bil2.RabbitMq.Subscription;
+using Lykke.Bil2.RabbitMq.Subscription.MessageFilters;
 using Lykke.Bil2.Sdk.BlocksReader.Settings;
 
 namespace Lykke.Bil2.Sdk.BlocksReader.Services
@@ -35,7 +36,8 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
                 .Handle<ReadBlockCommand>(o =>
                 {
                     o.WithHandler<ReadBlockCommandsHandler>();
-                });
+                })
+                .AddFilter(new AppInsightTelemetryMessageFilter());
 
             _rabbitMqEndpoint.Subscribe(
                 subscriptions,
