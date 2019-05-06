@@ -19,8 +19,9 @@ namespace Lykke.Bil2.Contract.TransactionsExecutor.Requests
         public Asset Asset { get; }
 
         /// <summary>
-        /// Amount to transfer from the source address
-        /// to the destination address.
+        /// Amount to transfer from the source address to the destination address.
+        /// Fee to spent by the transaction should be included in the amount in case
+        /// of transaction building.
         /// </summary>
         [JsonProperty("amount")]
         public UMoney Amount { get; }
