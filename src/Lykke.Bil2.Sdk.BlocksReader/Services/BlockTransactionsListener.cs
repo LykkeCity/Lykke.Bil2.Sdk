@@ -103,7 +103,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
 
         public async Task HandleRawTransactionAsync(Base64String rawTransaction, TransactionId transactionId)
         {
-           async Task SaveRawTransaction()
+            async Task SaveRawTransaction()
             {
                 try
                 {
