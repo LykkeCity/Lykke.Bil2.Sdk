@@ -90,17 +90,12 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
                         o.WithHandler<IBlockEventsHandler>();
                         o.WithState(integrationName);
                     })
-                    .Handle<TransferAmountTransactionExecutedEvent, string>(o =>
+                    .Handle<TransferAmountTransactionsBatchEvent, string>(o =>
                     {
                         o.WithHandler<IBlockEventsHandler>();
                         o.WithState(integrationName);
                     })
-                    .Handle<TransferCoinsTransactionExecutedEvent, string>(o =>
-                    {
-                        o.WithHandler<IBlockEventsHandler>();
-                        o.WithState(integrationName);
-                    })
-                    .Handle<TransactionFailedEvent, string>(o =>
+                    .Handle<TransferCoinsTransactionsBatchEvent, string>(o =>
                     {
                         o.WithHandler<IBlockEventsHandler>();
                         o.WithState(integrationName);

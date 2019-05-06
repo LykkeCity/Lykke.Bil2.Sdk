@@ -15,10 +15,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Tests.Configuration
         [UsedImplicitly]
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            var optionsConfiguration =
-                StartupDependencyFactorySingleton.Instance.GetOptionsConfiguration<AppSettings>();
-            StartupDependencyFactorySingleton.Instance.ServerServiceProvider = 
-                services.BuildBlockchainBlocksReaderServiceProvider(optionsConfiguration);
+            var optionsConfiguration = StartupDependencyFactorySingleton.Instance.GetOptionsConfiguration<AppSettings>();
+            StartupDependencyFactorySingleton.Instance.ServerServiceProvider = services.BuildBlockchainBlocksReaderServiceProvider(optionsConfiguration);
 
             return StartupDependencyFactorySingleton.Instance.ServerServiceProvider;
         }

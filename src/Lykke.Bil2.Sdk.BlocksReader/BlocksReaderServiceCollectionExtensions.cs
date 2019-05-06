@@ -67,32 +67,53 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             
             where TAppSettings : IBlocksReaderSettings<BaseBlocksReaderDbSettings, BaseBlocksReaderRabbitMqSettings>
         {
+            var currentSettings = settings.CurrentValue;
+
             services.AddTransient<IIrreversibleBlockListener, IrreversibleBlockListener>();
-            services.AddTransient<ReadBlockCommandsHandler>();
+            services.AddTransient
+            (
+                s => new ReadBlockCommandsHandler
+                (
+                    s.GetRequiredService<IBlockReader>(),
+                    s.GetRequiredService<IRawObjectWriteOnlyRepository>(),
+                    currentSettings.RabbitMq.TransactionsBatchSize,
+                    currentSettings.Db.MaxTransactionsSavingParallelism,
+                    options.TransferModel
+                )
+            );
             services.AddTransient<IStartupManager, StartupManager>();
 
-            services.AddSingleton(s => RawObjectWriteOnlyRepository.Create(
-                options.IntegrationName.CamelToKebab(),
-                settings.Nested(x => x.Db.AzureDataConnString)));
+            services.AddSingleton
+            (
+                s => RawObjectWriteOnlyRepository.Create
+                (
+                    options.IntegrationName.CamelToKebab(),
+                    settings.Nested(x => x.Db.AzureDataConnString)
+                )
+            );
 
-            services.AddSingleton<IRabbitMqEndpoint>(s =>
-                new RabbitMqEndpoint
+            services.AddSingleton<IRabbitMqEndpoint>
+            (
+                s => new RabbitMqEndpoint
                 (
                     s,
                     s.GetRequiredService<ILogFactory>(),
                     new Uri(settings.CurrentValue.RabbitMq.ConnString),
-                    settings.CurrentValue.RabbitMq.Vhost == "/" 
-                        ? null 
+                    settings.CurrentValue.RabbitMq.Vhost == "/"
+                        ? null
                         : settings.CurrentValue.RabbitMq.Vhost ?? options.RabbitVhost
-                ));
+                )
+            );
 
-            services.AddTransient<IRabbitMqConfigurator>(s =>
-                new RabbitMqConfigurator
+            services.AddTransient<IRabbitMqConfigurator>
+            (
+                s => new RabbitMqConfigurator
                 (
                     s.GetRequiredService<IRabbitMqEndpoint>(),
                     settings.CurrentValue.RabbitMq,
                     options.IntegrationName.CamelToKebab()
-                ));
+                )
+            );
         }
 
         private static void RegisterImplementationServices<TAppSettings>(
@@ -162,6 +183,11 @@ namespace Lykke.Bil2.Sdk.BlocksReader
             if (options.BlockReaderFactory == null)
             {
                 throw new InvalidOperationException($"{nameof(options)}.{nameof(options.BlockReaderFactory)} is required.");
+            }
+
+            if (!options.IsTransferModelSet)
+            {
+                throw new InvalidOperationException($"Transfer model should be set. Invoke either {nameof(BlocksReaderServiceOptions<TAppSettings>.UseTransferAmountTransactionsModel)} or {nameof(BlocksReaderServiceOptions<TAppSettings>.UseTransferCoinsTransactionsModel)}.");
             }
 
             return options;

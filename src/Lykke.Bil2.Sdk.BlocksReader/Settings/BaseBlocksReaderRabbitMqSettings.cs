@@ -17,6 +17,11 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Settings
         public string ConnString { get; set; }
 
         /// <summary>
+        /// Transactions count to send in the single batch event.
+        /// </summary>
+        public int TransactionsBatchSize { get; set; }
+
+        /// <summary>
         /// RabbitMq Vhost name.
         /// </summary>
         [Optional]

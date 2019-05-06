@@ -11,9 +11,8 @@ namespace Lykke.Bil2.Client.BlocksReader.Services
     public interface IBlockEventsHandler :
         IMessageHandler<BlockHeaderReadEvent, string>,
         IMessageHandler<BlockNotFoundEvent, string>,
-        IMessageHandler<TransferAmountTransactionExecutedEvent, string>,
-        IMessageHandler<TransferCoinsTransactionExecutedEvent, string>,
-        IMessageHandler<TransactionFailedEvent, string>,
+        IMessageHandler<TransferAmountTransactionsBatchEvent, string>,
+        IMessageHandler<TransferCoinsTransactionsBatchEvent, string>,
         IMessageHandler<LastIrreversibleBlockUpdatedEvent, string>
     {
     }
