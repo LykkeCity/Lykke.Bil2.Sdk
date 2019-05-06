@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Lykke.Bil2.SharedDomain;
 using Lykke.Numerics;
-using Newtonsoft.Json;
 
 namespace Lykke.Bil2.Contract.BlocksReader.Events
 {
@@ -28,8 +27,9 @@ namespace Lykke.Bil2.Contract.BlocksReader.Events
         public Asset Asset { get; }
 
         /// <summary>
-        /// Value for which the balance of the address was changed.
-        /// Can be positive to increase the balance or negative to decrease the balance.
+        /// Value for which the balance of the address was changed. Can be positive to increase
+        /// the balance or negative to decrease the balance. Fee spent for the transaction
+        /// should be taken into account (subtracted if any) in the value.
         /// </summary>
         [DataMember(Order = 2)]
         public Money Value { get; }
