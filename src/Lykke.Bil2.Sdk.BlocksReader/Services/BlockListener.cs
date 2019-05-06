@@ -72,7 +72,8 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
                 throw new InvalidOperationException("Invoke HandleRawBlock before StartBlockTransactionsHandling");
             }
 
-            _saveRawBlockTask = _rawObjectsRepository.SaveAsync(RawObjectType.Block, blockId, rawBlock);
+            // TODO: Optimize and uncomment
+            // _saveRawBlockTask = _rawObjectsRepository.SaveAsync(RawObjectType.Block, blockId, rawBlock);
         }
 
         public void HandleNotFoundBlock(BlockNotFoundEvent evt)
