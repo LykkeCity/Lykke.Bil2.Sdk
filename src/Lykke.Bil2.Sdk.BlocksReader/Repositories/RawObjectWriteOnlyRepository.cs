@@ -30,21 +30,23 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Repositories
 
         public async Task SaveAsync(RawObjectType objectType, string objectId, Base64String rawObject)
         {
-            var containerName = RawObjectRepositoryTools.GetContainerName(_integrationName, objectType);
-            var blobName = RawObjectRepositoryTools.GetBlobName(objectId);
+            await Task.CompletedTask;
+            // TODO: Optimize and uncomment
+            //var containerName = RawObjectRepositoryTools.GetContainerName(_integrationName, objectType);
+            //var blobName = RawObjectRepositoryTools.GetBlobName(objectId);
 
-            using (var stream = new MemoryStream())
-            using (var textWriter = new StreamWriter(stream))
-            {
-                textWriter.Write(rawObject.Value);
+            //using (var stream = new MemoryStream())
+            //using (var textWriter = new StreamWriter(stream))
+            //{
+            //    textWriter.Write(rawObject.Value);
 
-                await textWriter.FlushAsync();
-                await stream.FlushAsync();
+            //    await textWriter.FlushAsync();
+            //    await stream.FlushAsync();
 
-                stream.Position = 0;
+            //    stream.Position = 0;
 
-                await _blob.SaveBlobAsync(containerName, blobName, stream);
-            }
+            //    await _blob.SaveBlobAsync(containerName, blobName, stream);
+            //}
         }
     }
 }

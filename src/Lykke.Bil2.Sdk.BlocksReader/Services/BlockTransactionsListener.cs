@@ -101,25 +101,23 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
             SendTransactionsBatchIfNeeded();
         }
 
-        public Task HandleRawTransactionAsync(Base64String rawTransaction, TransactionId transactionId)
+        public async Task HandleRawTransactionAsync(Base64String rawTransaction, TransactionId transactionId)
         {
-            return Task.CompletedTask;
-            // TODO: Optimize and uncomment
-            //async Task SaveRawTransaction()
-            //{
-            //    try
-            //    {
-            //        await _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, transactionId, rawTransaction);
-            //    }
-            //    finally
-            //    {
-            //        _rawTransactionsPersistenceParallelismGuard.Release();
-            //    }
-            //}
+           async Task SaveRawTransaction()
+            {
+                try
+                {
+                    await _rawObjectsRepository.SaveAsync(RawObjectType.Transaction, transactionId, rawTransaction);
+                }
+                finally
+                {
+                    _rawTransactionsPersistenceParallelismGuard.Release();
+                }
+            }
 
-            //await _rawTransactionsPersistenceParallelismGuard.WaitAsync();
+            await _rawTransactionsPersistenceParallelismGuard.WaitAsync();
 
-            //_rawTransactionsPersistenceTasks.Add(SaveRawTransaction());
+            _rawTransactionsPersistenceTasks.Add(SaveRawTransaction());
         }
 
         public async Task FlushAsync()
