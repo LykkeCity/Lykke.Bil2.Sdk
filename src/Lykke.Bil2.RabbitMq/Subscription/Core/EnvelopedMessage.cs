@@ -25,7 +25,8 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             ulong deliveryTag,
             string routingKey)
         
-            : this(body, consumer, DateTime.UtcNow, correlationId, deliveryTag, exchange, Guid.NewGuid(),0, routingKey)
+            : this(body, consumer, DateTime.UtcNow, correlationId, deliveryTag, exchange, Guid.NewGuid(),0, routingKey, 
+                TelemetryClient.StartOperation<RequestTelemetry>($"Message consuming: {routingKey}", correlationId))
         {
             
         }
@@ -39,7 +40,8 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             string exchange,
             Guid id,
             int retryCount,
-            string routingKey)
+            string routingKey,
+            IOperationHolder<RequestTelemetry> telemetryOperation)
         {
             _consumer = consumer;
             _createdOn = createdOn;
@@ -52,7 +54,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             RetryCount = retryCount;
             RoutingKey = routingKey;
 
-            _telemetryOperation = TelemetryClient.StartOperation<RequestTelemetry>($"Enveloped Message: {RoutingKey}", correlationId);
+            _telemetryOperation = telemetryOperation;
         }
 
 
@@ -76,9 +78,8 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         {
             _telemetryOperation.Telemetry.ResponseCode = nameof(Ack);
             _telemetryOperation.Telemetry.Success = true;
-            _telemetryOperation.Telemetry.Stop();
 
-            TelemetryClient.TrackRequest(_telemetryOperation.Telemetry);
+            TelemetryClient.StopOperation(_telemetryOperation);
 
             _consumer.Ack(_deliveryTag);
         }
@@ -87,9 +88,8 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
         {
             _telemetryOperation.Telemetry.ResponseCode = nameof(Reject);
             _telemetryOperation.Telemetry.Success = false;
-            _telemetryOperation.Telemetry.Stop();
 
-            TelemetryClient.TrackRequest(_telemetryOperation.Telemetry);
+            TelemetryClient.StopOperation(_telemetryOperation);
 
             _consumer.Reject(_deliveryTag);
         }
@@ -99,7 +99,6 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
             var newRetryCount = RetryCount + 1;
             
             _telemetryOperation.Telemetry.Sequence = newRetryCount.ToString();
-            TelemetryClient.TrackRequest(_telemetryOperation.Telemetry);
 
             return new EnvelopedMessage
             (
@@ -111,7 +110,8 @@ namespace Lykke.Bil2.RabbitMq.Subscription.Core
                 Exchange,
                 Id,
                 newRetryCount,
-                RoutingKey
+                RoutingKey,
+                _telemetryOperation
             );
         }
     }
