@@ -13,7 +13,7 @@ namespace Lykke.Bil2.RabbitMq.Subscription.MessageFilters
         {
             var operation = TelemetryClient.StartOperation<RequestTelemetry>
             (
-                $"RabbitMq message: {context.HandlingContext.RoutingKey}",
+                $"Message processing: {context.HandlingContext.RoutingKey}",
                 context.Headers.CorrelationId
             );
 
