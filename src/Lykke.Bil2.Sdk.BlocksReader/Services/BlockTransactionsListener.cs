@@ -162,6 +162,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
                 _messagePublisher.Publish(new TransferAmountTransactionsBatchEvent
                 (
                     blockId: _blockHeader.BlockId,
+                    blockNumber: _blockHeader.BlockNumber,
                     transferAmountExecutedTransactions: _transferAmountExecutedTransactions,
                     failedTransactions: _failedTransactions
                 ));
@@ -176,6 +177,7 @@ namespace Lykke.Bil2.Sdk.BlocksReader.Services
                 _messagePublisher.Publish(new TransferCoinsTransactionsBatchEvent
                 (
                     blockId: _blockHeader.BlockId,
+                    blockNumber: _blockHeader.BlockNumber,
                     transferCoinsExecutedTransactions: _transferCoinsExecutedTransactions,
                     failedTransactions: _failedTransactions
                 ));
